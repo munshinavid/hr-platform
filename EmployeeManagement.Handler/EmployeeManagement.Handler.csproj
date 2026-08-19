@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\CreateEmployee\" />
+    <Folder Include="Commands\DeleteEmployee\" />
+    <Folder Include="Commands\UpdateEmployee\" />
+    <Folder Include="Queries\GetEmployee\" />
+    <Folder Include="Queries\GetEmployees\" />
+    <Folder Include="Queries\SearchEmployee\" />
+  </ItemGroup>
+
+</Project>

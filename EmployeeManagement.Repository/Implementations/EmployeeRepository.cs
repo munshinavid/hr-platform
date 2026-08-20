@@ -35,17 +35,17 @@ namespace EmployeeManagement.Repository.Implementations
                 .FirstOrDefaultAsync(e => e.UserId == userId);
         }
 
-        public async Task<bool> EmailExistsAsync(
-            string email,
-            int? excludeEmployeeId = null)
-        {
-            return await _dbSet
-                .Include(e => e.User)
-                .AnyAsync(e =>
-                    e.User.Email == email &&
-                    (!excludeEmployeeId.HasValue ||
-                     e.EmployeeId != excludeEmployeeId.Value));
-        }
+        //public async Task<bool> EmailExistsAsync(
+        //    string email,
+        //    int? excludeEmployeeId = null)
+        //{
+        //    return await _dbSet
+        //        .Include(e => e.User)
+        //        .AnyAsync(e =>
+        //            e.User.Email == email &&
+        //            (!excludeEmployeeId.HasValue ||
+        //             e.EmployeeId != excludeEmployeeId.Value));
+        //}
 
         public IQueryable<Employee> GetQueryable()
         {

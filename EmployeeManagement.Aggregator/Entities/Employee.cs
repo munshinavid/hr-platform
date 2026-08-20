@@ -26,7 +26,7 @@ public class Employee
 
     public User User { get; private set; } = null!;
 
-    public Employee(
+    private Employee(
         string phone,
         string gender,
         int departmentId,
@@ -54,5 +54,28 @@ public class Employee
         JoiningDate = joiningDate;
         Status = status;
         UserId = userId;
+    }
+
+    public static Employee Create(
+        string phone,
+        string gender,
+        int departmentId,
+        string jobTitle,
+        decimal salary,
+        string employmentType,
+        DateTime joiningDate,
+        string status,
+        int userId)
+    {
+        return new Employee(
+            phone,
+            gender,
+            departmentId,
+            jobTitle,
+            salary,
+            employmentType,
+            joiningDate,
+            status,
+            userId);
     }
 }

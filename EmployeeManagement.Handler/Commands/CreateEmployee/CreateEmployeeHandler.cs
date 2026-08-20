@@ -33,7 +33,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
 
             // Database-dependent business checks through Repository
 
-            var emailExists = await _employeeRepository.EmailExistsAsync(request.Email);
+            var emailExists = await _userRepository.EmailExistsAsync(request.Email);
 
             if (emailExists)
             {
@@ -56,18 +56,37 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                 string tempPassword = "Default@123";
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(tempPassword);
 
-                var user = EmployeeMapper.MapToUser(request, hashedPassword);
+                //var user = EmployeeMapper.MapToUser(request, hashedPassword);
+                var user= User.Create
+                (
+                    request.Name,
+                    request.Email,
+                    hashedPassword,
+                    Roles.Employee
+                );
 
                 await _userRepository.AddAsync(user);
 
-                var employee = EmployeeMapper.MapToEmployee(request, user.UserId);
+                //var employee = EmployeeMapper.MapToEmployee(request, user.UserId);
+                var employee = Employee.Create
+                (
+                    request.Phone,
+                    request.Gender,
+                    request.DepartmentId,
+                    request.JobTitle,
+                    request.Salary,
+                    request.EmploymentType,
+                    request.JoiningDate,
+                    request.Status,
+                    user.UserId
+                );
 
                 await _employeeRepository.AddAsync(employee);
 
                 // Re-fetch with navigation properties
                 var createdEmployee = await _employeeRepository.GetByIdAsync(employee.EmployeeId);
 
-                var response = EmployeeMapper.MapToResponse(createdEmployee!);
+                var response = EmployeeResponseMapper.MapToResponse(createdEmployee!);
 
                 return HandlerResult<EmployeeResponse>.SuccessResult(
                     response,

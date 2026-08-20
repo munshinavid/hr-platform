@@ -16,5 +16,15 @@ namespace EmployeeManagement.Repository.Implementations
             return await _dbSet
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task<bool> EmailExistsAsync(
+        string email,
+        int? excludeUserId = null)
+        {
+            return await _dbSet.AnyAsync(u =>
+                u.Email == email &&
+                (!excludeUserId.HasValue ||
+                 u.UserId != excludeUserId.Value));
+        }
     }
 }

@@ -1,4 +1,4 @@
-using EmployeeManagement.Aggregator.Entities;
+
 
 namespace EmployeeManagement.Repository.Interfaces
 {
@@ -6,7 +6,7 @@ namespace EmployeeManagement.Repository.Interfaces
     {
         Task<Employee?> GetByUserIdAsync(int userId);
 
-        Task<bool> EmailExistsAsync(string email, int? excludeEmployeeId = null);
+        //Task<bool> EmailExistsAsync(string email, int? excludeEmployeeId = null);
 
         IQueryable<Employee> GetQueryable();
     }

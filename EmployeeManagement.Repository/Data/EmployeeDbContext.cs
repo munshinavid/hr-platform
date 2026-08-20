@@ -36,10 +36,10 @@ namespace EmployeeManagement.Repository.Data
             );
 
             // Reusing a default hashed password for seeded users
-            string defaultPasswordHash = "$2a$11$Xlrxgz54nA19DFt72QE8KObUgjYvFwMOd0WptsY59zuA60LMcP8YW"; // "password123" maybe?
+            string defaultPasswordHash = "$2a$11$Xlrxgz54nA19DFt72QE8KObUgjYvFwMOd0WptsY59zuA60LMcP8YW"; // "123456" 
 
             modelBuilder.Entity<User>().HasData(
-                new User
+                new 
                 {
                     UserId = 1,
                     Name = "Admin",
@@ -47,15 +47,15 @@ namespace EmployeeManagement.Repository.Data
                     Password = "$2a$11$Yf0Mi/zOVDnkRqRHvOOin.MtWb.w36EGmQW/f55XQ5yvz51uBBXU6",
                     Role = "HR"
                 },
-                new User
+                new 
                 {
                     UserId = 2,
-                    Name = "Sadia Akter", // was Test User
-                    Email = "sadia@gmail.com", // was user@gmail.com
+                    Name = "Sadia Akter", 
+                    Email = "sadia@gmail.com", 
                     Password = defaultPasswordHash,
                     Role = "Employee"
                 },
-                new User
+                new
                 {
                     UserId = 3,
                     Name = "Rahim Ahmed",
@@ -63,7 +63,7 @@ namespace EmployeeManagement.Repository.Data
                     Password = defaultPasswordHash,
                     Role = "Employee"
                 },
-                new User
+                new
                 {
                     UserId = 4,
                     Name = "Karim Hasan",
@@ -71,7 +71,7 @@ namespace EmployeeManagement.Repository.Data
                     Password = defaultPasswordHash,
                     Role = "Employee"
                 },
-                new User
+                new
                 {
                     UserId = 5,
                     Name = "Nusrat Jahan",
@@ -79,7 +79,7 @@ namespace EmployeeManagement.Repository.Data
                     Password = defaultPasswordHash,
                     Role = "Employee"
                 },
-                new User
+                new
                 {
                     UserId = 6,
                     Name = "Hasan Mahmud",
@@ -90,7 +90,7 @@ namespace EmployeeManagement.Repository.Data
             );
 
             modelBuilder.Entity<Employee>().HasData(
-                new Employee
+                new
                 {
                     EmployeeId = 1,
                     UserId = 3,
@@ -98,12 +98,12 @@ namespace EmployeeManagement.Repository.Data
                     Gender = "Male",
                     DepartmentId = 1,
                     JobTitle = "Software Engineer",
-                    Salary = 45000,
+                    Salary = 45000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2025, 1, 10),
                     Status = "Active"
                 },
-                new Employee
+                new
                 {
                     EmployeeId = 2,
                     UserId = 4,
@@ -111,12 +111,12 @@ namespace EmployeeManagement.Repository.Data
                     Gender = "Male",
                     DepartmentId = 2,
                     JobTitle = "HR Executive",
-                    Salary = 35000,
+                    Salary = 35000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2024, 6, 15),
                     Status = "Active"
                 },
-                new Employee
+                new
                 {
                     EmployeeId = 3,
                     UserId = 5,
@@ -124,12 +124,12 @@ namespace EmployeeManagement.Repository.Data
                     Gender = "Female",
                     DepartmentId = 3,
                     JobTitle = "Accountant",
-                    Salary = 40000,
+                    Salary = 40000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2025, 3, 20),
                     Status = "Active"
                 },
-                new Employee
+                new
                 {
                     EmployeeId = 4,
                     UserId = 6,
@@ -137,12 +137,12 @@ namespace EmployeeManagement.Repository.Data
                     Gender = "Male",
                     DepartmentId = 1,
                     JobTitle = "Web Developer",
-                    Salary = 50000,
+                    Salary = 50000m,
                     EmploymentType = "Contract",
                     JoiningDate = new DateTime(2023, 9, 5),
                     Status = "Inactive"
                 },
-                new Employee
+                new
                 {
                     EmployeeId = 5,
                     UserId = 2,
@@ -150,7 +150,7 @@ namespace EmployeeManagement.Repository.Data
                     Gender = "Female",
                     DepartmentId = 2,
                     JobTitle = "HR Manager",
-                    Salary = 60000,
+                    Salary = 60000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2022, 11, 12),
                     Status = "Active"

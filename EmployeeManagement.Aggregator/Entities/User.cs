@@ -14,5 +14,17 @@ namespace EmployeeManagement.Aggregator.Entities
 
         // Navigation
         public Employee? Employee { get; set; }
+
+
+        public User(string name,
+            string email,
+            string password,
+            string role)
+        {
+            Name = name;
+            Email = email;
+            Password = password;
+            Role = role;
+        }
     }
 }

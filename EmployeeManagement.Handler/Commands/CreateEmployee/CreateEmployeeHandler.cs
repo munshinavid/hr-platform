@@ -2,6 +2,7 @@ using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.DTO.Employee;
 using EmployeeManagement.Handler.Common;
+using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -55,35 +56,18 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                 string tempPassword = "Default@123";
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(tempPassword);
 
-                var user = new User
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    Password = hashedPassword,
-                    Role = Roles.Employee
-                };
+                var user = EmployeeMapper.MapToUser(request, hashedPassword);
 
                 await _userRepository.AddAsync(user);
 
-                var employee = new Employee
-                {
-                    Phone = request.Phone,
-                    Gender = request.Gender,
-                    DepartmentId = request.DepartmentId,
-                    JobTitle = request.JobTitle,
-                    Salary = request.Salary,
-                    EmploymentType = request.EmploymentType,
-                    JoiningDate = request.JoiningDate,
-                    Status = request.Status,
-                    UserId = user.UserId
-                };
+                var employee = EmployeeMapper.MapToEmployee(request, user.UserId);
 
                 await _employeeRepository.AddAsync(employee);
 
                 // Re-fetch with navigation properties
                 var createdEmployee = await _employeeRepository.GetByIdAsync(employee.EmployeeId);
 
-                var response = MapToResponse(createdEmployee!);
+                var response = EmployeeMapper.MapToResponse(createdEmployee!);
 
                 return HandlerResult<EmployeeResponse>.SuccessResult(
                     response,
@@ -98,23 +82,5 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
             }
         }
 
-        private static EmployeeResponse MapToResponse(Employee employee)
-        {
-            return new EmployeeResponse
-            {
-                EmployeeId = employee.EmployeeId,
-                Name = employee.User?.Name ?? string.Empty,
-                Email = employee.User?.Email ?? string.Empty,
-                Phone = employee.Phone,
-                Gender = employee.Gender,
-                DepartmentId = employee.DepartmentId,
-                DepartmentName = employee.Department?.DepartmentName,
-                JobTitle = employee.JobTitle,
-                Salary = employee.Salary,
-                EmploymentType = employee.EmploymentType,
-                JoiningDate = employee.JoiningDate,
-                Status = employee.Status
-            };
-        }
     }
 }

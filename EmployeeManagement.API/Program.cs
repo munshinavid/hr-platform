@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
 // Configure JWT Authentication
-builder.Services.AddJwtAuthentication(builder.Configuration);
+//builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddAuthorization();
 

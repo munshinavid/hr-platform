@@ -1,29 +1,58 @@
-namespace EmployeeManagement.Aggregator.Entities
+using EmployeeManagement.Aggregator.Entities;
+
+public class Employee
 {
-    public class Employee
+    public int EmployeeId { get; private set; }
+
+    public string Phone { get; private set; } = string.Empty;
+
+    public string Gender { get; private set; } = string.Empty;
+
+    public int DepartmentId { get; private set; }
+
+    public string JobTitle { get; private set; } = string.Empty;
+
+    public decimal Salary { get; private set; }
+
+    public string EmploymentType { get; private set; } = string.Empty;
+
+    public DateTime JoiningDate { get; private set; }
+
+    public string Status { get; private set; } = string.Empty;
+
+    public int UserId { get; private set; }
+
+    public Department? Department { get; private set; }
+
+    public User User { get; private set; } = null!;
+
+    public Employee(
+        string phone,
+        string gender,
+        int departmentId,
+        string jobTitle,
+        decimal salary,
+        string employmentType,
+        DateTime joiningDate,
+        string status,
+        int userId)
     {
-        public int EmployeeId { get; set; }
+        if (salary < 0)
+            throw new ArgumentException(
+                "Employee salary cannot be negative.");
 
-        public string Phone { get; set; } = string.Empty;
+        if (joiningDate > DateTime.UtcNow)
+            throw new ArgumentException(
+                "Joining date cannot be in the future.");
 
-        public string Gender { get; set; } = string.Empty;
-
-        public int DepartmentId { get; set; }
-
-        public string JobTitle { get; set; } = string.Empty;
-
-        public decimal Salary { get; set; }
-
-        public string EmploymentType { get; set; } = string.Empty;
-
-        public DateTime JoiningDate { get; set; }
-
-        public string Status { get; set; } = string.Empty;
-
-        public int UserId { get; set; }
-
-        // Navigation
-        public Department? Department { get; set; }
-        public User User { get; set; } = null!;
+        Phone = phone;
+        Gender = gender;
+        DepartmentId = departmentId;
+        JobTitle = jobTitle;
+        Salary = salary;
+        EmploymentType = employmentType;
+        JoiningDate = joiningDate;
+        Status = status;
+        UserId = userId;
     }
 }

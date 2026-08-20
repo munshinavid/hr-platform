@@ -8,7 +8,7 @@ namespace EmployeeManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class EmployeeController : ControllerBase
     {
         private readonly CreateEmployeeHandler _createEmployeeHandler;
@@ -20,7 +20,7 @@ namespace EmployeeManagement.API.Controllers
 
         // POST: api/Employee
         [HttpPost]
-        [Authorize(Roles = "HR")]
+        //[Authorize(Roles = "HR")]
         public async Task<IActionResult> Create(CreateEmployeeRequest request)
         {
             var command = new CreateEmployeeCommand(request);

@@ -1,4 +1,5 @@
 using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.Handler.Abstractions;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
@@ -6,6 +7,7 @@ using EmployeeManagement.Repository.Interfaces;
 namespace EmployeeManagement.Handler.Queries.GetEmployee
 {
     public class GetEmployeeHandler
+        : IQueryHandler<GetEmployeeQuery, HandlerResult<EmployeeResponse>>
     {
         private readonly IEmployeeRepository _employeeRepository;
 
@@ -16,7 +18,7 @@ namespace EmployeeManagement.Handler.Queries.GetEmployee
         }
 
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
-            GetEmployeeQuery query)
+            GetEmployeeQuery query, CancellationToken ct = default)
         {
             var employee = await _employeeRepository
                 .GetByIdAsync(query.EmployeeId);
@@ -34,4 +36,4 @@ namespace EmployeeManagement.Handler.Queries.GetEmployee
                 "Employee retrieved successfully.");
         }
     }
-}
+}

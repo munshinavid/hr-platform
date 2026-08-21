@@ -1,6 +1,7 @@
 using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.Handler.Abstractions;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace EmployeeManagement.Handler.Commands.CreateEmployee
 {
     public class CreateEmployeeHandler
+        : ICommandHandler<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IDepartmentRepository _departmentRepository;
@@ -27,7 +29,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
             _logger = logger;
         }
 
-        public async Task<HandlerResult<EmployeeResponse>> HandleAsync(CreateEmployeeCommand command)
+        public async Task<HandlerResult<EmployeeResponse>> HandleAsync(CreateEmployeeCommand command, CancellationToken ct = default)
         {
             var request = command.Request;
 

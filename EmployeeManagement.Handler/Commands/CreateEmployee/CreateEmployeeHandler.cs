@@ -1,5 +1,6 @@
 using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Exceptions;
 using EmployeeManagement.DTO.Employee;
 using EmployeeManagement.Handler.Abstractions;
 using EmployeeManagement.Handler.Common;
@@ -33,9 +34,10 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
         }
 
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
-            CreateEmployeeCommand request,
+            CreateEmployeeCommand command,
             CancellationToken ct = default)
         {
+            var request= command.Request;
             try
             {
                 await _transactionManager.BeginTransactionAsync();
@@ -52,10 +54,6 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                 );
 
                 await _userRepository.AddAsync(user);
-
-                // SaveChanges happens inside AddAsync()
-                // UserId is generated here
-                // user.UserId is now available
 
                 var employee = Employee.Create(
                     request.Phone,

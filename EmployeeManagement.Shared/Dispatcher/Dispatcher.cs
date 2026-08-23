@@ -12,16 +12,16 @@ namespace EmployeeManagement.Shared.Dispatcher
             _serviceProvider = serviceProvider;
         }
 
-        public Task<TResult> SendCommand<TCommand, TResult>(TCommand command, CancellationToken ct = default)
+        public Task<TResult> SendCommand<TCommand, TResult>(TCommand command)
         {
             var handler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResult>>();
-            return handler.HandleAsync(command, ct);
+            return handler.HandleAsync(command);
         }
 
-        public Task<TResult> SendQuery<TQuery, TResult>(TQuery query, CancellationToken ct = default)
+        public Task<TResult> SendQuery<TQuery, TResult>(TQuery query)
         {
             var handler = _serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
-            return handler.HandleAsync(query, ct);
+            return handler.HandleAsync(query);
         }
     }
 }

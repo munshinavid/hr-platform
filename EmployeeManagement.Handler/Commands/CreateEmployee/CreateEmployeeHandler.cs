@@ -1,10 +1,10 @@
 using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.Aggregator.Exceptions;
+using EmployeeManagement.Aggregator.Mapping;
 using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Common;
-using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
 using EmployeeManagement.Shared.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -35,8 +35,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
         }
 
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
-            CreateEmployeeCommand command,
-            CancellationToken ct = default)
+            CreateEmployeeCommand command)
         {
             try
             {

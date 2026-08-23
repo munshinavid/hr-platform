@@ -2,7 +2,7 @@ using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.DTO.Command;
 using FluentValidation;
 
-namespace EmployeeManagement.Handler.Validators
+namespace EmployeeManagement.Aggregator.Validation
 {
     public class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
     {

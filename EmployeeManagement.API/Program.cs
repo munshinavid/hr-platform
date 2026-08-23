@@ -2,7 +2,7 @@ using EmployeeManagement.Handler;
 using EmployeeManagement.Repository;
 using EmployeeManagement.Shared.Extensions;
 using EmployeeManagement.Shared.Middleware;
-using EmployeeManagement.Handler.Validators;
+using EmployeeManagement.Aggregator.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 

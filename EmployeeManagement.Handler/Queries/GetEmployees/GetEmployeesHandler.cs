@@ -1,7 +1,7 @@
 using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
+using EmployeeManagement.Aggregator.Mapping;
 using EmployeeManagement.Handler.Common;
-using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
 using EmployeeManagement.Shared.Abstractions;
 
@@ -17,8 +17,7 @@ namespace EmployeeManagement.Handler.Queries.GetEmployees
             _employeeRepository = employeeRepository;
         }
         public async Task<HandlerResult<PagedResponse<EmployeeResponse>>> HandleAsync(
-        GetEmployeesQuery query,
-        CancellationToken ct = default)
+        GetEmployeesQuery query)
         {
             var (employees, totalCount) =
                 await _employeeRepository.GetPagedAsync(

@@ -28,7 +28,7 @@ namespace EmployeeManagement.Handler
                 IQueryHandler<GetEmployeesQuery, HandlerResult<PagedResponse<EmployeeResponse>>>,
                 GetEmployeesHandler>();
 
-            // Dispatcher
+            // Dispatcher 
             services.AddScoped<IDispatcher, Dispatcher>();
 
             return services;

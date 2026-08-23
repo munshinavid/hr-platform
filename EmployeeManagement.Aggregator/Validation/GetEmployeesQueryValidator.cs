@@ -1,7 +1,7 @@
 using EmployeeManagement.DTO.Query;
 using FluentValidation;
 
-namespace EmployeeManagement.Handler.Validators
+namespace EmployeeManagement.Aggregator.Validation
 {
     public class GetEmployeesQueryValidator : AbstractValidator<GetEmployeesQuery>
     {

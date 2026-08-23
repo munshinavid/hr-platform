@@ -1,8 +1,8 @@
 using EmployeeManagement.DTO.Employee;
-using EmployeeManagement.Handler.Abstractions;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
+using EmployeeManagement.Shared.Abstractions;
 
 namespace EmployeeManagement.Handler.Queries.GetEmployee
 {

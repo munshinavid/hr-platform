@@ -2,8 +2,9 @@ using EmployeeManagement.DTO.Common;
 using EmployeeManagement.DTO.Employee;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
 using EmployeeManagement.Handler.Common;
-using EmployeeManagement.Handler.Dispatcher;
 using EmployeeManagement.Handler.Queries.GetEmployee;
+using EmployeeManagement.Handler.Queries.GetEmployees;
+using EmployeeManagement.Shared.Dispatcher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,28 @@ namespace EmployeeManagement.API.Controllers
             {
                 message = result.Message,
                 employee = result.Data
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmployees(
+            [FromQuery] GetEmployeesRequest request)
+        {
+            var query = new GetEmployeesQuery(request.PageNumber, request.PageSize);
+            var result = await _dispatcher.SendQuery<
+                GetEmployeesQuery,
+                HandlerResult<PagedResponse<EmployeeResponse>>>(query);
+            if (!result.Success)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Bad request"
+                });
+            }
+            return Ok(new
+            {
+                message = result.Message,
+                employees = result.Data
             });
         }
 

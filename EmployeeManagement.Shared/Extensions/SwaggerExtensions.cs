@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace EmployeeManagement.API.Extensions
+namespace EmployeeManagement.Shared.Extensions
 {
     public static class SwaggerExtensions
     {

@@ -1,4 +1,4 @@
-namespace EmployeeManagement.Handler.Abstractions
+namespace EmployeeManagement.Shared.Abstractions
 {
     public interface IQueryHandler<TQuery, TResult>
     {

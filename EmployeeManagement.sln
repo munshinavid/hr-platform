@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Reposito
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Aggregator", "EmployeeManagement.Aggregator\EmployeeManagement.Aggregator.csproj", "{1D40655A-62A3-41E4-9775-619E4F54750C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Shared", "EmployeeManagement.Shared\EmployeeManagement.Shared.csproj", "{BEF9D1AA-E39C-4236-8D5B-00548A92BEC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1D40655A-62A3-41E4-9775-619E4F54750C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D40655A-62A3-41E4-9775-619E4F54750C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D40655A-62A3-41E4-9775-619E4F54750C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF9D1AA-E39C-4236-8D5B-00548A92BEC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF9D1AA-E39C-4236-8D5B-00548A92BEC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF9D1AA-E39C-4236-8D5B-00548A92BEC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF9D1AA-E39C-4236-8D5B-00548A92BEC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

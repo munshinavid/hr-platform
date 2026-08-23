@@ -1,7 +1,7 @@
-using EmployeeManagement.Handler.Abstractions;
+using EmployeeManagement.Shared.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EmployeeManagement.Handler.Dispatcher
+namespace EmployeeManagement.Shared.Dispatcher
 {
     public class Dispatcher : IDispatcher
     {

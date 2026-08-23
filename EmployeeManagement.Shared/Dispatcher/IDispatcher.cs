@@ -1,4 +1,4 @@
-namespace EmployeeManagement.Handler.Dispatcher
+namespace EmployeeManagement.Shared.Dispatcher
 {
     public interface IDispatcher
     {

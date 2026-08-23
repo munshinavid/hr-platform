@@ -1,6 +1,8 @@
 using EmployeeManagement.DTO.Common;
 using EmployeeManagement.DTO.Employee;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
+using EmployeeManagement.Handler.Common;
+using EmployeeManagement.Handler.Dispatcher;
 using EmployeeManagement.Handler.Queries.GetEmployee;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +14,11 @@ namespace EmployeeManagement.API.Controllers
     //[Authorize]
     public class EmployeeController : ControllerBase
     {
-        private readonly CreateEmployeeHandler _createEmployeeHandler;
-        private readonly GetEmployeeHandler _getEmployeeHandler;
+        private readonly IDispatcher _dispatcher;
 
-        public EmployeeController(CreateEmployeeHandler createEmployeeHandler, GetEmployeeHandler getEmployeeHandler)
+        public EmployeeController(IDispatcher dispatcher)
         {
-            _createEmployeeHandler = createEmployeeHandler;
-            _getEmployeeHandler = getEmployeeHandler;
+            _dispatcher = dispatcher;
         }
 
         // POST: api/Employee
@@ -27,7 +27,7 @@ namespace EmployeeManagement.API.Controllers
         public async Task<IActionResult> Create(CreateEmployeeRequest request)
         {
             var command = new CreateEmployeeCommand(request);
-            var result = await _createEmployeeHandler.HandleAsync(command);
+            var result = await _dispatcher.SendCommand<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>(command);
 
             if (!result.Success)
             {
@@ -48,15 +48,16 @@ namespace EmployeeManagement.API.Controllers
         public async Task<IActionResult> GetEmployeeById(int employeeId)
         {
             var query = new GetEmployeeQuery(employeeId);
-            var result = await _getEmployeeHandler.HandleAsync(query);
+            var result = await _dispatcher.SendQuery<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(query);
+
             if (!result.Success)
-                {
+            {
                 return NotFound(new ApiErrorResponse
                 {
                     Message = result.Message ?? "Employee not found"
                 });
             }
-            
+
             return Ok(new
             {
                 message = result.Message,

@@ -21,6 +21,7 @@ namespace EmployeeManagement.Repository
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<ITransactionManager, TransactionManager>();
 
             return services;
         }

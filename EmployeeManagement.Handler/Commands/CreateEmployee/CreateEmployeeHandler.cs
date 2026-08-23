@@ -1,6 +1,8 @@
 using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Exceptions;
 using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.Handler.Abstractions;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
@@ -9,56 +11,42 @@ using Microsoft.Extensions.Logging;
 namespace EmployeeManagement.Handler.Commands.CreateEmployee
 {
     public class CreateEmployeeHandler
+        : ICommandHandler<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ITransactionManager _transactionManager;
         private readonly ILogger<CreateEmployeeHandler> _logger;
 
         public CreateEmployeeHandler(
             IEmployeeRepository employeeRepository,
             IDepartmentRepository departmentRepository,
             IUserRepository userRepository,
+            ITransactionManager transactionManager,
             ILogger<CreateEmployeeHandler> logger)
         {
             _employeeRepository = employeeRepository;
             _departmentRepository = departmentRepository;
             _userRepository = userRepository;
+            _transactionManager = transactionManager;
             _logger = logger;
         }
 
-        public async Task<HandlerResult<EmployeeResponse>> HandleAsync(CreateEmployeeCommand command)
+        public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
+            CreateEmployeeCommand command,
+            CancellationToken ct = default)
         {
-            var request = command.Request;
-
-            // Database-dependent business checks through Repository
-
-            var emailExists = await _userRepository.EmailExistsAsync(request.Email);
-
-            if (emailExists)
-            {
-                return HandlerResult<EmployeeResponse>.FailureResult(
-                    "An employee with this email already exists.");
-            }
-
-            var department = await _departmentRepository.GetByIdAsync(request.DepartmentId);
-
-            if (department == null)
-            {
-                return HandlerResult<EmployeeResponse>.FailureResult(
-                    "Department not found.");
-            }
-
-            // Create domain entities
-
+            var request= command.Request;
             try
             {
-                string tempPassword = "Default@123";
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(tempPassword);
+                await _transactionManager.BeginTransactionAsync();
 
-                //var user = EmployeeMapper.MapToUser(request, hashedPassword);
-                var user= User.Create
-                (
+                string tempPassword = "Default@123";
+                string hashedPassword =
+                    BCrypt.Net.BCrypt.HashPassword(tempPassword);
+
+                var user = User.Create(
                     request.Name,
                     request.Email,
                     hashedPassword,
@@ -67,9 +55,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
 
                 await _userRepository.AddAsync(user);
 
-                //var employee = EmployeeMapper.MapToEmployee(request, user.UserId);
-                var employee = Employee.Create
-                (
+                var employee = Employee.Create(
                     request.Phone,
                     request.Gender,
                     request.DepartmentId,
@@ -83,23 +69,34 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
 
                 await _employeeRepository.AddAsync(employee);
 
-                // Re-fetch with navigation properties
-                var createdEmployee = await _employeeRepository.GetByIdAsync(employee.EmployeeId);
+                await _transactionManager.CommitAsync();
 
-                var response = EmployeeResponseMapper.MapToResponse(createdEmployee!);
+                var createdEmployee =
+                    await _employeeRepository.GetByIdAsync(employee.EmployeeId);
+
+                var response =
+                    EmployeeResponseMapper.MapToResponse(createdEmployee!);
 
                 return HandlerResult<EmployeeResponse>.SuccessResult(
                     response,
                     "Employee created successfully.");
             }
+            catch (DomainException ex)
+            {
+                await _transactionManager.RollbackAsync();
+
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    ex.Message);
+            }
             catch (Exception ex)
             {
+                await _transactionManager.RollbackAsync();
+
                 _logger.LogError(ex, "Error creating employee.");
 
                 return HandlerResult<EmployeeResponse>.FailureResult(
                     "Employee could not be saved to the database.");
             }
         }
-
     }
 }

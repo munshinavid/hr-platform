@@ -1,4 +1,5 @@
 using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Exceptions;
 
 public class Employee
 {
@@ -38,11 +39,11 @@ public class Employee
         int userId)
     {
         if (salary < 0)
-            throw new ArgumentException(
+            throw new DomainException(
                 "Employee salary cannot be negative.");
 
         if (joiningDate > DateTime.UtcNow)
-            throw new ArgumentException(
+            throw new DomainException(
                 "Joining date cannot be in the future.");
 
         Phone = phone;

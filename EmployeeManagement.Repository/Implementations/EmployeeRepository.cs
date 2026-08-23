@@ -54,5 +54,24 @@ namespace EmployeeManagement.Repository.Implementations
                 .Include(e => e.User)
                 .AsQueryable();
         }
+
+        public async Task<(List<Employee> Employees, int TotalCount)> GetPagedAsync(
+        int pageNumber,
+        int pageSize)
+        {
+            var query = _dbSet
+                .Include(e => e.Department)
+                .Include(e => e.User)
+                .OrderBy(e => e.EmployeeId);
+
+            var totalCount = await query.CountAsync();
+
+            var employees = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (employees, totalCount);
+        }
     }
 }

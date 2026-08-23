@@ -1,14 +1,15 @@
-using EmployeeManagement.API.Extensions;
-using EmployeeManagement.API.Middleware;
 using EmployeeManagement.Handler;
 using EmployeeManagement.Repository;
+using EmployeeManagement.Shared.Extensions;
+using EmployeeManagement.Shared.Middleware;
+using EmployeeManagement.Aggregator.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddFluentValidationConfiguration();
+builder.Services.AddFluentValidationConfiguration(typeof(CreateEmployeeCommandValidator));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

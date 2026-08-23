@@ -1,8 +1,10 @@
-using EmployeeManagement.DTO.Common;
+using EmployeeManagement.DTO.Response;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.Json;
 
-namespace EmployeeManagement.API.Middleware
+namespace EmployeeManagement.Shared.Middleware
 {
     public class ExceptionHandlingMiddleware
     {

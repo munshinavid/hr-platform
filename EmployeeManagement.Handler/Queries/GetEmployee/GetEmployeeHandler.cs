@@ -1,8 +1,9 @@
-using EmployeeManagement.DTO.Employee;
-using EmployeeManagement.Handler.Abstractions;
+using EmployeeManagement.DTO.Query;
+using EmployeeManagement.DTO.Response;
+using EmployeeManagement.Aggregator.Mapping;
 using EmployeeManagement.Handler.Common;
-using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
+using EmployeeManagement.Shared.Abstractions;
 
 namespace EmployeeManagement.Handler.Queries.GetEmployee
 {
@@ -18,7 +19,7 @@ namespace EmployeeManagement.Handler.Queries.GetEmployee
         }
 
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
-            GetEmployeeQuery query, CancellationToken ct = default)
+            GetEmployeeQuery query)
         {
             var employee = await _employeeRepository
                 .GetByIdAsync(query.EmployeeId);

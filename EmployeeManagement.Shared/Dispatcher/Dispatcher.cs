@@ -1,7 +1,7 @@
-using EmployeeManagement.Handler.Abstractions;
+using EmployeeManagement.Shared.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EmployeeManagement.Handler.Dispatcher
+namespace EmployeeManagement.Shared.Dispatcher
 {
     public class Dispatcher : IDispatcher
     {
@@ -12,16 +12,16 @@ namespace EmployeeManagement.Handler.Dispatcher
             _serviceProvider = serviceProvider;
         }
 
-        public Task<TResult> SendCommand<TCommand, TResult>(TCommand command, CancellationToken ct = default)
+        public Task<TResult> SendCommand<TCommand, TResult>(TCommand command)
         {
             var handler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResult>>();
-            return handler.HandleAsync(command, ct);
+            return handler.HandleAsync(command);
         }
 
-        public Task<TResult> SendQuery<TQuery, TResult>(TQuery query, CancellationToken ct = default)
+        public Task<TResult> SendQuery<TQuery, TResult>(TQuery query)
         {
             var handler = _serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
-            return handler.HandleAsync(query, ct);
+            return handler.HandleAsync(query);
         }
     }
 }

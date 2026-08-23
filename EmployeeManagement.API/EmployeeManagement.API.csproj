@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EmployeeManagement.Aggregator\EmployeeManagement.Aggregator.csproj" />
     <ProjectReference Include="..\EmployeeManagement.Handler\EmployeeManagement.Handler.csproj" />
     <ProjectReference Include="..\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
     <ProjectReference Include="..\EmployeeManagement.Repository\EmployeeManagement.Repository.csproj" />
+    <ProjectReference Include="..\EmployeeManagement.Shared\EmployeeManagement.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

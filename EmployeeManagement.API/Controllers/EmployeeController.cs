@@ -1,9 +1,8 @@
-using EmployeeManagement.DTO.Common;
-using EmployeeManagement.DTO.Employee;
-using EmployeeManagement.Handler.Commands.CreateEmployee;
+using EmployeeManagement.DTO.Command;
+using EmployeeManagement.DTO.Query;
+using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Common;
-using EmployeeManagement.Handler.Dispatcher;
-using EmployeeManagement.Handler.Queries.GetEmployee;
+using EmployeeManagement.Shared.Dispatcher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +23,8 @@ namespace EmployeeManagement.API.Controllers
         // POST: api/Employee
         [HttpPost]
         //[Authorize(Roles = "HR")]
-        public async Task<IActionResult> Create(CreateEmployeeRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateEmployeeCommand command)
         {
-            var command = new CreateEmployeeCommand(request);
             var result = await _dispatcher.SendCommand<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>(command);
 
             if (!result.Success)
@@ -44,10 +42,30 @@ namespace EmployeeManagement.API.Controllers
             });
         }
 
-        [HttpGet("{employeeId}")]
-        public async Task<IActionResult> GetEmployeeById(int employeeId)
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmployees(
+            [FromQuery] GetEmployeesQuery query)
         {
-            var query = new GetEmployeeQuery(employeeId);
+            var result = await _dispatcher.SendQuery<
+                GetEmployeesQuery,
+                HandlerResult<PagedResponse<EmployeeResponse>>>(query);
+            if (!result.Success)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Bad request"
+                });
+            }
+            return Ok(new
+            {
+                message = result.Message,
+                employees = result.Data
+            });
+        }
+
+        [HttpGet("{employeeId}")]
+        public async Task<IActionResult> GetEmployeeById([FromRoute] GetEmployeeQuery query)
+        {
             var result = await _dispatcher.SendQuery<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(query);
 
             if (!result.Success)

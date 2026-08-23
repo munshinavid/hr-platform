@@ -1,9 +1,12 @@
-using EmployeeManagement.DTO.Employee;
-using EmployeeManagement.Handler.Abstractions;
+using EmployeeManagement.DTO.Command;
+using EmployeeManagement.DTO.Query;
+using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
 using EmployeeManagement.Handler.Common;
-using EmployeeManagement.Handler.Dispatcher;
 using EmployeeManagement.Handler.Queries.GetEmployee;
+using EmployeeManagement.Handler.Queries.GetEmployees;
+using EmployeeManagement.Shared.Abstractions;
+using EmployeeManagement.Shared.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EmployeeManagement.Handler
@@ -21,9 +24,12 @@ namespace EmployeeManagement.Handler
             services.AddScoped<
                 IQueryHandler<GetEmployeeQuery, HandlerResult<EmployeeResponse>>,
                 GetEmployeeHandler>();
+            services.AddScoped<
+                IQueryHandler<GetEmployeesQuery, HandlerResult<PagedResponse<EmployeeResponse>>>,
+                GetEmployeesHandler>();
 
-            // Dispatcher
-            services.AddScoped<IDispatcher, Dispatcher.Dispatcher>();
+            // Dispatcher 
+            services.AddScoped<IDispatcher, Dispatcher>();
 
             return services;
         }

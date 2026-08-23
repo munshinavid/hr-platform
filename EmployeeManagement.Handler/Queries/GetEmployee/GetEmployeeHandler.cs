@@ -1,4 +1,5 @@
-using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.DTO.Query;
+using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;

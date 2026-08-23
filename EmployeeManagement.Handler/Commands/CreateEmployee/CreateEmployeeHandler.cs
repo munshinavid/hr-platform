@@ -1,7 +1,8 @@
 using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.Aggregator.Exceptions;
-using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.DTO.Command;
+using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Mappers;
 using EmployeeManagement.Repository.Interfaces;
@@ -37,7 +38,6 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
             CreateEmployeeCommand command,
             CancellationToken ct = default)
         {
-            var request= command.Request;
             try
             {
                 await _transactionManager.BeginTransactionAsync();
@@ -47,8 +47,8 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                     BCrypt.Net.BCrypt.HashPassword(tempPassword);
 
                 var user = User.Create(
-                    request.Name,
-                    request.Email,
+                    command.Name,
+                    command.Email,
                     hashedPassword,
                     Roles.Employee
                 );
@@ -56,14 +56,14 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                 await _userRepository.AddAsync(user);
 
                 var employee = Employee.Create(
-                    request.Phone,
-                    request.Gender,
-                    request.DepartmentId,
-                    request.JobTitle,
-                    request.Salary,
-                    request.EmploymentType,
-                    request.JoiningDate,
-                    request.Status,
+                    command.Phone,
+                    command.Gender,
+                    command.DepartmentId,
+                    command.JobTitle,
+                    command.Salary,
+                    command.EmploymentType,
+                    command.JoiningDate,
+                    command.Status,
                     user.UserId
                 );
 

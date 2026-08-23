@@ -1,12 +1,11 @@
-﻿using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.DTO.Query;
 using FluentValidation;
 
 namespace EmployeeManagement.Handler.Validators
 {
-    public class GetEmployeesRequestValidator
-        : AbstractValidator<GetEmployeesRequest>
+    public class GetEmployeesQueryValidator : AbstractValidator<GetEmployeesQuery>
     {
-        public GetEmployeesRequestValidator()
+        public GetEmployeesQueryValidator()
         {
             RuleFor(x => x.PageNumber)
                 .GreaterThanOrEqualTo(1)

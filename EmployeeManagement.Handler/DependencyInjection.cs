@@ -1,5 +1,6 @@
-using EmployeeManagement.DTO.Common;
-using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.DTO.Command;
+using EmployeeManagement.DTO.Query;
+using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Queries.GetEmployee;

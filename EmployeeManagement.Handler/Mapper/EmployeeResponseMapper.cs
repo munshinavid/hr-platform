@@ -1,6 +1,6 @@
 ﻿using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
-using EmployeeManagement.DTO.Employee;
+using EmployeeManagement.DTO.Response;
 
 namespace EmployeeManagement.Handler.Mappers
 {

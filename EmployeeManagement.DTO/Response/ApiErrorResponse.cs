@@ -1,4 +1,4 @@
-namespace EmployeeManagement.DTO.Common
+namespace EmployeeManagement.DTO.Response
 {
     public class ApiErrorResponse
     {

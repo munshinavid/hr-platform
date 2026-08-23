@@ -1,4 +1,4 @@
-using EmployeeManagement.DTO.Common;
+using EmployeeManagement.DTO.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;

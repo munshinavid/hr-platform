@@ -1,9 +1,8 @@
-﻿namespace EmployeeManagement.DTO.Employee
+namespace EmployeeManagement.DTO.Query
 {
-    public class GetEmployeesRequest
+    public class GetEmployeesQuery
     {
         public int PageNumber { get; set; } = 1;
-
         public int PageSize { get; set; } = 10;
     }
 }

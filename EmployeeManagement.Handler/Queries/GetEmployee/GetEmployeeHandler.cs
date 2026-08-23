@@ -36,4 +36,4 @@ namespace EmployeeManagement.Handler.Queries.GetEmployee
                 "Employee retrieved successfully.");
         }
     }
-}
+}

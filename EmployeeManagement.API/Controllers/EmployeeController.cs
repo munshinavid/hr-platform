@@ -42,6 +42,32 @@ namespace EmployeeManagement.API.Controllers
             });
         }
 
+        [HttpPut("{employeeId}")]
+        public async Task<IActionResult> Update(
+            [FromRoute] int employeeId,
+            [FromBody] UpdateEmployeeCommand command)
+        {
+            command.EmployeeId = employeeId;
+
+            var result = await _dispatcher.SendCommand<
+                UpdateEmployeeCommand,
+                HandlerResult<EmployeeResponse>>(command);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Bad request"
+                });
+            }
+
+            return Ok(new
+            {
+                message = result.Message,
+                employee = result.Data
+            });
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllEmployees(
             [FromQuery] GetEmployeesQuery query)

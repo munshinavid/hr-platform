@@ -1,42 +1,45 @@
+using EmployeeManagement.Aggregator.Mapping;
+using EmployeeManagement.DTO.Command;
+using EmployeeManagement.DTO.Response;
+
 namespace EmployeeManagement.Aggregator.Entities
 {
     public class User
     {
-        public int UserId { get; private set; }
+        public int UserId { get; set; }
 
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public string Email { get; private set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
-        public string Password { get; private set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
 
-        public string Role { get; private set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
 
-        public Employee? Employee { get; private set; }
+        public Employee? Employee { get; set; }
 
-        private User(
-            string name,
-            string email,
+        public static User MapToAggregator(
+            CreateEmployeeCommand command,
             string password,
             string role)
         {
-            Name = name;
-            Email = email;
-            Password = password;
-            Role = role;
-        }
-
-        public static User Create(
-            string name,
-            string email,
-            string password,
-            string role)
-        {
-            return new User(
-                name,
-                email,
+            return UserMapper.MapToAggregator(
+                command,
                 password,
                 role);
         }
+
+        public void MapToAggregator(
+            UpdateEmployeeCommand command)
+        {
+            UserMapper.MapToAggregator(
+                this,
+                command);
+        }
+
+        //public UserResponse MapToResponse()
+        //{
+        //    return UserResponseMapper.MapToResponse(this);
+        //}
     }
 }

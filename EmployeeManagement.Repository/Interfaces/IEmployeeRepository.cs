@@ -1,4 +1,4 @@
-
+using EmployeeManagement.Aggregator.Entities;
 
 namespace EmployeeManagement.Repository.Interfaces
 {

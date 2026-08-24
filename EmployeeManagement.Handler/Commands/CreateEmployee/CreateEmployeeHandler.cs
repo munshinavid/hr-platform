@@ -45,24 +45,16 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                 string hashedPassword =
                     BCrypt.Net.BCrypt.HashPassword(tempPassword);
 
-                var user = User.Create(
-                    command.Name,
-                    command.Email,
+                var user = User.MapToAggregator(
+                    command,
                     hashedPassword,
                     Roles.Employee
                 );
 
                 await _userRepository.AddAsync(user);
 
-                var employee = Employee.Create(
-                    command.Phone,
-                    command.Gender,
-                    command.DepartmentId,
-                    command.JobTitle,
-                    command.Salary,
-                    command.EmploymentType,
-                    command.JoiningDate,
-                    command.Status,
+                var employee = Employee.MapToAggregator(
+                    command,
                     user.UserId
                 );
 
@@ -74,7 +66,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                     await _employeeRepository.GetByIdAsync(employee.EmployeeId);
 
                 var response =
-                    EmployeeResponseMapper.MapToResponse(createdEmployee!);
+                    createdEmployee!.MapToResponse();
 
                 return HandlerResult<EmployeeResponse>.SuccessResult(
                     response,

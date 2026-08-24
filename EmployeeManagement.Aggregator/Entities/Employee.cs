@@ -1,82 +1,77 @@
-using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.Aggregator.Exceptions;
+using EmployeeManagement.Aggregator.Mapping;
+using EmployeeManagement.DTO.Command;
+using EmployeeManagement.DTO.Response;
 
-public class Employee
+namespace EmployeeManagement.Aggregator.Entities
 {
-    public int EmployeeId { get; private set; }
-
-    public string Phone { get; private set; } = string.Empty;
-
-    public string Gender { get; private set; } = string.Empty;
-
-    public int DepartmentId { get; private set; }
-
-    public string JobTitle { get; private set; } = string.Empty;
-
-    public decimal Salary { get; private set; }
-
-    public string EmploymentType { get; private set; } = string.Empty;
-
-    public DateTime JoiningDate { get; private set; }
-
-    public string Status { get; private set; } = string.Empty;
-
-    public int UserId { get; private set; }
-
-    public Department? Department { get; private set; }
-
-    public User User { get; private set; } = null!;
-
-    private Employee(
-        string phone,
-        string gender,
-        int departmentId,
-        string jobTitle,
-        decimal salary,
-        string employmentType,
-        DateTime joiningDate,
-        string status,
-        int userId)
+    public class Employee
     {
-        if (salary < 0)
-            throw new DomainException(
-                "Employee salary cannot be negative.");
+        public int EmployeeId { get; set; }
 
-        if (joiningDate > DateTime.UtcNow)
-            throw new DomainException(
-                "Joining date cannot be in the future.");
+        public string Phone { get; set; } = string.Empty;
 
-        Phone = phone;
-        Gender = gender;
-        DepartmentId = departmentId;
-        JobTitle = jobTitle;
-        Salary = salary;
-        EmploymentType = employmentType;
-        JoiningDate = joiningDate;
-        Status = status;
-        UserId = userId;
-    }
+        public string Gender { get; set; } = string.Empty;
 
-    public static Employee Create(
-        string phone,
-        string gender,
-        int departmentId,
-        string jobTitle,
-        decimal salary,
-        string employmentType,
-        DateTime joiningDate,
-        string status,
-        int userId)
-    {
-        return new Employee(
-            phone,
-            gender,
-            departmentId,
-            jobTitle,
-            salary,
-            employmentType,
-            joiningDate,
-            status,
-            userId);
+        public int DepartmentId { get; set; }
+
+        public string JobTitle { get; set; } = string.Empty;
+
+        public decimal Salary { get; set; }
+
+        public string EmploymentType { get; set; } = string.Empty;
+
+        public DateTime JoiningDate { get; set; }
+
+        public string Status { get; set; } = string.Empty;
+
+        public int UserId { get; set; }
+
+        public Department? Department { get; set; }
+
+        public User User { get; set; } = null!;
+
+        public static void ValidateBusinessRules(
+            decimal salary,
+            DateTime joiningDate)
+        {
+            if (salary < 0)
+                throw new DomainException(
+                    "Employee salary cannot be negative.");
+
+            if (joiningDate > DateTime.UtcNow)
+                throw new DomainException(
+                    "Joining date cannot be in the future.");
+        }
+
+        public static Employee MapToAggregator(
+            CreateEmployeeCommand command,
+            int userId)
+        {
+            ValidateBusinessRules(
+                command.Salary,
+                command.JoiningDate);
+
+            return EmployeeMapper.MapToAggregator(
+                command,
+                userId);
+        }
+
+        public void MapToAggregator(
+            UpdateEmployeeCommand command)
+        {
+            ValidateBusinessRules(
+                command.Salary,
+                command.JoiningDate);
+
+            EmployeeMapper.MapToAggregator(
+                this,
+                command);
+        }
+
+        public EmployeeResponse MapToResponse()
+        {
+            return EmployeeResponseMapper.MapToResponse(this);
+        }
     }
 }

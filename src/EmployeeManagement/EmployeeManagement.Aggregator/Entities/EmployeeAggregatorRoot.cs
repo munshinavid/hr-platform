@@ -5,7 +5,7 @@ using EmployeeManagement.DTO.Response;
 
 namespace EmployeeManagement.Aggregator.Entities
 {
-    public class Employee
+    public class EmployeeAggregatorRoot
     {
         public int EmployeeId { get; set; }
 
@@ -27,9 +27,9 @@ namespace EmployeeManagement.Aggregator.Entities
 
         public int UserId { get; set; }
 
-        public Department? Department { get; set; }
+        public DepartmentAggregatorRoot? Department { get; set; }
 
-        public User User { get; set; } = null!;
+        public UserAggregatorRoot User { get; set; } = null!;
 
         public static void ValidateBusinessRules(
             decimal salary,
@@ -44,7 +44,7 @@ namespace EmployeeManagement.Aggregator.Entities
                     "Joining date cannot be in the future.");
         }
 
-        public static Employee MapToAggregator(
+        public static EmployeeAggregatorRoot MapToAggregator(
             CreateEmployeeCommand command,
             int userId)
         {

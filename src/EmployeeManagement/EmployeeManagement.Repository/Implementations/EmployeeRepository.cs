@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagement.Repository.Implementations
 {
-    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
+    public class EmployeeRepository : GenericRepository<EmployeeAggregatorRoot>, IEmployeeRepository
     {
         public EmployeeRepository(EmployeeDbContext context) : base(context)
         {
         }
 
-        public override async Task<List<Employee>> GetAllAsync()
+        public override async Task<List<EmployeeAggregatorRoot>> GetAllAsync()
         {
             return await _dbSet
                 .Include(e => e.Department)
@@ -19,7 +19,7 @@ namespace EmployeeManagement.Repository.Implementations
                 .ToListAsync();
         }
 
-        public override async Task<Employee?> GetByIdAsync(int id)
+        public override async Task<EmployeeAggregatorRoot?> GetByIdAsync(int id)
         {
             return await _dbSet
                 .Include(e => e.Department)
@@ -27,7 +27,7 @@ namespace EmployeeManagement.Repository.Implementations
                 .FirstOrDefaultAsync(e => e.EmployeeId == id);
         }
 
-        public async Task<Employee?> GetByUserIdAsync(int userId)
+        public async Task<EmployeeAggregatorRoot?> GetByUserIdAsync(int userId)
         {
             return await _dbSet
                 .Include(e => e.Department)
@@ -48,7 +48,7 @@ namespace EmployeeManagement.Repository.Implementations
         }
 
 
-        public IQueryable<Employee> GetQueryable()
+        public IQueryable<EmployeeAggregatorRoot> GetQueryable()
         {
             return _dbSet
                 .Include(e => e.Department)
@@ -56,7 +56,7 @@ namespace EmployeeManagement.Repository.Implementations
                 .AsQueryable();
         }
 
-        public async Task<(List<Employee> Employees, int TotalCount)> GetPagedAsync(
+        public async Task<(List<EmployeeAggregatorRoot> Employees, int TotalCount)> GetPagedAsync(
         int pageNumber,
         int pageSize)
         {

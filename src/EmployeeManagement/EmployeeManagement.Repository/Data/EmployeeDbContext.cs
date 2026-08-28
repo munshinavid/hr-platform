@@ -10,35 +10,70 @@ namespace EmployeeManagement.Repository.Data
         {
         }
 
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<EmployeeAggregatorRoot> Employees { get; set; }
+        public DbSet<DepartmentAggregatorRoot> Departments { get; set; }
+        public DbSet<UserAggregatorRoot> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Employee>()
+            // Primary Keys
+            modelBuilder.Entity<EmployeeAggregatorRoot>()
+                .HasKey(e => e.EmployeeId);
+
+            modelBuilder.Entity<DepartmentAggregatorRoot>()
+                .HasKey(d => d.DepartmentId);
+
+            modelBuilder.Entity<UserAggregatorRoot>()
+                .HasKey(u => u.UserId);
+
+            // Existing database table names
+            modelBuilder.Entity<EmployeeAggregatorRoot>()
+                .ToTable("Employee");
+
+            modelBuilder.Entity<DepartmentAggregatorRoot>()
+                .ToTable("Department");
+
+            modelBuilder.Entity<UserAggregatorRoot>()
+                .ToTable("User");
+
+            // Employee salary
+            modelBuilder.Entity<EmployeeAggregatorRoot>()
                 .Property(e => e.Salary)
                 .HasPrecision(18, 2);
 
-            modelBuilder.Entity<Employee>()
+            // Employee -> User
+            modelBuilder.Entity<EmployeeAggregatorRoot>()
                 .HasOne(e => e.User)
                 .WithOne(u => u.Employee)
-                .HasForeignKey<Employee>(e => e.UserId)
+                .HasForeignKey<EmployeeAggregatorRoot>(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Department>().HasData(
-                new Department { DepartmentId = 1, DepartmentName = "IT" },
-                new Department { DepartmentId = 2, DepartmentName = "HR" },
-                new Department { DepartmentId = 3, DepartmentName = "Finance" }
+            // Seed Department
+            modelBuilder.Entity<DepartmentAggregatorRoot>().HasData(
+                new DepartmentAggregatorRoot
+                {
+                    DepartmentId = 1,
+                    DepartmentName = "IT"
+                },
+                new DepartmentAggregatorRoot
+                {
+                    DepartmentId = 2,
+                    DepartmentName = "HR"
+                },
+                new DepartmentAggregatorRoot
+                {
+                    DepartmentId = 3,
+                    DepartmentName = "Finance"
+                }
             );
 
             // Reusing a default hashed password for seeded users
             string defaultPasswordHash = "$2a$11$Xlrxgz54nA19DFt72QE8KObUgjYvFwMOd0WptsY59zuA60LMcP8YW"; // "123456" 
 
-            modelBuilder.Entity<User>().HasData(
+            modelBuilder.Entity<UserAggregatorRoot>().HasData(
                 new 
                 {
                     UserId = 1,
@@ -89,7 +124,7 @@ namespace EmployeeManagement.Repository.Data
                 }
             );
 
-            modelBuilder.Entity<Employee>().HasData(
+            modelBuilder.Entity<EmployeeAggregatorRoot>().HasData(
                 new
                 {
                     EmployeeId = 1,

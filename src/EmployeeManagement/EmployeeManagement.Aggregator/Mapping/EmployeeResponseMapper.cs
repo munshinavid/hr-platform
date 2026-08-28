@@ -5,7 +5,7 @@ namespace EmployeeManagement.Aggregator.Mapping
 {
     public static class EmployeeResponseMapper
     {
-        public static EmployeeResponse MapToResponse(Employee employee)
+        public static EmployeeResponse MapToResponse(EmployeeAggregatorRoot employee)
         {
             return new EmployeeResponse
             {

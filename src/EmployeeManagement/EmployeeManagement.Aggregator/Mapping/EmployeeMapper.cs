@@ -5,11 +5,11 @@ namespace EmployeeManagement.Aggregator.Mapping
 {
     public static class EmployeeMapper
     {
-        public static Employee MapToAggregator(
+        public static EmployeeAggregatorRoot MapToAggregator(
             CreateEmployeeCommand command,
             int userId)
         {
-            return new Employee
+            return new EmployeeAggregatorRoot
             {
                 Phone = command.Phone,
                 Gender = command.Gender,
@@ -24,7 +24,7 @@ namespace EmployeeManagement.Aggregator.Mapping
         }
 
         public static void MapToAggregator(
-            Employee employee,
+            EmployeeAggregatorRoot employee,
             UpdateEmployeeCommand command)
         {
             employee.Phone = command.Phone;

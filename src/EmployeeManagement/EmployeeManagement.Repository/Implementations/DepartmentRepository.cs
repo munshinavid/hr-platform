@@ -4,7 +4,7 @@ using EmployeeManagement.Aggregator.Entities;
 
 namespace EmployeeManagement.Repository.Implementations
 {
-    public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
+    public class DepartmentRepository : GenericRepository<DepartmentAggregatorRoot>, IDepartmentRepository
     {
         public DepartmentRepository(EmployeeDbContext context) : base(context)
         {

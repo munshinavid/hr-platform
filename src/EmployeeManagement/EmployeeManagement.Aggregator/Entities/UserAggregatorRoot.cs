@@ -4,7 +4,7 @@ using EmployeeManagement.DTO.Response;
 
 namespace EmployeeManagement.Aggregator.Entities
 {
-    public class User
+    public class UserAggregatorRoot
     {
         public int UserId { get; set; }
 
@@ -16,9 +16,9 @@ namespace EmployeeManagement.Aggregator.Entities
 
         public string Role { get; set; } = string.Empty;
 
-        public Employee? Employee { get; set; }
+        public EmployeeAggregatorRoot? Employee { get; set; }
 
-        public static User MapToAggregator(
+        public static UserAggregatorRoot MapToAggregator(
             CreateEmployeeCommand command,
             string password,
             string role)

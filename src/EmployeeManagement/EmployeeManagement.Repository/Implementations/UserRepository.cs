@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagement.Repository.Implementations
 {
-    public class UserRepository : GenericRepository<User>, IUserRepository
+    public class UserRepository : GenericRepository<UserAggregatorRoot>, IUserRepository
     {
         public UserRepository(EmployeeDbContext context) : base(context)
         {
         }
 
-        public async Task<User?> GetByEmailAsync(string email)
+        public async Task<UserAggregatorRoot?> GetByEmailAsync(string email)
         {
             return await _dbSet
                 .FirstOrDefaultAsync(u => u.Email == email);

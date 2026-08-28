@@ -45,7 +45,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                 string hashedPassword =
                     BCrypt.Net.BCrypt.HashPassword(tempPassword);
 
-                var user = User.MapToAggregator(
+                var user = UserAggregatorRoot.MapToAggregator(
                     command,
                     hashedPassword,
                     Roles.Employee
@@ -53,7 +53,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
 
                 await _userRepository.AddAsync(user);
 
-                var employee = Employee.MapToAggregator(
+                var employee = EmployeeAggregatorRoot.MapToAggregator(
                     command,
                     user.UserId
                 );

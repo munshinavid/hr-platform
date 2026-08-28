@@ -5,12 +5,12 @@ namespace EmployeeManagement.Aggregator.Mapping
 {
     public static class UserMapper
     {
-        public static User MapToAggregator(
+        public static UserAggregatorRoot MapToAggregator(
             CreateEmployeeCommand command,
             string password,
             string role)
         {
-            return new User
+            return new UserAggregatorRoot
             {
                 Name = command.Name,
                 Email = command.Email,
@@ -20,7 +20,7 @@ namespace EmployeeManagement.Aggregator.Mapping
         }
 
         public static void MapToAggregator(
-            User user,
+            UserAggregatorRoot user,
             UpdateEmployeeCommand command)
         {
             user.Name = command.Name;

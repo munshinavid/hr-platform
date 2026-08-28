@@ -1,17 +1,58 @@
+using Authentication.DTO.Command;
+using Authentication.DTO.Response;
+using HRPlatform.Shared.Common;
+using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Authentication.API.Controllers
 {
-    /// <summary>
-    /// Placeholder authentication controller.
-    /// Future endpoint: POST /api/authentication/login
-    /// JWT generation belongs here (Authentication subsystem), not in EmployeeManagement.
-    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        // TODO: Inject IDispatcher and implement Login endpoint when
-        // Authentication.Handler.Commands.Login.LoginHandler is implemented.
+        private readonly IDispatcher _dispatcher;
+
+        public AuthenticationController(IDispatcher dispatcher)
+        {
+            _dispatcher = dispatcher;
+        }
+
+        // POST: api/authentication/register
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
+        {
+            var result = await _dispatcher.SendCommand<RegisterUserCommand, HandlerResult>(command);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Bad request"
+                });
+            }
+
+            return Ok(new
+            {
+                message = result.Message
+            });
+        }
+
+        // POST: api/authentication/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
+        {
+            var result = await _dispatcher.SendCommand<LoginCommand, HandlerResult<AuthResponse>>(command);
+
+            if (!result.Success)
+            {
+                return Unauthorized(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Unauthorized"
+                });
+            }
+
+            return Ok(result.Data);
+        }
     }
 }
+

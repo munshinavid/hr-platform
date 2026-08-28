@@ -2,10 +2,12 @@ using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Common;
-using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+// Use alias to avoid ambiguity with HRPlatform.Shared.Common.ApiErrorResponse
+using ApiErrorResponse = HRPlatform.Shared.Common.ApiErrorResponse;
+
 
 namespace EmployeeManagement.API.Controllers
 {

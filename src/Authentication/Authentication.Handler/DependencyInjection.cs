@@ -1,3 +1,10 @@
+using Authentication.DTO.Command;
+using Authentication.DTO.Response;
+using Authentication.Handler.Commands.Login;
+using Authentication.Handler.Commands.Register;
+using Authentication.Handler.Services;
+using HRPlatform.Shared.Abstractions;
+using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -5,20 +12,26 @@ namespace Authentication.Handler
 {
     public static class DependencyInjection
     {
-        /// <summary>
-        /// Registers Authentication use-case handlers and the Dispatcher.
-        /// Pattern mirrors EmployeeManagement.Handler.DependencyInjection.
-        /// Future: register ICommandHandler<LoginCommand, HandlerResult<AuthResponse>>, LoginHandler.
-        /// </summary>
         public static IServiceCollection AddAuthHandlerLayer(this IServiceCollection services)
         {
-            // Dispatcher is registered here (or could be registered once in a shared bootstrap).
-            // If the Authentication API is a standalone entry point it needs its own dispatcher.
-            services.AddScoped<IDispatcher, Dispatcher>();
+            // Services
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
 
-            // TODO: Register Login command handler when implemented.
+            // Commands
+            services.AddScoped<
+                ICommandHandler<RegisterUserCommand, HandlerResult>,
+                RegisterUserHandler>();
+
+            services.AddScoped<
+                ICommandHandler<LoginCommand, HandlerResult<AuthResponse>>,
+                LoginHandler>();
+
+            // Dispatcher (registered per-API entry point, mirrors EM.Handler convention)
+            services.AddScoped<IDispatcher, Dispatcher>();
 
             return services;
         }
     }
 }
+

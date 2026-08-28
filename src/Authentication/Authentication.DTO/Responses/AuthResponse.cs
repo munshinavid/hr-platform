@@ -1,9 +1,5 @@
-namespace Authentication.DTO.Responses
+namespace Authentication.DTO.Response
 {
-    /// <summary>
-    /// Authentication response contract.
-    /// The JWT token produced by Authentication.Handler is returned here.
-    /// </summary>
     public class AuthResponse
     {
         public string Token { get; set; } = string.Empty;

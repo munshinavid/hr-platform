@@ -3,28 +3,22 @@ using FluentValidation;
 
 namespace Authentication.Aggregator.Validation
 {
-    /// <summary>
-    /// Input-only validation for RegisterUserCommand.
-    /// Database-dependent checks (e.g. email already exists) are handled in
-    /// RegisterUserHandler through IAuthUserRepository, not here.
-    /// Mirrors the EmployeeManagement.Aggregator.Validation convention.
-    /// </summary>
     public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
     {
         public RegisterUserCommandValidator()
         {
             RuleFor(x => x.Name)
-                .NotEmpty()
-                .Length(2, 100);
+                .NotEmpty().WithMessage("Name is required.")
+                .Length(2, 100).WithMessage("Name must be between 2 and 100 characters.");
 
             RuleFor(x => x.Email)
-                .NotEmpty()
-                .EmailAddress();
+                .NotEmpty().WithMessage("Email is required.")
+                .EmailAddress().WithMessage("A valid email address is required.");
 
             RuleFor(x => x.Password)
-                .NotEmpty()
-                .MinimumLength(6)
-                .MaximumLength(20);
+                .NotEmpty().WithMessage("Password is required.")
+                .MinimumLength(6).WithMessage("Password must be at least 6 characters long.")
+                .MaximumLength(20).WithMessage("Password cannot exceed 20 characters.");
         }
     }
 }

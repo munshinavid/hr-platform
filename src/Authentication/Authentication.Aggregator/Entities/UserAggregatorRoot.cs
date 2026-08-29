@@ -11,11 +11,6 @@ namespace Authentication.Aggregator.Entities
 
         public string Email { get; set; } = string.Empty;
 
-        /// <summary>
-        /// BCrypt hash of the user's password.
-        /// Maps to the existing "Password" column in the User table via AuthDbContext.
-        /// Never expose this value in API responses.
-        /// </summary>
         public string PasswordHash { get; set; } = string.Empty;
 
         public string Role { get; set; } = string.Empty;

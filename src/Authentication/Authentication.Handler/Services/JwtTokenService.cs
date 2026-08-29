@@ -7,17 +7,6 @@ using System.Text;
 
 namespace Authentication.Handler.Services
 {
-    /// <summary>
-    /// JWT token generation service.
-    /// Reads Jwt:SecretKey, Jwt:Issuer, Jwt:Audience, Jwt:ExpirationMinutes from configuration.
-    /// Claims follow the same pattern used in the 3-tier AuthService:
-    ///   - ClaimTypes.NameIdentifier → UserId
-    ///   - ClaimTypes.Email          → Email
-    ///   - ClaimTypes.Role           → Role
-    ///
-    /// Uses System.IdentityModel.Tokens.Jwt for token creation.
-    /// JWT Bearer validation is configured separately in HRPlatform.Shared.Extensions.
-    /// </summary>
     public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _configuration;

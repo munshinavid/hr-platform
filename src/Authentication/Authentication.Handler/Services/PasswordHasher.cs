@@ -1,10 +1,5 @@
 namespace Authentication.Handler.Services
 {
-    /// <summary>
-    /// BCrypt password hasher.
-    /// Uses the same BCrypt.Net-Next library already used in
-    /// EmployeeManagement.Handler (CreateEmployeeHandler) for consistency.
-    /// </summary>
     public class PasswordHasher : IPasswordHasher
     {
         public string Hash(string password)

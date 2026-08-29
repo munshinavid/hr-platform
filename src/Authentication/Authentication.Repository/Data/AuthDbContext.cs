@@ -19,7 +19,7 @@ namespace Authentication.Repository.Data
             modelBuilder.Entity<UserAggregatorRoot>(entity =>
             {
                 entity.HasKey(u => u.UserId);
-                entity.ToTable("User");
+                entity.ToTable("Users");
 
                 // Map the C# property PasswordHash → existing column "Password"
                 entity.Property(u => u.PasswordHash)

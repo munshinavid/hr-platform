@@ -5,7 +5,6 @@ using EmployeeManagement.Handler.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-// Use alias to avoid ambiguity with HRPlatform.Shared.Common.ApiErrorResponse
 using ApiErrorResponse = HRPlatform.Shared.Common.ApiErrorResponse;
 
 
@@ -93,8 +92,12 @@ namespace EmployeeManagement.API.Controllers
         }
 
         [HttpGet("{employeeId}")]
-        public async Task<IActionResult> GetEmployeeById([FromRoute] GetEmployeeQuery query)
+        public async Task<IActionResult> GetEmployeeById([FromRoute] int employeeId)
         {
+            var query = new GetEmployeeQuery
+            {
+                EmployeeId = employeeId
+            };
             var result = await _dispatcher.SendQuery<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(query);
 
             if (!result.Success)

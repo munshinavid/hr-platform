@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Validation\UpdateEmployeeCommandValidator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
   </ItemGroup>
 

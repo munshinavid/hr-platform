@@ -2,6 +2,7 @@ using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
+using EmployeeManagement.Handler.Commands.UpdateEmployee;
 using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Queries.GetEmployee;
 using EmployeeManagement.Handler.Queries.GetEmployees;
@@ -19,6 +20,9 @@ namespace EmployeeManagement.Handler
             services.AddScoped<
                 ICommandHandler<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>,
                 CreateEmployeeHandler>();
+            services.AddScoped<
+                ICommandHandler<UpdateEmployeeCommand, HandlerResult<EmployeeResponse>>,
+                UpdateEmployeeHandler>();
 
             // Queries
             services.AddScoped<

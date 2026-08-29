@@ -30,13 +30,13 @@ namespace EmployeeManagement.Repository.Data
 
             // Existing database table names
             modelBuilder.Entity<EmployeeAggregatorRoot>()
-                .ToTable("Employee");
+                .ToTable("Employees");
 
             modelBuilder.Entity<DepartmentAggregatorRoot>()
-                .ToTable("Department");
+                .ToTable("Departments");
 
             modelBuilder.Entity<UserAggregatorRoot>()
-                .ToTable("User");
+                .ToTable("Users");
 
             // Employee salary
             modelBuilder.Entity<EmployeeAggregatorRoot>()

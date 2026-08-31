@@ -3,6 +3,7 @@ using EmployeeManagement.Repository;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
 using EmployeeManagement.Aggregator.Validation;
+using HRPlatform.ServiceBus.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddRepositoryLayer(builder.Configuration);
 builder.Services.AddHandlerLayer();
+builder.Services.AddServiceBus();
 
 var app = builder.Build();
 

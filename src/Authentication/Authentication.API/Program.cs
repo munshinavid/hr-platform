@@ -3,6 +3,7 @@ using Authentication.Handler;
 using Authentication.Repository;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
+using HRPlatform.ServiceBus.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ builder.Services.AddAuthorization();
 // Repository and Handler layers (mirrors EM.API Program.cs convention)
 builder.Services.AddAuthRepositoryLayer(builder.Configuration);
 builder.Services.AddAuthHandlerLayer();
+builder.Services.AddServiceBus();
 
 var app = builder.Build();
 

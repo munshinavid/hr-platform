@@ -1,4 +1,3 @@
-using EmployeeManagement.Aggregator.Constants;
 using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.Aggregator.Exceptions;
 using EmployeeManagement.Aggregator.Mapping;
@@ -15,22 +14,13 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
         : ICommandHandler<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly ITransactionManager _transactionManager;
         private readonly ILogger<CreateEmployeeHandler> _logger;
 
         public CreateEmployeeHandler(
             IEmployeeRepository employeeRepository,
-            IDepartmentRepository departmentRepository,
-            IUserRepository userRepository,
-            ITransactionManager transactionManager,
             ILogger<CreateEmployeeHandler> logger)
         {
             _employeeRepository = employeeRepository;
-            _departmentRepository = departmentRepository;
-            _userRepository = userRepository;
-            _transactionManager = transactionManager;
             _logger = logger;
         }
 
@@ -39,28 +29,12 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
         {
             try
             {
-                await _transactionManager.BeginTransactionAsync();
-
-                string tempPassword = "Default@123";
-                string hashedPassword =
-                    BCrypt.Net.BCrypt.HashPassword(tempPassword);
-
-                var user = UserAggregatorRoot.MapToAggregator(
-                    command,
-                    hashedPassword,
-                    Roles.Employee
-                );
-
-                await _userRepository.AddAsync(user);
-
                 var employee = EmployeeAggregatorRoot.MapToAggregator(
                     command,
-                    user.UserId
+                    command.UserId
                 );
 
                 await _employeeRepository.AddAsync(employee);
-
-                await _transactionManager.CommitAsync();
 
                 var createdEmployee =
                     await _employeeRepository.GetByIdAsync(employee.EmployeeId);
@@ -74,15 +48,11 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
             }
             catch (DomainException ex)
             {
-                await _transactionManager.RollbackAsync();
-
                 return HandlerResult<EmployeeResponse>.FailureResult(
                     ex.Message);
             }
             catch (Exception ex)
             {
-                await _transactionManager.RollbackAsync();
-
                 _logger.LogError(ex, "Error creating employee.");
 
                 return HandlerResult<EmployeeResponse>.FailureResult(

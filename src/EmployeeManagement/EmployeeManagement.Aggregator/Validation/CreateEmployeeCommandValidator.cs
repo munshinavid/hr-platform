@@ -8,6 +8,7 @@ namespace EmployeeManagement.Aggregator.Validation
     {
         public CreateEmployeeCommandValidator()
         {
+            RuleFor(x => x.UserId).GreaterThan(0).WithMessage("A valid UserId is required. Register the user via the Authentication API first.");
             RuleFor(x => x.Name).NotEmpty().Length(2, 100);
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Phone).NotEmpty().Matches(@"^01[0-9]{9}$")

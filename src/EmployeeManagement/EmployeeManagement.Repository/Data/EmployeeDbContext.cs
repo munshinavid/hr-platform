@@ -12,7 +12,6 @@ namespace EmployeeManagement.Repository.Data
 
         public DbSet<EmployeeAggregatorRoot> Employees { get; set; }
         public DbSet<DepartmentAggregatorRoot> Departments { get; set; }
-        public DbSet<UserAggregatorRoot> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,9 +24,6 @@ namespace EmployeeManagement.Repository.Data
             modelBuilder.Entity<DepartmentAggregatorRoot>()
                 .HasKey(d => d.DepartmentId);
 
-            modelBuilder.Entity<UserAggregatorRoot>()
-                .HasKey(u => u.UserId);
-
             // Existing database table names
             modelBuilder.Entity<EmployeeAggregatorRoot>()
                 .ToTable("Employees");
@@ -35,21 +31,16 @@ namespace EmployeeManagement.Repository.Data
             modelBuilder.Entity<DepartmentAggregatorRoot>()
                 .ToTable("Departments");
 
-            modelBuilder.Entity<UserAggregatorRoot>()
-                .ToTable("Users");
-
             // Employee salary
             modelBuilder.Entity<EmployeeAggregatorRoot>()
                 .Property(e => e.Salary)
                 .HasPrecision(18, 2);
 
-            // Employee -> User
+            // UserId is a plain scalar column — logical reference to the Identity User.
+            // No EF navigation property; the FK constraint at DB level is preserved.
             modelBuilder.Entity<EmployeeAggregatorRoot>()
-                .HasOne(e => e.User)
-                .WithOne(u => u.Employee)
-                .HasForeignKey<EmployeeAggregatorRoot>(e => e.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+                .Property(e => e.UserId)
+                .IsRequired();
 
             // Seed Department
             modelBuilder.Entity<DepartmentAggregatorRoot>().HasData(
@@ -70,65 +61,13 @@ namespace EmployeeManagement.Repository.Data
                 }
             );
 
-            // Reusing a default hashed password for seeded users
-            string defaultPasswordHash = "$2a$11$Xlrxgz54nA19DFt72QE8KObUgjYvFwMOd0WptsY59zuA60LMcP8YW"; // "123456" 
-
-            modelBuilder.Entity<UserAggregatorRoot>().HasData(
-                new 
-                {
-                    UserId = 1,
-                    Name = "Admin",
-                    Email = "navid@gmail.com",
-                    Password = "$2a$11$Yf0Mi/zOVDnkRqRHvOOin.MtWb.w36EGmQW/f55XQ5yvz51uBBXU6",
-                    Role = "HR"
-                },
-                new 
-                {
-                    UserId = 2,
-                    Name = "Sadia Akter", 
-                    Email = "sadia@gmail.com", 
-                    Password = defaultPasswordHash,
-                    Role = "Employee"
-                },
-                new
-                {
-                    UserId = 3,
-                    Name = "Rahim Ahmed",
-                    Email = "rahim@gmail.com",
-                    Password = defaultPasswordHash,
-                    Role = "Employee"
-                },
-                new
-                {
-                    UserId = 4,
-                    Name = "Karim Hasan",
-                    Email = "karim@gmail.com",
-                    Password = defaultPasswordHash,
-                    Role = "Employee"
-                },
-                new
-                {
-                    UserId = 5,
-                    Name = "Nusrat Jahan",
-                    Email = "nusrat@gmail.com",
-                    Password = defaultPasswordHash,
-                    Role = "Employee"
-                },
-                new
-                {
-                    UserId = 6,
-                    Name = "Hasan Mahmud",
-                    Email = "hasan@gmail.com",
-                    Password = defaultPasswordHash,
-                    Role = "Employee"
-                }
-            );
-
             modelBuilder.Entity<EmployeeAggregatorRoot>().HasData(
                 new
                 {
                     EmployeeId = 1,
                     UserId = 3,
+                    Name = "Rahim Ahmed",
+                    Email = "rahim@gmail.com",
                     Phone = "01711111111",
                     Gender = "Male",
                     DepartmentId = 1,
@@ -142,6 +81,8 @@ namespace EmployeeManagement.Repository.Data
                 {
                     EmployeeId = 2,
                     UserId = 4,
+                    Name = "Karim Hasan",
+                    Email = "karim@gmail.com",
                     Phone = "01722222222",
                     Gender = "Male",
                     DepartmentId = 2,
@@ -155,6 +96,8 @@ namespace EmployeeManagement.Repository.Data
                 {
                     EmployeeId = 3,
                     UserId = 5,
+                    Name = "Nusrat Jahan",
+                    Email = "nusrat@gmail.com",
                     Phone = "01733333333",
                     Gender = "Female",
                     DepartmentId = 3,
@@ -168,6 +111,8 @@ namespace EmployeeManagement.Repository.Data
                 {
                     EmployeeId = 4,
                     UserId = 6,
+                    Name = "Hasan Mahmud",
+                    Email = "hasan@gmail.com",
                     Phone = "01744444444",
                     Gender = "Male",
                     DepartmentId = 1,
@@ -181,6 +126,8 @@ namespace EmployeeManagement.Repository.Data
                 {
                     EmployeeId = 5,
                     UserId = 2,
+                    Name = "Sadia Akter",
+                    Email = "sadia@gmail.com",
                     Phone = "01755555555",
                     Gender = "Female",
                     DepartmentId = 2,

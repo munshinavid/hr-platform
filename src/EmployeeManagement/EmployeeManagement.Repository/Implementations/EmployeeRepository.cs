@@ -15,7 +15,6 @@ namespace EmployeeManagement.Repository.Implementations
         {
             return await _dbSet
                 .Include(e => e.Department)
-                .Include(e => e.User)
                 .ToListAsync();
         }
 
@@ -23,7 +22,6 @@ namespace EmployeeManagement.Repository.Implementations
         {
             return await _dbSet
                 .Include(e => e.Department)
-                .Include(e => e.User)
                 .FirstOrDefaultAsync(e => e.EmployeeId == id);
         }
 
@@ -31,7 +29,6 @@ namespace EmployeeManagement.Repository.Implementations
         {
             return await _dbSet
                 .Include(e => e.Department)
-                .Include(e => e.User)
                 .FirstOrDefaultAsync(e => e.UserId == userId);
         }
 
@@ -40,9 +37,8 @@ namespace EmployeeManagement.Repository.Implementations
             int? excludeEmployeeId = null)
         {
             return await _dbSet
-                .Include(e => e.User)
                 .AnyAsync(e =>
-                    e.User.Email == email &&
+                    e.Email == email &&
                     (!excludeEmployeeId.HasValue ||
                      e.EmployeeId != excludeEmployeeId.Value));
         }
@@ -52,7 +48,6 @@ namespace EmployeeManagement.Repository.Implementations
         {
             return _dbSet
                 .Include(e => e.Department)
-                .Include(e => e.User)
                 .AsQueryable();
         }
 
@@ -62,7 +57,6 @@ namespace EmployeeManagement.Repository.Implementations
         {
             var query = _dbSet
                 .Include(e => e.Department)
-                .Include(e => e.User)
                 .OrderBy(e => e.EmployeeId);
 
             var totalCount = await query.CountAsync();

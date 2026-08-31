@@ -10,8 +10,8 @@ namespace EmployeeManagement.Aggregator.Mapping
             return new EmployeeResponse
             {
                 EmployeeId = employee.EmployeeId,
-                Name = employee.User?.Name ?? string.Empty,
-                Email = employee.User?.Email ?? string.Empty,
+                Name = employee.Name,
+                Email = employee.Email,
                 Phone = employee.Phone,
                 Gender = employee.Gender,
                 DepartmentId = employee.DepartmentId,

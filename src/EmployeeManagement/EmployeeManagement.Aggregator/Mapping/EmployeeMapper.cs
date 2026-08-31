@@ -1,4 +1,4 @@
-﻿using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.DTO.Command;
 
 namespace EmployeeManagement.Aggregator.Mapping
@@ -11,6 +11,9 @@ namespace EmployeeManagement.Aggregator.Mapping
         {
             return new EmployeeAggregatorRoot
             {
+                UserId = userId,
+                Name = command.Name,
+                Email = command.Email,
                 Phone = command.Phone,
                 Gender = command.Gender,
                 DepartmentId = command.DepartmentId,
@@ -18,8 +21,7 @@ namespace EmployeeManagement.Aggregator.Mapping
                 Salary = command.Salary,
                 EmploymentType = command.EmploymentType,
                 JoiningDate = command.JoiningDate,
-                Status = command.Status,
-                UserId = userId
+                Status = command.Status
             };
         }
 
@@ -27,6 +29,8 @@ namespace EmployeeManagement.Aggregator.Mapping
             EmployeeAggregatorRoot employee,
             UpdateEmployeeCommand command)
         {
+            employee.Name = command.Name;
+            employee.Email = command.Email;
             employee.Phone = command.Phone;
             employee.Gender = command.Gender;
             employee.DepartmentId = command.DepartmentId;
@@ -37,4 +41,4 @@ namespace EmployeeManagement.Aggregator.Mapping
             employee.Status = command.Status;
         }
     }
-}
+}

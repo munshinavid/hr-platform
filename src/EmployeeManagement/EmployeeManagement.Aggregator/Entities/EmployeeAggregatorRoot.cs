@@ -9,6 +9,17 @@ namespace EmployeeManagement.Aggregator.Entities
     {
         public int EmployeeId { get; set; }
 
+        // Logical reference to the Identity User — no EF navigation property.
+        // Employee.UserId is a plain scalar FK; synchronisation of Name/Email
+        // is handled by Phase 2 (ServiceBus / domain events).
+        public int UserId { get; set; }
+
+        // Employee-owned, denormalized copy of the identity name/email.
+        // Source of truth for Name/Email is User in the Authentication context.
+        public string Name { get; set; } = string.Empty;
+
+        public string Email { get; set; } = string.Empty;
+
         public string Phone { get; set; } = string.Empty;
 
         public string Gender { get; set; } = string.Empty;
@@ -25,11 +36,8 @@ namespace EmployeeManagement.Aggregator.Entities
 
         public string Status { get; set; } = string.Empty;
 
-        public int UserId { get; set; }
-
+        // Department navigation is kept — Department is owned by EmployeeManagement.
         public DepartmentAggregatorRoot? Department { get; set; }
-
-        public UserAggregatorRoot User { get; set; } = null!;
 
         public static void ValidateBusinessRules(
             decimal salary,
@@ -74,4 +82,4 @@ namespace EmployeeManagement.Aggregator.Entities
             return EmployeeResponseMapper.MapToResponse(this);
         }
     }
-}
+}

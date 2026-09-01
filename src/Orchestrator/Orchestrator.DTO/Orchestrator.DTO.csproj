@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\IdentityManagement\IdentityManagement.DTO\IdentityManagement.DTO.csproj" />
     <ProjectReference Include="..\..\EmployeeManagement\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
+    <ProjectReference Include="..\..\LeaveManagement\LeaveManagement.DTO\LeaveManagement.DTO.csproj" />
   </ItemGroup>
 
 </Project>

@@ -32,6 +32,7 @@ namespace LeaveManagement.Handler
 
             // Queries
             services.AddScoped<IQueryHandler<GetLeaveBalanceQuery, HandlerResult<LeaveBalanceResponse>>, GetLeaveBalanceHandler>();
+            services.AddScoped<IQueryHandler<GetAllLeaveBalancesQuery, HandlerResult<IEnumerable<LeaveBalanceResponse>>>, Queries.GetAllLeaveBalances.GetAllLeaveBalancesHandler>();
             services.AddScoped<IQueryHandler<GetLeaveRequestQuery, HandlerResult<LeaveRequestResponse>>, GetLeaveRequestHandler>();
             services.AddScoped<IQueryHandler<GetLeaveRequestsQuery, HandlerResult<PagedResponse<LeaveRequestResponse>>>, GetLeaveRequestsHandler>();
 

@@ -7,6 +7,7 @@ namespace IdentityManagement.Repository.Interfaces
         Task<UserAggregatorRoot?> GetByEmailAsync(string email);
         Task<bool> EmailExistsAsync(string email);
         Task<bool> AddAsync(UserAggregatorRoot user);
+        Task<bool> DeleteAsync(int userId);
     }
 }
 

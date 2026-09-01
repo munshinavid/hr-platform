@@ -1,6 +1,5 @@
 using IdentityManagement.Aggregator.Validation;
 using IdentityManagement.Handler;
-using IdentityManagement.Repository;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
 using HRPlatform.ServiceBus.Extensions;
@@ -22,9 +21,8 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddAuthorization();
 
-// Repository and Handler layers (mirrors EM.API Program.cs convention)
-builder.Services.AddIdentityRepositoryLayer(builder.Configuration);
-builder.Services.AddIdentityHandlerLayer();
+// Handler layer (mirrors EM.API Program.cs convention)
+builder.Services.AddIdentityHandlerLayer(builder.Configuration);
 builder.Services.AddServiceBus();
 
 var app = builder.Build();

@@ -1,5 +1,4 @@
 using EmployeeManagement.Handler;
-using EmployeeManagement.Repository;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
 using EmployeeManagement.Aggregator.Validation;
@@ -21,9 +20,8 @@ builder.Services.AddSwaggerConfiguration();
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddRepositoryLayer(builder.Configuration);
-builder.Services.AddHandlerLayer();
-builder.Services.AddServiceBus();
+builder.Services.AddHandlerLayer(builder.Configuration);
+//builder.Services.AddServiceBus();
 
 var app = builder.Build();
 

@@ -3,19 +3,22 @@ using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
 using EmployeeManagement.Handler.Commands.UpdateEmployee;
-using EmployeeManagement.Handler.Common;
 using EmployeeManagement.Handler.Queries.GetEmployee;
 using EmployeeManagement.Handler.Queries.GetEmployees;
 using HRPlatform.Shared.Abstractions;
+using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using EmployeeManagement.Repository;
 
 namespace EmployeeManagement.Handler
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddHandlerLayer(this IServiceCollection services)
+        public static IServiceCollection AddHandlerLayer(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddRepositoryLayer(configuration);
             // Commands
             services.AddScoped<
                 ICommandHandler<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>,

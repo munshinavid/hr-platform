@@ -1,7 +1,7 @@
 using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Aggregator.Mapping;
-using EmployeeManagement.Handler.Common;
+using HRPlatform.Shared.Common;
 using EmployeeManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 

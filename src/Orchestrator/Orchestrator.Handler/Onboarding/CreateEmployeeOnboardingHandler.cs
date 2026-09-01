@@ -27,17 +27,10 @@ namespace Orchestrator.Handler.Onboarding
         public async Task<HandlerResult<CreateEmployeeOnboardingResponse>> HandleAsync(
             CreateEmployeeOnboardingCommand command)
         {
-            var request = command.Request;
-
             _logger.LogInformation(
-                "Onboarding: sending RegisterUserCommand for email {Email}", request.Email);
+                "Onboarding: sending RegisterUserCommand for email {Email}", command.Email);
 
-            var registerCommand = new RegisterUserCommand
-            {
-                Name     = request.Name,
-                Email    = request.Email,
-                Password = request.Password
-            };
+            var registerCommand = OnboardingCommandMapper.ToRegisterUserCommand(command);
 
             HandlerResult<UserRegistrationResult> identityResult;
             try
@@ -58,7 +51,7 @@ namespace Orchestrator.Handler.Onboarding
             {
                 _logger.LogWarning(
                     "Onboarding: user creation failed for {Email}. Reason: {Reason}",
-                    request.Email,
+                    command.Email,
                     identityResult.Message);
 
                 return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(
@@ -71,20 +64,7 @@ namespace Orchestrator.Handler.Onboarding
                 "Onboarding: user created with UserId={UserId}. Proceeding to create Employee.",
                 userId);
 
-            var createEmployeeCommand = new CreateEmployeeCommand
-            {
-                UserId         = userId,
-                Name           = request.Name,
-                Email          = request.Email,
-                Phone          = request.Phone,
-                Gender         = request.Gender,
-                DepartmentId   = request.DepartmentId,
-                JobTitle       = request.JobTitle,
-                Salary         = request.Salary,
-                EmploymentType = request.EmploymentType,
-                JoiningDate    = request.JoiningDate,
-                Status         = request.Status
-            };
+            var createEmployeeCommand = OnboardingCommandMapper.ToCreateEmployeeCommand(command, userId);
 
             HandlerResult<EmployeeResponse> employeeResult;
             try

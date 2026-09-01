@@ -9,15 +9,6 @@ using HRPlatform.Shared.Common;
 
 namespace IdentityManagement.Handler.Commands.Register
 {
-    /// <summary>
-    /// Orchestration-facing variant of the user registration handler.
-    /// Returns HandlerResult&lt;UserRegistrationResult&gt; so that downstream
-    /// workflow steps (e.g. Orchestrator) receive the newly created UserId
-    /// without accessing the Identity repository directly.
-    ///
-    /// The original RegisterUserHandler (returning HandlerResult) is preserved
-    /// for the IdentityController's direct registration endpoint.
-    /// </summary>
     public class RegisterUserWithResultHandler
         : ICommandHandler<RegisterUserCommand, HandlerResult<UserRegistrationResult>>
     {

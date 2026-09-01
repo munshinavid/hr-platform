@@ -16,7 +16,7 @@ namespace EmployeeManagement.Handler
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddHandlerLayer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddEmployeeHandlerLayer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddRepositoryLayer(configuration);
             // Commands

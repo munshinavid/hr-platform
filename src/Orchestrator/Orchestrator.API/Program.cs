@@ -20,15 +20,14 @@ builder.Services.AddSwaggerConfiguration();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
-//  In-Process ServiceBus 
-// Must be registered BEFORE subsystem handlers so DI container has IServiceBus
+
 builder.Services.AddServiceBus();
 
 
 builder.Services.AddIdentityHandlerLayer(builder.Configuration);
 
 // ── Composition Root: EmployeeManagement subsystem 
-builder.Services.AddHandlerLayer(builder.Configuration);
+builder.Services.AddEmployeeHandlerLayer(builder.Configuration);
 
 // ── Orchestrator Handler layer 
 builder.Services.AddOrchestratorHandlerLayer();

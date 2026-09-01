@@ -20,7 +20,7 @@ builder.Services.AddSwaggerConfiguration();
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddHandlerLayer(builder.Configuration);
+builder.Services.AddEmployeeHandlerLayer(builder.Configuration);
 //builder.Services.AddServiceBus();
 
 var app = builder.Build();

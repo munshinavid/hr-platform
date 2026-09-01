@@ -18,13 +18,8 @@ namespace Orchestrator.API.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> OnboardEmployee(
-            [FromBody] CreateEmployeeOnboardingRequest request)
+            [FromBody] CreateEmployeeOnboardingCommand command)
         {
-            var command = new CreateEmployeeOnboardingCommand
-            {
-                Request = request
-            };
-
             var result = await _dispatcher
                 .SendCommand<CreateEmployeeOnboardingCommand, HandlerResult<CreateEmployeeOnboardingResponse>>(
                     command);

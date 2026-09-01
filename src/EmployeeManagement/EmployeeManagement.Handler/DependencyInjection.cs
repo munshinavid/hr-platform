@@ -3,6 +3,7 @@ using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
 using EmployeeManagement.Handler.Commands.UpdateEmployee;
+using EmployeeManagement.Handler.Commands.Reactivate;
 using EmployeeManagement.Handler.Commands.Terminate;
 using EmployeeManagement.Handler.Commands.AssignReportingManager;
 using EmployeeManagement.Handler.Queries.GetEmployee;
@@ -31,6 +32,11 @@ namespace EmployeeManagement.Handler
             services.AddScoped<
                 ICommandHandler<TerminateEmployeeCommand, HandlerResult>,
                 TerminateEmployeeHandler>();
+
+            services.AddScoped<
+                ICommandHandler<ReactivateEmployeeCommand, HandlerResult>,
+                ReactivateEmployeeHandler>();
+
             services.AddScoped<
                 ICommandHandler<AssignReportingManagerCommand, HandlerResult>,
                 AssignReportingManagerHandler>();

@@ -13,6 +13,7 @@
     <!-- Subsystem public contracts (DTO only — no Handler/Repository/Aggregator) -->
     <ProjectReference Include="..\..\IdentityManagement\IdentityManagement.DTO\IdentityManagement.DTO.csproj" />
     <ProjectReference Include="..\..\EmployeeManagement\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
+    <ProjectReference Include="..\..\LeaveManagement\LeaveManagement.DTO\LeaveManagement.DTO.csproj" />
 
     <!-- Shared abstractions (ICommandHandler, HandlerResult, IDispatcher) -->
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />

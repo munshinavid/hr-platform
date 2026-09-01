@@ -28,6 +28,7 @@ namespace LeaveManagement.Handler
             services.AddScoped<ICommandHandler<ApproveLeaveCommand, HandlerResult>, ApproveLeaveHandler>();
             services.AddScoped<ICommandHandler<RejectLeaveCommand, HandlerResult>, RejectLeaveHandler>();
             services.AddScoped<ICommandHandler<CancelLeaveCommand, HandlerResult>, CancelLeaveHandler>();
+            services.AddScoped<ICommandHandler<CancelPendingLeavesCommand, HandlerResult<CancelPendingLeavesResponse>>, Commands.CancelPendingLeaves.CancelPendingLeavesHandler>();
 
             // Queries
             services.AddScoped<IQueryHandler<GetLeaveBalanceQuery, HandlerResult<LeaveBalanceResponse>>, GetLeaveBalanceHandler>();

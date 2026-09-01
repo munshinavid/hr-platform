@@ -101,6 +101,16 @@ namespace EmployeeManagement.Aggregator.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void Reactivate()
+        {
+            if (Status != "Terminated")
+                throw new DomainException("Employee is not terminated and therefore cannot be reactivated.");
+
+            Status = "Active";
+            TerminationDate = null;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void AssignReportingManager(int reportingManagerId)
         {
             if (reportingManagerId == EmployeeId)

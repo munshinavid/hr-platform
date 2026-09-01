@@ -10,6 +10,7 @@ namespace EmployeeManagement.Aggregator.Mapping
             return new EmployeeResponse
             {
                 EmployeeId = employee.EmployeeId,
+                UserId = employee.UserId,
                 Name = employee.Name,
                 Email = employee.Email,
                 Phone = employee.Phone,

@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37531.7
@@ -13,15 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Reposito
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Aggregator", "src\EmployeeManagement\EmployeeManagement.Aggregator\EmployeeManagement.Aggregator.csproj", "{1D40655A-62A3-41E4-9775-619E4F54750C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.API", "src\Authentication\Authentication.API\Authentication.API.csproj", "{0447A596-A09C-47EE-8AEB-E6BF0B271FC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityManagement.API", "src\IdentityManagement\IdentityManagement.API\IdentityManagement.API.csproj", "{0447A596-A09C-47EE-8AEB-E6BF0B271FC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Handler", "src\Authentication\Authentication.Handler\Authentication.Handler.csproj", "{E579B893-8C13-40E1-8621-718A98468C88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityManagement.Handler", "src\IdentityManagement\IdentityManagement.Handler\IdentityManagement.Handler.csproj", "{E579B893-8C13-40E1-8621-718A98468C88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.DTO", "src\Authentication\Authentication.DTO\Authentication.DTO.csproj", "{88D767E1-23D8-44B1-9F06-B5D4C6010B05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityManagement.DTO", "src\IdentityManagement\IdentityManagement.DTO\IdentityManagement.DTO.csproj", "{88D767E1-23D8-44B1-9F06-B5D4C6010B05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Repository", "src\Authentication\Authentication.Repository\Authentication.Repository.csproj", "{A588A065-17F9-4110-8B9E-1B734388CD0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityManagement.Repository", "src\IdentityManagement\IdentityManagement.Repository\IdentityManagement.Repository.csproj", "{A588A065-17F9-4110-8B9E-1B734388CD0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Aggregator", "src\Authentication\Authentication.Aggregator\Authentication.Aggregator.csproj", "{C6AF6955-650F-47E7-BF15-BE7661661C79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityManagement.Aggregator", "src\IdentityManagement\IdentityManagement.Aggregator\IdentityManagement.Aggregator.csproj", "{C6AF6955-650F-47E7-BF15-BE7661661C79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRPlatform.Shared", "src\HRPlatform.Shared\HRPlatform.Shared.csproj", "{BEF9D1AA-E39C-4236-8D5B-00548A92BEC7}"
 EndProject
@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5EB16F3-3A5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployeeManagement", "EmployeeManagement", "{C57D16AA-77DE-4FFA-B27B-ACBF7CDB3B39}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{ABCCA0B9-48E7-455C-B739-991E0EBB71EA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityManagement", "IdentityManagement", "{ABCCA0B9-48E7-455C-B739-991E0EBB71EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{1818B128-D0AB-4800-9AD8-24E3CD84FD37}"
 EndProject
@@ -214,3 +214,5 @@ Global
 		SolutionGuid = {819C5A50-BDA2-48F1-A1AE-4448D45A247F}
 	EndGlobalSection
 EndGlobal
+
+

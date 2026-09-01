@@ -11,7 +11,7 @@ namespace HRPlatform.Shared.Extensions
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Employee Management API",
+                    Title = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Name?.Replace(".", " ") ?? "API",
                     Version = "v1"
                 });
 
@@ -45,3 +45,4 @@ namespace HRPlatform.Shared.Extensions
         }
     }
 }
+

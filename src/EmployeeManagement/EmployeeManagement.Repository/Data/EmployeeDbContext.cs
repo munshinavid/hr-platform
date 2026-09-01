@@ -42,6 +42,14 @@ namespace EmployeeManagement.Repository.Data
                 .Property(e => e.UserId)
                 .IsRequired();
 
+            // Self-referencing reporting manager
+            modelBuilder.Entity<EmployeeAggregatorRoot>()
+                .HasOne(e => e.ReportingManager)
+                .WithMany()
+                .HasForeignKey(e => e.ReportingManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             // Seed Department
             modelBuilder.Entity<DepartmentAggregatorRoot>().HasData(
                 new DepartmentAggregatorRoot
@@ -75,7 +83,9 @@ namespace EmployeeManagement.Repository.Data
                     Salary = 45000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2025, 1, 10),
-                    Status = "Active"
+                    Status = "Active",
+                    CreatedAt = new DateTime(2025, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 1, 10, 0, 0, 0, DateTimeKind.Utc)
                 },
                 new
                 {
@@ -90,7 +100,9 @@ namespace EmployeeManagement.Repository.Data
                     Salary = 35000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2024, 6, 15),
-                    Status = "Active"
+                    Status = "Active",
+                    CreatedAt = new DateTime(2024, 6, 15, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2024, 6, 15, 0, 0, 0, DateTimeKind.Utc)
                 },
                 new
                 {
@@ -105,7 +117,9 @@ namespace EmployeeManagement.Repository.Data
                     Salary = 40000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2025, 3, 20),
-                    Status = "Active"
+                    Status = "Active",
+                    CreatedAt = new DateTime(2025, 3, 20, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 3, 20, 0, 0, 0, DateTimeKind.Utc)
                 },
                 new
                 {
@@ -120,7 +134,9 @@ namespace EmployeeManagement.Repository.Data
                     Salary = 50000m,
                     EmploymentType = "Contract",
                     JoiningDate = new DateTime(2023, 9, 5),
-                    Status = "Inactive"
+                    Status = "Inactive",
+                    CreatedAt = new DateTime(2023, 9, 5, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2023, 9, 5, 0, 0, 0, DateTimeKind.Utc)
                 },
                 new
                 {
@@ -135,7 +151,9 @@ namespace EmployeeManagement.Repository.Data
                     Salary = 60000m,
                     EmploymentType = "Full-Time",
                     JoiningDate = new DateTime(2022, 11, 12),
-                    Status = "Active"
+                    Status = "Active",
+                    CreatedAt = new DateTime(2022, 11, 12, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2022, 11, 12, 0, 0, 0, DateTimeKind.Utc)
                 }
             );
         }

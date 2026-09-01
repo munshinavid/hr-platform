@@ -20,7 +20,11 @@ namespace EmployeeManagement.Aggregator.Mapping
                 Salary = employee.Salary,
                 EmploymentType = employee.EmploymentType,
                 JoiningDate = employee.JoiningDate,
-                Status = employee.Status
+                Status = employee.Status,
+                ReportingManagerId = employee.ReportingManagerId,
+                TerminationDate = employee.TerminationDate,
+                CreatedAt = employee.CreatedAt,
+                UpdatedAt = employee.UpdatedAt
             };
         }
     }

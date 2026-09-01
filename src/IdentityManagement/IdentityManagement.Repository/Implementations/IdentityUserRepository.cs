@@ -14,6 +14,11 @@ namespace IdentityManagement.Repository.Implementations
             _context = context;
         }
 
+        public async Task<UserAggregatorRoot?> GetByIdAsync(int userId)
+        {
+            return await _context.Users.FindAsync(userId);
+        }
+
         public async Task<UserAggregatorRoot?> GetByEmailAsync(string email)
         {
             return await _context.Users
@@ -32,6 +37,12 @@ namespace IdentityManagement.Repository.Implementations
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> UpdateAsync(UserAggregatorRoot user)
+        {
+            _context.Users.Update(user);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> DeleteAsync(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
@@ -45,4 +56,3 @@ namespace IdentityManagement.Repository.Implementations
         }
     }
 }
-

@@ -113,5 +113,41 @@ namespace EmployeeManagement.API.Controllers
                 employee = result.Data
             });
         }
+
+        [HttpPost("{employeeId}/terminate")]
+        public async Task<IActionResult> Terminate([FromRoute] int employeeId)
+        {
+            var command = new TerminateEmployeeCommand { EmployeeId = employeeId };
+            var result = await _dispatcher.SendCommand<TerminateEmployeeCommand, HandlerResult>(command);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Termination failed"
+                });
+            }
+
+            return Ok(new { message = result.Message });
+        }
+
+        [HttpPut("{employeeId}/reporting-manager")]
+        public async Task<IActionResult> AssignReportingManager(
+            [FromRoute] int employeeId,
+            [FromBody] AssignReportingManagerCommand command)
+        {
+            command.EmployeeId = employeeId;
+            var result = await _dispatcher.SendCommand<AssignReportingManagerCommand, HandlerResult>(command);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = result.Message ?? "Failed to assign reporting manager"
+                });
+            }
+
+            return Ok(new { message = result.Message });
+        }
     }
 }

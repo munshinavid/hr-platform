@@ -39,6 +39,15 @@ namespace EmployeeManagement.Aggregator.Entities
         // Department navigation is kept — Department is owned by EmployeeManagement.
         public DepartmentAggregatorRoot? Department { get; set; }
 
+        public int? ReportingManagerId { get; set; }
+        public EmployeeAggregatorRoot? ReportingManager { get; set; }
+
+        public DateTime? TerminationDate { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+
         public static void ValidateBusinessRules(
             decimal salary,
             DateTime joiningDate)
@@ -80,6 +89,25 @@ namespace EmployeeManagement.Aggregator.Entities
         public EmployeeResponse MapToResponse()
         {
             return EmployeeResponseMapper.MapToResponse(this);
+        }
+
+        public void Terminate()
+        {
+            if (Status == "Terminated")
+                throw new DomainException("Employee is already terminated.");
+
+            Status = "Terminated";
+            TerminationDate = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void AssignReportingManager(int reportingManagerId)
+        {
+            if (reportingManagerId == EmployeeId)
+                throw new DomainException("An employee cannot report to themselves.");
+
+            ReportingManagerId = reportingManagerId;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

@@ -3,6 +3,8 @@ using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using EmployeeManagement.Handler.Commands.CreateEmployee;
 using EmployeeManagement.Handler.Commands.UpdateEmployee;
+using EmployeeManagement.Handler.Commands.Terminate;
+using EmployeeManagement.Handler.Commands.AssignReportingManager;
 using EmployeeManagement.Handler.Queries.GetEmployee;
 using EmployeeManagement.Handler.Queries.GetEmployees;
 using HRPlatform.Shared.Abstractions;
@@ -26,6 +28,12 @@ namespace EmployeeManagement.Handler
             services.AddScoped<
                 ICommandHandler<UpdateEmployeeCommand, HandlerResult<EmployeeResponse>>,
                 UpdateEmployeeHandler>();
+            services.AddScoped<
+                ICommandHandler<TerminateEmployeeCommand, HandlerResult>,
+                TerminateEmployeeHandler>();
+            services.AddScoped<
+                ICommandHandler<AssignReportingManagerCommand, HandlerResult>,
+                AssignReportingManagerHandler>();
 
             // Queries
             services.AddScoped<

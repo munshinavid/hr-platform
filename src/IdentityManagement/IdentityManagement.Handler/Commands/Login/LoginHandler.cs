@@ -39,18 +39,24 @@ namespace IdentityManagement.Handler.Commands.Login
                 return HandlerResult<IdentityResponse>.FailureResult("Invalid email or password.");
             }
 
+            // Account lifecycle check — performed AFTER password verification to avoid
+            // leaking whether the email exists. A deactivated account returns the same
+            // generic error so callers cannot distinguish inactive from wrong-password.
+            if (!user.IsActive)
+            {
+                return HandlerResult<IdentityResponse>.FailureResult("Invalid email or password.");
+            }
+
             var token = _jwtTokenService.GenerateToken(user);
 
-            var IdentityResponse = new IdentityResponse
+            var identityResponse = new IdentityResponse
             {
-                Token          = token,
-                TokenType      = "Bearer",
+                Token            = token,
+                TokenType        = "Bearer",
                 ExpiresInMinutes = _jwtTokenService.GetExpirationMinutes()
             };
 
-            return HandlerResult<IdentityResponse>.SuccessResult(IdentityResponse, "Login successful.");
+            return HandlerResult<IdentityResponse>.SuccessResult(identityResponse, "Login successful.");
         }
     }
 }
-
-

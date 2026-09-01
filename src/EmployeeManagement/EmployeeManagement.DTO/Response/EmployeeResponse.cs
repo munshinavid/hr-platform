@@ -14,5 +14,9 @@ namespace EmployeeManagement.DTO.Response
         public string EmploymentType { get; set; } = string.Empty;
         public DateTime JoiningDate { get; set; }
         public string Status { get; set; } = string.Empty;
+        public int? ReportingManagerId { get; set; }
+        public DateTime? TerminationDate { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

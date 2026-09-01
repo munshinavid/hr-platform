@@ -21,7 +21,9 @@ namespace EmployeeManagement.Aggregator.Mapping
                 Salary = command.Salary,
                 EmploymentType = command.EmploymentType,
                 JoiningDate = command.JoiningDate,
-                Status = command.Status
+                Status = command.Status,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
         }
 
@@ -39,6 +41,7 @@ namespace EmployeeManagement.Aggregator.Mapping
             employee.EmploymentType = command.EmploymentType;
             employee.JoiningDate = command.JoiningDate;
             employee.Status = command.Status;
+            employee.UpdatedAt = DateTime.UtcNow;
         }
     }
 }

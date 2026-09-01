@@ -10,14 +10,19 @@ namespace IdentityManagement.Aggregator.Mapping
             string passwordHash,
             string role)
         {
+            var now = DateTime.UtcNow;
+
             return new UserAggregatorRoot
             {
-                Name         = command.Name,
                 Email        = command.Email,
                 PasswordHash = passwordHash,
-                Role         = role
+                Role         = role,
+                IsActive     = true,     // all newly registered accounts start active
+                CreatedAt    = now,
+                UpdatedAt    = now
             };
         }
     }
 }
+
 

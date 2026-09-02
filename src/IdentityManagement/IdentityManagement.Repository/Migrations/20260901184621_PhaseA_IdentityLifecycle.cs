@@ -83,6 +83,7 @@ namespace IdentityManagement.Repository.Migrations
                     ALTER TABLE [Users] DROP COLUMN [Name]");
 
             // 7. Unique index on Email for fast login lookup.
+            migrationBuilder.Sql(@"ALTER TABLE [Users] ALTER COLUMN [Email] nvarchar(256) NOT NULL;");
             //    IF NOT EXISTS guard makes this safe to run on databases that already have it.
             migrationBuilder.Sql(@"
                 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_Email' AND object_id = OBJECT_ID('Users'))

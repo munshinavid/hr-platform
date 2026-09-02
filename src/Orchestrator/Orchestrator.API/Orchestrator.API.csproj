@@ -22,9 +22,7 @@
       Orchestrator.Handler does NOT reference these projects.
     -->
     <ProjectReference Include="..\..\IdentityManagement\IdentityManagement.Handler\IdentityManagement.Handler.csproj" />
-    <ProjectReference Include="..\..\IdentityManagement\IdentityManagement.Aggregator\IdentityManagement.Aggregator.csproj" />
     <ProjectReference Include="..\..\EmployeeManagement\EmployeeManagement.Handler\EmployeeManagement.Handler.csproj" />
-    <ProjectReference Include="..\..\EmployeeManagement\EmployeeManagement.Aggregator\EmployeeManagement.Aggregator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

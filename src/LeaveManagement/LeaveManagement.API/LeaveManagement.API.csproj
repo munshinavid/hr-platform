@@ -16,10 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LeaveManagement.DTO\LeaveManagement.DTO.csproj" />
-    <ProjectReference Include="..\LeaveManagement.Aggregator\LeaveManagement.Aggregator.csproj" />
     <ProjectReference Include="..\LeaveManagement.Handler\LeaveManagement.Handler.csproj" />
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />
-    <ProjectReference Include="..\..\HRPlatform.ServiceBus\HRPlatform.ServiceBus.csproj" />
   </ItemGroup>
 
 </Project>

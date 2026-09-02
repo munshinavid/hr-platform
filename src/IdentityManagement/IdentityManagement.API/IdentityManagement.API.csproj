@@ -10,7 +10,6 @@
     <ProjectReference Include="..\IdentityManagement.Handler\IdentityManagement.Handler.csproj" />
     <ProjectReference Include="..\IdentityManagement.DTO\IdentityManagement.DTO.csproj" />
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />
-    <ProjectReference Include="..\..\HRPlatform.ServiceBus\HRPlatform.ServiceBus.csproj" />
   </ItemGroup>
 
   <ItemGroup>

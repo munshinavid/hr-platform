@@ -2,7 +2,6 @@ using IdentityManagement.Aggregator.Validation;
 using IdentityManagement.Handler;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
-using HRPlatform.ServiceBus.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +11,7 @@ builder.Services.AddControllers();
 // FluentValidation — scans IdentityManagement.Aggregator assembly for all validators
 builder.Services.AddFluentValidationConfiguration(typeof(RegisterUserCommandValidator));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Learn more about configuring Swagger/OpenAPI 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
@@ -23,7 +22,6 @@ builder.Services.AddAuthorization();
 
 // Handler layer (mirrors EM.API Program.cs convention)
 builder.Services.AddIdentityHandlerLayer(builder.Configuration);
-builder.Services.AddServiceBus();
 
 var app = builder.Build();
 

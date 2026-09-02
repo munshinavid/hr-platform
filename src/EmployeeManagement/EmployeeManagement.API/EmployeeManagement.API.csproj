@@ -11,7 +11,6 @@
     <ProjectReference Include="..\EmployeeManagement.Handler\EmployeeManagement.Handler.csproj" />
     <ProjectReference Include="..\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />
-    <ProjectReference Include="..\..\HRPlatform.ServiceBus\HRPlatform.ServiceBus.csproj" />
   </ItemGroup>
 
   <ItemGroup>

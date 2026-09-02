@@ -1,9 +1,7 @@
-using EmployeeManagement.Aggregator.Validation;
 using EmployeeManagement.Handler;
 using HRPlatform.ServiceBus.Extensions;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
-using IdentityManagement.Aggregator.Validation;
 using IdentityManagement.Handler;
 using Orchestrator.Handler;
 
@@ -17,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
 
-builder.Services.AddJwtAuthentication(builder.Configuration);
+//builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 
@@ -26,7 +24,7 @@ builder.Services.AddServiceBus();
 
 builder.Services.AddIdentityHandlerLayer(builder.Configuration);
 
-// ── Composition Root: EmployeeManagement subsystem 
+//  EmployeeManagement subsystem 
 builder.Services.AddEmployeeHandlerLayer(builder.Configuration);
 
 // ── Orchestrator Handler layer 

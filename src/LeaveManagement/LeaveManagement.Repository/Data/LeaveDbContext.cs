@@ -56,6 +56,132 @@ namespace LeaveManagement.Repository.Data
                 .WithMany()
                 .HasForeignKey(lr => lr.LeaveTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Seeding LeaveBalances for existing seeded employees (Year 2026)
+            modelBuilder.Entity<LeaveBalance>().HasData(
+                // Rahim Ahmed (EmployeeId = 1)
+                new LeaveBalance
+                {
+                    LeaveBalanceId = 1,
+                    EmployeeId = 1,
+                    LeaveTypeId = 1, // Annual Leave
+                    Year = 2026,
+                    TotalDays = 20,
+                    HeldDays = 0,
+                    UsedDays = 0,
+                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                },
+                new LeaveBalance
+                {
+                    LeaveBalanceId = 2,
+                    EmployeeId = 1,
+                    LeaveTypeId = 2, // Sick Leave
+                    Year = 2026,
+                    TotalDays = 10,
+                    HeldDays = 0,
+                    UsedDays = 0,
+                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                },
+                new LeaveBalance
+                {
+                    LeaveBalanceId = 3,
+                    EmployeeId = 1,
+                    LeaveTypeId = 3, // Casual Leave
+                    Year = 2026,
+                    TotalDays = 5,
+                    HeldDays = 0,
+                    UsedDays = 0,
+                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                },
+
+                // Karim Hasan (EmployeeId = 2)
+                new LeaveBalance
+                {
+                    LeaveBalanceId = 4,
+                    EmployeeId = 2,
+                    LeaveTypeId = 1,
+                    Year = 2026,
+                    TotalDays = 20,
+                    HeldDays = 0,
+                    UsedDays = 2,
+                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                },
+
+                // Sadia Akter (EmployeeId = 5 - HR Manager)
+                new LeaveBalance
+                {
+                    LeaveBalanceId = 5,
+                    EmployeeId = 5,
+                    LeaveTypeId = 1,
+                    Year = 2026,
+                    TotalDays = 20,
+                    HeldDays = 0,
+                    UsedDays = 0,
+                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                }
+            );
+
+
+            modelBuilder.Entity<LeaveRequest>().HasData(
+                new
+                {
+                    LeaveRequestId = 1,
+                    EmployeeId = 1,
+                    LeaveTypeId = 1,
+                    StartDate = new DateTime(2026, 10, 5),
+                    EndDate = new DateTime(2026, 10, 7),
+                    TotalDays = 3,
+                    Reason = "Family vacation",
+                    Status = "Pending",
+                    RequestedAt = new DateTime(2026, 9, 1, 10, 0, 0, DateTimeKind.Utc),
+                    ApprovedByEmployeeId = (int?)null,
+                    ReviewedAt = (DateTime?)null,
+                    RejectionReason = (string?)null,
+                    CreatedAt = new DateTime(2026, 9, 1, 10, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 9, 1, 10, 0, 0, DateTimeKind.Utc)
+                },
+                new
+                {
+                    LeaveRequestId = 2,
+                    EmployeeId = 2,
+                    LeaveTypeId = 1,
+                    StartDate = new DateTime(2026, 8, 10),
+                    EndDate = new DateTime(2026, 8, 11),
+                    TotalDays = 2,
+                    Reason = "Personal work",
+                    Status = "Approved",
+                    RequestedAt = new DateTime(2026, 8, 1, 9, 0, 0, DateTimeKind.Utc),
+                    ApprovedByEmployeeId = (int?)5,
+                    ReviewedAt = (DateTime?)new DateTime(2026, 8, 2, 14, 0, 0, DateTimeKind.Utc),
+                    RejectionReason = (string?)null,
+                    CreatedAt = new DateTime(2026, 8, 1, 9, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 8, 2, 14, 0, 0, DateTimeKind.Utc)
+                },
+                new
+                {
+                    LeaveRequestId = 3,
+                    EmployeeId = 1,
+                    LeaveTypeId = 3,
+                    StartDate = new DateTime(2026, 7, 1),
+                    EndDate = new DateTime(2026, 7, 2),
+                    TotalDays = 2,
+                    Reason = "Urgent travel",
+                    Status = "Rejected",
+                    RequestedAt = new DateTime(2026, 6, 25, 11, 0, 0, DateTimeKind.Utc),
+                    ApprovedByEmployeeId = (int?)5,
+                    ReviewedAt = (DateTime?)new DateTime(2026, 6, 26, 16, 0, 0, DateTimeKind.Utc),
+                    RejectionReason = "Critical release scheduled on those dates",
+                    CreatedAt = new DateTime(2026, 6, 25, 11, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2026, 6, 26, 16, 0, 0, DateTimeKind.Utc)
+                }
+            );
+
+
         }
     }
 }

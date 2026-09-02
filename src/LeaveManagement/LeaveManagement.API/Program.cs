@@ -7,7 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register the Handler layer (which also registers Repository)
+// Register Handler layer (which also registers Repository)
 builder.Services.AddLeaveHandlerLayer(builder.Configuration);
 
 var app = builder.Build();

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <!-- Orchestrator layers -->
+    <ProjectReference Include="..\..\LeaveManagement\LeaveManagement.Handler\LeaveManagement.Handler.csproj" />
     <ProjectReference Include="..\Orchestrator.Handler\Orchestrator.Handler.csproj" />
     <ProjectReference Include="..\Orchestrator.DTO\Orchestrator.DTO.csproj" />
 

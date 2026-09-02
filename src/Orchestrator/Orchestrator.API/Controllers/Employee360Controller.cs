@@ -9,7 +9,7 @@ namespace Orchestrator.API.Controllers
 {
     [Route("api/orchestrator/employees")]
     [ApiController]
-    [Authorize(Policy = "RequireHRRole")] // Protected with existing HR role policy convention
+    //[Authorize(Policy = "RequireHRRole")] // 
     public class Employee360Controller : ControllerBase
     {
         private readonly IDispatcher _dispatcher;

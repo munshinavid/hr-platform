@@ -68,7 +68,7 @@ namespace IdentityManagement.Handler
                 IQueryHandler<GetUserStatusQuery, HandlerResult<UserStatusResponse>>,
                 GetUserStatusHandler>();
 
-            // Full identity profile for Orchestrator composite reads (Employee 360).
+            // Full identity profile for Orchestrator composite reads (Employee Dashboard).
             services.AddScoped<
                 IQueryHandler<GetUserProfileQuery, HandlerResult<UserProfileResponse>>,
                 GetUserProfileHandler>();

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Mvc;
-using Orchestrator.DTO.Employee360;
+using Orchestrator.DTO.EmployeeDashboard;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Orchestrator.API.Controllers
@@ -10,23 +10,23 @@ namespace Orchestrator.API.Controllers
     [Route("api/orchestrator/employees")]
     [ApiController]
     //[Authorize(Policy = "RequireHRRole")] // 
-    public class Employee360Controller : ControllerBase
+    public class EmployeeDashboardController : ControllerBase
     {
         private readonly IDispatcher _dispatcher;
 
-        public Employee360Controller(IDispatcher dispatcher)
+        public EmployeeDashboardController(IDispatcher dispatcher)
         {
             _dispatcher = dispatcher;
         }
 
-        [HttpGet("{employeeId}/360")]
-        public async Task<IActionResult> GetEmployee360(
+        [HttpGet("{employeeId}/dashboard")]
+        public async Task<IActionResult> GetEmployeeDashboard(
             [FromRoute] int employeeId)
         {
-            var query = new GetEmployee360Query { EmployeeId = employeeId };
+            var query = new GetEmployeeDashboardQuery { EmployeeId = employeeId };
             
             var result = await _dispatcher
-                .SendQuery<GetEmployee360Query, HandlerResult<Employee360Response>>(query);
+                .SendQuery<GetEmployeeDashboardQuery, HandlerResult<EmployeeDashboardResponse>>(query);
 
             if (!result.Success)
             {
@@ -34,7 +34,7 @@ namespace Orchestrator.API.Controllers
                 {
                     return NotFound(new ApiErrorResponse { Message = result.Message });
                 }
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to retrieve Employee 360 profile." });
+                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to retrieve Employee Dashboard profile." });
             }
 
             return Ok(new

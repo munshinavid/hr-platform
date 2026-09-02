@@ -3,9 +3,9 @@ using EmployeeManagement.DTO.Response;
 using IdentityManagement.DTO.Response;
 using LeaveManagement.DTO.Response;
 
-namespace Orchestrator.DTO.Employee360
+namespace Orchestrator.DTO.EmployeeDashboard
 {
-    public class Employee360Response
+    public class EmployeeDashboardResponse
     {
         public EmployeeResponse? Employee { get; set; }
         public UserProfileResponse? Identity { get; set; }

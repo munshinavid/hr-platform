@@ -5,7 +5,7 @@ namespace EmployeeManagement.Repository.Data
 {
     public class EmployeeDbContext : DbContext
     {
-        public EmployeeDbContext(DbContextOptions options)
+        public EmployeeDbContext(DbContextOptions<EmployeeDbContext> options)
             : base(options)
         {
         }

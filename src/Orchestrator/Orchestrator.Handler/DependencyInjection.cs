@@ -6,8 +6,8 @@ using Orchestrator.DTO.Onboarding;
 using Orchestrator.Handler.Onboarding;
 using Orchestrator.DTO.Offboarding;
 using Orchestrator.Handler.Offboarding;
-using Orchestrator.DTO.Employee360;
-using Orchestrator.Handler.Employee360;
+using Orchestrator.DTO.EmployeeDashboard;
+using Orchestrator.Handler.EmployeeDashboard;
 
 namespace Orchestrator.Handler
 {
@@ -25,10 +25,10 @@ namespace Orchestrator.Handler
                 ICommandHandler<OffboardEmployeeCommand, HandlerResult<OffboardEmployeeResponse>>,
                 OffboardEmployeeHandler>();
 
-            // Employee 360 Aggregation
+            // Employee Dashboard Aggregation
             services.AddScoped<
-                IQueryHandler<GetEmployee360Query, HandlerResult<Employee360Response>>,
-                GetEmployee360Handler>();
+                IQueryHandler<GetEmployeeDashboardQuery, HandlerResult<EmployeeDashboardResponse>>,
+                GetEmployeeDashboardHandler>();
 
             // Dispatcher for Orchestrator.API → Orchestrator.Handler dispatch
             services.AddScoped<IDispatcher, Dispatcher>();

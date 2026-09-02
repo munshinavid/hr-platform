@@ -2,7 +2,7 @@ namespace IdentityManagement.DTO.Response
 {
     /// <summary>
     /// Full identity profile response.
-    /// Used by Orchestrator for composite reads (e.g., Employee 360 dashboard).
+    /// Used by Orchestrator for composite reads (e.g., Employee Dashboard dashboard).
     ///
     /// Security invariants:
     ///   - PasswordHash is NEVER present.

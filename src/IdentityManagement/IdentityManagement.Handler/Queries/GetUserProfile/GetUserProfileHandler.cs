@@ -8,7 +8,7 @@ namespace IdentityManagement.Handler.Queries.GetUserProfile
 {
     /// <summary>
     /// Returns the full identity profile for a user.
-    /// Used by Orchestrator for composite read aggregation (Employee 360 dashboard).
+    /// Used by Orchestrator for composite read aggregation (Employee Dashboard dashboard).
     ///
     /// Security invariants enforced here:
     ///   - PasswordHash is never mapped to the response.

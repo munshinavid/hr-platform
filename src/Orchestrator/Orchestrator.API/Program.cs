@@ -1,9 +1,6 @@
-using EmployeeManagement.Handler;
 using HRPlatform.ServiceBus.Extensions;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
-using IdentityManagement.Handler;
-using LeaveManagement.Handler;
 using Orchestrator.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,19 +17,9 @@ builder.Services.AddSwaggerConfiguration();
 builder.Services.AddAuthorization();
 
 
-builder.Services.AddServiceBus();
+builder.Services.AddServiceBus(builder.Configuration);
 
-
-builder.Services.AddIdentityHandlerLayer(builder.Configuration);
-
-//  EmployeeManagement subsystem 
-builder.Services.AddEmployeeHandlerLayer(builder.Configuration);
-
-// ── Orchestrator Handler layer 
 builder.Services.AddOrchestratorHandlerLayer();
-
-//Leave Management subsystem
-builder.Services.AddLeaveHandlerLayer(builder.Configuration);
 
 // ── Build 
 var app = builder.Build();

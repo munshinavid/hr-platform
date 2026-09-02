@@ -1,11 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\LeaveManagement.DTO\LeaveManagement.DTO.csproj" />
     <ProjectReference Include="..\LeaveManagement.Aggregator\LeaveManagement.Aggregator.csproj" />
     <ProjectReference Include="..\LeaveManagement.Repository\LeaveManagement.Repository.csproj" />
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />
-    <ProjectReference Include="..\..\HRPlatform.ServiceBus\HRPlatform.ServiceBus.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -8,22 +8,12 @@
 
   <ItemGroup>
     <!-- Orchestrator layers -->
-    <ProjectReference Include="..\..\LeaveManagement\LeaveManagement.Handler\LeaveManagement.Handler.csproj" />
     <ProjectReference Include="..\Orchestrator.Handler\Orchestrator.Handler.csproj" />
     <ProjectReference Include="..\Orchestrator.DTO\Orchestrator.DTO.csproj" />
 
     <!-- Shared infrastructure -->
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />
     <ProjectReference Include="..\..\HRPlatform.ServiceBus\HRPlatform.ServiceBus.csproj" />
-
-    <!--
-      COMPOSITION ROOT — subsystem references for DI registration ONLY.
-      These are referenced here (in the host) so that the in-process ServiceBus
-      can resolve subsystem handlers from the DI container at runtime.
-      Orchestrator.Handler does NOT reference these projects.
-    -->
-    <ProjectReference Include="..\..\IdentityManagement\IdentityManagement.Handler\IdentityManagement.Handler.csproj" />
-    <ProjectReference Include="..\..\EmployeeManagement\EmployeeManagement.Handler\EmployeeManagement.Handler.csproj" />
   </ItemGroup>
 
   <ItemGroup>

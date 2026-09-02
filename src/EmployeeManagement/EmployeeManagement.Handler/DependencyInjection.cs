@@ -14,6 +14,8 @@ using HRPlatform.Shared.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using EmployeeManagement.Repository;
+using EmployeeManagement.Aggregator.Validation;
+using HRPlatform.Shared.Extensions;
 
 namespace EmployeeManagement.Handler
 {
@@ -21,6 +23,9 @@ namespace EmployeeManagement.Handler
     {
         public static IServiceCollection AddEmployeeHandlerLayer(this IServiceCollection services, IConfiguration configuration)
         {
+
+            //validator
+            services.AddFluentValidationConfiguration(typeof(CreateEmployeeCommandValidator));
             services.AddRepositoryLayer(configuration);
             // Commands
             services.AddScoped<

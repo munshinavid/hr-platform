@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmployeeManagement.Aggregator\EmployeeManagement.Aggregator.csproj" />
     <ProjectReference Include="..\EmployeeManagement.Handler\EmployeeManagement.Handler.csproj" />
     <ProjectReference Include="..\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
     <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />

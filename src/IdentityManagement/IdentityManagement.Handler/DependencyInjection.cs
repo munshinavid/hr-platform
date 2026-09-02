@@ -1,20 +1,21 @@
-using IdentityManagement.DTO.Command;
-using IdentityManagement.DTO.Query;
-using IdentityManagement.DTO.Response;
-using IdentityManagement.Handler.Commands.Login;
-using IdentityManagement.Handler.Commands.Register;
-using IdentityManagement.Handler.Commands.Deactivate;
-using IdentityManagement.Handler.Commands.Activate;
-using IdentityManagement.Handler.Queries.GetUserStatus;
-using IdentityManagement.Handler.Queries.GetUserProfile;
-using IdentityManagement.Handler.Services;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
-using Microsoft.Extensions.DependencyInjection;
-
-using Microsoft.Extensions.Configuration;
+using IdentityManagement.Aggregator.Validation;
+using IdentityManagement.DTO.Command;
+using IdentityManagement.DTO.Query;
+using IdentityManagement.DTO.Response;
+using IdentityManagement.Handler.Commands.Activate;
+using IdentityManagement.Handler.Commands.Deactivate;
+using IdentityManagement.Handler.Commands.Login;
+using IdentityManagement.Handler.Commands.Register;
+using IdentityManagement.Handler.Queries.GetUserProfile;
+using IdentityManagement.Handler.Queries.GetUserStatus;
+using IdentityManagement.Handler.Services;
 using IdentityManagement.Repository;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using HRPlatform.Shared.Extensions;
 
 namespace IdentityManagement.Handler
 {
@@ -22,20 +23,21 @@ namespace IdentityManagement.Handler
     {
         public static IServiceCollection AddIdentityHandlerLayer(this IServiceCollection services, IConfiguration configuration)
         {
+            // FluentValidation 
+            services.AddFluentValidationConfiguration(typeof(RegisterUserCommandValidator));
+
             services.AddIdentityRepositoryLayer(configuration);
 
-            // ── Services ─────────────────────────────────────────────────────────
+            // ── Services 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
 
-            // ── Commands — existing ───────────────────────────────────────────────
+            // ── Commands — existing 
 
-            // Void result: used directly by IdentityController /register endpoint.
             services.AddScoped<
                 ICommandHandler<RegisterUserCommand, HandlerResult>,
                 RegisterUserHandler>();
 
-            // Rich result: used by Orchestrator ServiceBus for onboarding (returns UserId).
             services.AddScoped<
                 ICommandHandler<RegisterUserCommand, HandlerResult<UserRegistrationResult>>,
                 RegisterUserWithResultHandler>();
@@ -44,36 +46,31 @@ namespace IdentityManagement.Handler
                 ICommandHandler<LoginCommand, HandlerResult<IdentityResponse>>,
                 LoginHandler>();
 
-            // Hard delete — used as compensation by Onboarding Orchestrator.
             services.AddScoped<
                 ICommandHandler<DeleteUserCommand, HandlerResult>,
-                IdentityManagement.Handler.Commands.Delete.DeleteUserHandler>();
+                Commands.Delete.DeleteUserHandler>();
 
-            // ── Commands — account lifecycle (Phase A) ────────────────────────────
+            //  Commands — account
 
-            // Soft deactivation — used by Offboarding Orchestrator (Phase D).
             services.AddScoped<
                 ICommandHandler<DeactivateUserCommand, HandlerResult>,
                 DeactivateUserHandler>();
 
-            // Re-activation — compensation counterpart for offboarding rollback.
             services.AddScoped<
                 ICommandHandler<ActivateUserCommand, HandlerResult>,
                 ActivateUserHandler>();
 
-            // ── Queries — account lifecycle (Phase A) ─────────────────────────────
+            //  Queries — account  
 
-            // Lightweight gatekeeper: is this account active?
             services.AddScoped<
                 IQueryHandler<GetUserStatusQuery, HandlerResult<UserStatusResponse>>,
                 GetUserStatusHandler>();
 
-            // Full identity profile for Orchestrator composite reads (Employee Dashboard).
             services.AddScoped<
                 IQueryHandler<GetUserProfileQuery, HandlerResult<UserProfileResponse>>,
                 GetUserProfileHandler>();
 
-            // ── Dispatcher (per-API-host, mirrors EM.Handler convention) ─────────
+            //  Dispatcher 
             services.AddScoped<IDispatcher, Dispatcher>();
 
             return services;

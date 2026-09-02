@@ -1,14 +1,12 @@
 using EmployeeManagement.Handler;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
-using EmployeeManagement.Aggregator.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddFluentValidationConfiguration(typeof(CreateEmployeeCommandValidator));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

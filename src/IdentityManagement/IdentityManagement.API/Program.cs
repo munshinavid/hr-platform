@@ -1,4 +1,4 @@
-using IdentityManagement.Aggregator.Validation;
+
 using IdentityManagement.Handler;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
@@ -8,14 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// FluentValidation — scans IdentityManagement.Aggregator assembly for all validators
-builder.Services.AddFluentValidationConfiguration(typeof(RegisterUserCommandValidator));
-
-// Learn more about configuring Swagger/OpenAPI 
+// Swagger / OpenAPI configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerConfiguration();
 
-// Configure JWT Bearer authentication (validation only — token generation is in IdentityManagement.Handler)
+// Configure JWT Bearer authentication (validation only)
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddAuthorization();
@@ -36,7 +33,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Authentication must come before Authorization in the pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 

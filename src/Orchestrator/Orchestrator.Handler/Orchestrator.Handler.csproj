@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Orchestrator's own DTO contract -->
+    <ProjectReference Include="..\Orchestrator.DTO\Orchestrator.DTO.csproj" />
+
+    <!-- Subsystem public contracts (DTO only — no Handler/Repository/Aggregator) -->
+    <ProjectReference Include="..\..\IdentityManagement\IdentityManagement.DTO\IdentityManagement.DTO.csproj" />
+    <ProjectReference Include="..\..\EmployeeManagement\EmployeeManagement.DTO\EmployeeManagement.DTO.csproj" />
+    <ProjectReference Include="..\..\LeaveManagement\LeaveManagement.DTO\LeaveManagement.DTO.csproj" />
+
+    <!-- Shared abstractions (ICommandHandler, HandlerResult, IDispatcher) -->
+    <ProjectReference Include="..\..\HRPlatform.Shared\HRPlatform.Shared.csproj" />
+
+    <!-- ServiceBus abstraction (IServiceBus) -->
+    <ProjectReference Include="..\..\HRPlatform.ServiceBus\HRPlatform.ServiceBus.csproj" />
+  </ItemGroup>
+
+  <!--
+    BOUNDARY ENFORCEMENT:
+    This project intentionally does NOT reference:
+      - IdentityManagement.Handler
+      - IdentityManagement.Repository
+      - IdentityManagement.Aggregator
+      - EmployeeManagement.Handler
+      - EmployeeManagement.Repository
+      - EmployeeManagement.Aggregator
+      - Any DbContext
+    Those references live only in Orchestrator.API (composition root).
+  -->
+
+</Project>
+

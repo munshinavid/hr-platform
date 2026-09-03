@@ -3,6 +3,7 @@ using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,18 +29,10 @@ namespace EmployeeManagement.API.Controllers
         {
             var result = await _dispatcher.SendCommand<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Bad request"
-                });
-            }
-
-            return Ok(new
+            return result.ToActionResult(data => new
             {
                 message = result.Message,
-                employee = result.Data
+                employee = data
             });
         }
 

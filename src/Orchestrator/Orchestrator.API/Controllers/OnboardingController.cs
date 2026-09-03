@@ -1,8 +1,8 @@
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Orchestrator.DTO.Onboarding;
-using Orchestrator.Handler.Onboarding;
 
 namespace Orchestrator.API.Controllers
 {
@@ -16,6 +16,7 @@ namespace Orchestrator.API.Controllers
         {
             _dispatcher = dispatcher;
         }
+
         [HttpPost]
         public async Task<IActionResult> OnboardEmployee(
             [FromBody] CreateEmployeeOnboardingCommand command)
@@ -24,18 +25,10 @@ namespace Orchestrator.API.Controllers
                 .SendCommand<CreateEmployeeOnboardingCommand, HandlerResult<CreateEmployeeOnboardingResponse>>(
                     command);
 
-            if (!result.Success)
+            return result.ToActionResult(data => new
             {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Onboarding failed."
-                });
-            }
-
-            return Ok(new
-            {
-                message  = result.Data!.Message,
-                onboarding = result.Data
+                message = data.Message,
+                onboarding = data
             });
         }
     }

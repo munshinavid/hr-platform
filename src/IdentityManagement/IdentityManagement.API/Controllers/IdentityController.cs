@@ -3,6 +3,7 @@ using IdentityManagement.DTO.Query;
 using IdentityManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,23 +20,13 @@ namespace IdentityManagement.API.Controllers
             _dispatcher = dispatcher;
         }
 
-        // ── Authentication endpoints (no auth required — these create/validate tokens) ──
-
         // POST: api/users/register
         [HttpPost("users/register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
             var result = await _dispatcher.SendCommand<RegisterUserCommand, HandlerResult>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Bad request"
-                });
-            }
-
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         // POST: api/auth/login
@@ -54,8 +45,6 @@ namespace IdentityManagement.API.Controllers
 
             return Ok(result.Data);
         }
-
-        // ── Account lifecycle endpoints (HR role required) ────────────────────────
 
         // POST: api/users/{userId}/deactivate
         [HttpPost("users/{userId}/deactivate")]
@@ -95,10 +84,10 @@ namespace IdentityManagement.API.Controllers
             return Ok(new { message = result.Message });
         }
 
-        // ── Query endpoints ────────────────────────────────────────────────────────
+        //  Query endpoints 
 
         // GET: api/users/{userId}/status
-        // Lightweight — returns only IsActive. Used as a quick health-check.
+        // returns only IsActive.
         [HttpGet("users/{userId}/status")]
         [Authorize(Roles = "HR")]
         public async Task<IActionResult> GetUserStatus([FromRoute] int userId)
@@ -118,7 +107,7 @@ namespace IdentityManagement.API.Controllers
         }
 
         // GET: api/users/{userId}/profile
-        // Full identity profile — safe fields only (no PasswordHash).
+        // Full identity profile
         [HttpGet("users/{userId}/profile")]
         [Authorize(Roles = "HR")]
         public async Task<IActionResult> GetUserProfile([FromRoute] int userId)

@@ -41,21 +41,20 @@ namespace Orchestrator.Handler.Onboarding
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex,
-                    "Onboarding: no handler registered for RegisterUserCommand → HandlerResult<UserRegistrationResult>.");
+                _logger.LogError(ex, "Onboarding: no handler registered for RegisterUserCommand.");
                 return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(
-                    "Identity service is not available.");
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Identity service is not available."));
             }
 
             if (!identityResult.Success || identityResult.Data == null)
             {
                 _logger.LogWarning(
-                    "Onboarding: user creation failed for {Email}. Reason: {Reason}",
+                    "Onboarding: user creation failed for {Email}. Reason: {Reason} (Code: {Code})",
                     command.Email,
-                    identityResult.Message);
+                    identityResult.Error.Description,
+                    identityResult.Error.Code);
 
-                return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(
-                    $"User creation failed: {identityResult.Message}");
+                return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(identityResult.Error);
             }
 
             var userId = identityResult.Data.UserId;
@@ -75,13 +74,10 @@ namespace Orchestrator.Handler.Onboarding
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex,
-                    "Onboarding: no handler registered for CreateEmployeeCommand.");
-                
+                _logger.LogError(ex, "Onboarding: no handler registered for CreateEmployeeCommand.");
                 await CompensateUserCreationAsync(userId);
-
                 return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(
-                    "Employee service is not available. The newly created identity user was rolled back/deleted.");
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Employee service is not available. The newly created identity user was rolled back/deleted."));
             }
 
             if (employeeResult.Success && employeeResult.Data != null)
@@ -104,14 +100,14 @@ namespace Orchestrator.Handler.Onboarding
             }
 
             _logger.LogError(
-                "Onboarding: Employee creation failed after User creation. Triggering compensation for UserId={UserId}. Reason: {Reason}",
+                "Onboarding: Employee creation failed after User creation. Triggering compensation for UserId={UserId}. Reason: {Reason} (Code: {Code})",
                 userId,
-                employeeResult.Message);
+                employeeResult.Error.Description,
+                employeeResult.Error.Code);
 
             await CompensateUserCreationAsync(userId);
 
-            return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(
-                $"Employee creation failed: {employeeResult.Message}. The newly created identity user was rolled back/deleted.");
+            return HandlerResult<CreateEmployeeOnboardingResponse>.FailureResult(employeeResult.Error);
         }
 
         private async Task CompensateUserCreationAsync(int userId)

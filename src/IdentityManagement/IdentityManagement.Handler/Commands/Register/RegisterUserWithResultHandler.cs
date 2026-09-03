@@ -30,7 +30,7 @@ namespace IdentityManagement.Handler.Commands.Register
             if (emailExists)
             {
                 return HandlerResult<UserRegistrationResult>.FailureResult(
-                    "Email is already registered.");
+                    Error.Conflict("USER_EMAIL_EXISTS", $"User with email '{command.Email}' is already registered."));
             }
 
             var passwordHash = _passwordHasher.Hash(command.Password);
@@ -45,7 +45,7 @@ namespace IdentityManagement.Handler.Commands.Register
             if (!saved)
             {
                 return HandlerResult<UserRegistrationResult>.FailureResult(
-                    "User could not be saved to the database.");
+                    Error.Failure("USER_SAVE_FAILED", "User could not be saved to the database."));
             }
 
             return HandlerResult<UserRegistrationResult>.SuccessResult(

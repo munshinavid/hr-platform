@@ -3,6 +3,7 @@ using LeaveManagement.DTO.Query;
 using LeaveManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -23,11 +24,11 @@ namespace LeaveManagement.API.Controllers
         public async Task<IActionResult> ApplyLeave([FromBody] ApplyLeaveCommand command)
         {
             var result = await _dispatcher.SendCommand<ApplyLeaveCommand, HandlerResult<LeaveRequestResponse>>(command);
-            if (!result.Success)
+            if (result.Success)
             {
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to apply for leave." });
+                return Ok(new { message = result.Message, data = result.Data });
             }
-            return Ok(new { message = result.Message, data = result.Data });
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpPost("{leaveRequestId}/approve")]
@@ -35,11 +36,7 @@ namespace LeaveManagement.API.Controllers
         {
             command.LeaveRequestId = leaveRequestId;
             var result = await _dispatcher.SendCommand<ApproveLeaveCommand, HandlerResult>(command);
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to approve leave." });
-            }
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         [HttpPost("{leaveRequestId}/reject")]
@@ -47,11 +44,7 @@ namespace LeaveManagement.API.Controllers
         {
             command.LeaveRequestId = leaveRequestId;
             var result = await _dispatcher.SendCommand<RejectLeaveCommand, HandlerResult>(command);
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to reject leave." });
-            }
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         [HttpPost("{leaveRequestId}/cancel")]
@@ -59,33 +52,29 @@ namespace LeaveManagement.API.Controllers
         {
             var command = new CancelLeaveCommand { LeaveRequestId = leaveRequestId };
             var result = await _dispatcher.SendCommand<CancelLeaveCommand, HandlerResult>(command);
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to cancel leave." });
-            }
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         [HttpGet("balance")]
         public async Task<IActionResult> GetLeaveBalance([FromQuery] GetLeaveBalanceQuery query)
         {
             var result = await _dispatcher.SendQuery<GetLeaveBalanceQuery, HandlerResult<LeaveBalanceResponse>>(query);
-            if (!result.Success)
+            if (result.Success)
             {
-                return NotFound(new ApiErrorResponse { Message = result.Message ?? "Leave balance not found." });
+                return Ok(new { data = result.Data });
             }
-            return Ok(new { data = result.Data });
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpGet("requests")]
         public async Task<IActionResult> GetLeaveRequests([FromQuery] GetLeaveRequestsQuery query)
         {
             var result = await _dispatcher.SendQuery<GetLeaveRequestsQuery, HandlerResult<PagedResponse<LeaveRequestResponse>>>(query);
-            if (!result.Success)
+            if (result.Success)
             {
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to get leave requests." });
+                return Ok(new { data = result.Data });
             }
-            return Ok(new { data = result.Data });
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpGet("requests/{leaveRequestId}")]
@@ -93,11 +82,11 @@ namespace LeaveManagement.API.Controllers
         {
             var query = new GetLeaveRequestQuery { LeaveRequestId = leaveRequestId };
             var result = await _dispatcher.SendQuery<GetLeaveRequestQuery, HandlerResult<LeaveRequestResponse>>(query);
-            if (!result.Success)
+            if (result.Success)
             {
-                return NotFound(new ApiErrorResponse { Message = result.Message ?? "Leave request not found." });
+                return Ok(new { data = result.Data });
             }
-            return Ok(new { data = result.Data });
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

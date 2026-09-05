@@ -26,19 +26,16 @@ namespace Orchestrator.API.Controllers
             var result = await _dispatcher
                 .SendCommand<OffboardEmployeeCommand, HandlerResult<OffboardEmployeeResponse>>(command);
 
-            if (!result.Success)
+            if (result.Success)
             {
-                return BadRequest(new ApiErrorResponse
+                return Ok(new
                 {
-                    Message = result.Message ?? "Offboarding failed."
+                    message = result.Message,
+                    data = result.Data
                 });
             }
 
-            return Ok(new
-            {
-                message = result.Message,
-                data = result.Data
-            });
+            return HRPlatform.Shared.Extensions.ResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

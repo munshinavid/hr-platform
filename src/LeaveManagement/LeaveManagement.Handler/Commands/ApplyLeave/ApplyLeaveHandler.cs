@@ -38,13 +38,15 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
             {
                 var leaveType = await _typeRepository.GetByIdAsync(command.LeaveTypeId);
                 if (leaveType == null || !leaveType.IsActive)
-                    return HandlerResult<LeaveRequestResponse>.FailureResult("Invalid or inactive Leave Type.");
+                    return HandlerResult<LeaveRequestResponse>.FailureResult(
+                        Error.Validation("INVALID_LEAVE_TYPE", "Invalid or inactive Leave Type."));
 
                 int year = command.StartDate.Year;
                 var balance = await _balanceRepository.GetByEmployeeAndTypeAsync(command.EmployeeId, command.LeaveTypeId, year);
                 
                 if (balance == null)
-                    return HandlerResult<LeaveRequestResponse>.FailureResult($"No leave balance found for year {year}.");
+                    return HandlerResult<LeaveRequestResponse>.FailureResult(
+                        Error.NotFound("LEAVE_BALANCE_NOT_FOUND", $"No leave balance found for year {year}."));
 
                 int totalDays = (command.EndDate - command.StartDate).Days + 1;
 
@@ -70,15 +72,13 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
             }
             catch (DomainException ex)
             {
-                return HandlerResult<LeaveRequestResponse>.FailureResult(ex.Message);
+                return HandlerResult<LeaveRequestResponse>.FailureResult(
+                    Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
             catch (DbUpdateConcurrencyException)
             {
-                return HandlerResult<LeaveRequestResponse>.FailureResult("A concurrency error occurred while updating the leave balance. Please try again.");
-            }
-            catch (Exception ex)
-            {
-                return HandlerResult<LeaveRequestResponse>.FailureResult($"An error occurred: {ex.Message}");
+                return HandlerResult<LeaveRequestResponse>.FailureResult(
+                    Error.Conflict("CONCURRENCY_ERROR", "A concurrency error occurred while updating the leave balance. Please try again."));
             }
         }
     }

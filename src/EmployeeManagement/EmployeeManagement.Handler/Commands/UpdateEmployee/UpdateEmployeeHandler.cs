@@ -33,7 +33,7 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
                 if (employee == null)
                 {
                     return HandlerResult<EmployeeResponse>.FailureResult(
-                        "Employee not found.");
+                        Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
                 }
 
                 // Check Employee.Email uniqueness in the EmployeeManagement context.
@@ -46,7 +46,7 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
                 if (emailExists)
                 {
                     return HandlerResult<EmployeeResponse>.FailureResult(
-                        "Email already exists.");
+                        Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
                 }
 
                 employee.MapToAggregator(command);
@@ -65,14 +65,7 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
             catch (DomainException ex)
             {
                 return HandlerResult<EmployeeResponse>.FailureResult(
-                    ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating employee.");
-
-                return HandlerResult<EmployeeResponse>.FailureResult(
-                    "Employee could not be updated.");
+                    Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
         }
     }

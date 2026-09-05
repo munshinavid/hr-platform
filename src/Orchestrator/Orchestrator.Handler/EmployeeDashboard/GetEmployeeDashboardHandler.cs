@@ -38,16 +38,17 @@ namespace Orchestrator.Handler.EmployeeDashboard
             {
                 employeeResult = await _serviceBus.SendQueryAsync<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(employeeQuery);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Employee Dashboard: Failed to retrieve employee {EmployeeId}", query.EmployeeId);
-                return HandlerResult<EmployeeDashboardResponse>.FailureResult("Failed to retrieve employee information.");
+                _logger.LogError(ex, "Employee Dashboard: no handler registered for GetEmployeeQuery.");
+                return HandlerResult<EmployeeDashboardResponse>.FailureResult(
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Employee service is not available."));
             }
 
             if (!employeeResult.Success || employeeResult.Data == null)
             {
-                _logger.LogWarning("Employee Dashboard: Gatekeeper failed for EmployeeId={EmployeeId}. Reason: {Reason}", query.EmployeeId, employeeResult.Message);
-                return HandlerResult<EmployeeDashboardResponse>.FailureResult($"Employee not found or could not be retrieved: {employeeResult.Message}");
+                _logger.LogWarning("Employee Dashboard: Gatekeeper failed for EmployeeId={EmployeeId}. Reason: {Reason}", query.EmployeeId, employeeResult.Error.Description);
+                return HandlerResult<EmployeeDashboardResponse>.FailureResult(employeeResult.Error);
             }
 
             // Step 2: Parallel Aggregation for independent downstream queries
@@ -64,10 +65,11 @@ namespace Orchestrator.Handler.EmployeeDashboard
             {
                 await Task.WhenAll(identityTask, leaveTask);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Employee Dashboard: One or more downstream queries failed.");
-                return HandlerResult<EmployeeDashboardResponse>.FailureResult("An error occurred while aggregating downstream services.");
+                _logger.LogError(ex, "Employee Dashboard: One or more downstream queries missing handlers.");
+                return HandlerResult<EmployeeDashboardResponse>.FailureResult(
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "One or more downstream services are not available."));
             }
 
             var identityResult = await identityTask;
@@ -75,14 +77,14 @@ namespace Orchestrator.Handler.EmployeeDashboard
 
             if (!identityResult.Success || identityResult.Data == null)
             {
-                _logger.LogError("Employee Dashboard: Identity query failed for UserId={UserId}. Reason: {Reason}", employeeResult.Data.UserId, identityResult.Message);
-                return HandlerResult<EmployeeDashboardResponse>.FailureResult($"Failed to retrieve identity profile: {identityResult.Message}");
+                _logger.LogError("Employee Dashboard: Identity query failed for UserId={UserId}. Reason: {Reason}", employeeResult.Data.UserId, identityResult.Error.Description);
+                return HandlerResult<EmployeeDashboardResponse>.FailureResult(identityResult.Error);
             }
 
             if (!leaveResult.Success || leaveResult.Data == null)
             {
-                _logger.LogError("Employee Dashboard: Leave balance query failed for EmployeeId={EmployeeId}. Reason: {Reason}", query.EmployeeId, leaveResult.Message);
-                return HandlerResult<EmployeeDashboardResponse>.FailureResult($"Failed to retrieve leave balances: {leaveResult.Message}");
+                _logger.LogError("Employee Dashboard: Leave balance query failed for EmployeeId={EmployeeId}. Reason: {Reason}", query.EmployeeId, leaveResult.Error.Description);
+                return HandlerResult<EmployeeDashboardResponse>.FailureResult(leaveResult.Error);
             }
 
             // Combine the results

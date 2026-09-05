@@ -27,7 +27,7 @@ namespace EmployeeManagement.Handler.Queries.GetEmployee
             if (employee == null)
             {
                 return HandlerResult<EmployeeResponse>.FailureResult(
-                    "Employee not found.");
+                    Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {query.EmployeeId} not found."));
             }
 
             var response = EmployeeResponseMapper.MapToResponse(employee);

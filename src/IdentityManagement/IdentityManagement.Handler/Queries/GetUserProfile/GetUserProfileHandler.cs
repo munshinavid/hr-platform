@@ -33,7 +33,7 @@ namespace IdentityManagement.Handler.Queries.GetUserProfile
             if (user == null)
             {
                 return HandlerResult<UserProfileResponse>.FailureResult(
-                    $"User with ID {query.UserId} was not found.");
+                    Error.NotFound("USER_NOT_FOUND", $"User with ID {query.UserId} was not found."));
             }
 
             return HandlerResult<UserProfileResponse>.SuccessResult(

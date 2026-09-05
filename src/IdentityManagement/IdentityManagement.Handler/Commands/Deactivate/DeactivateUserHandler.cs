@@ -36,7 +36,7 @@ namespace IdentityManagement.Handler.Commands.Deactivate
             if (user == null)
             {
                 return HandlerResult.FailureResult(
-                    $"User with ID {command.UserId} was not found.");
+                    Error.NotFound("USER_NOT_FOUND", $"User with ID {command.UserId} was not found."));
             }
 
             var changed = user.Deactivate();
@@ -49,7 +49,7 @@ namespace IdentityManagement.Handler.Commands.Deactivate
                     command.UserId);
 
                 return HandlerResult.FailureResult(
-                    $"User {command.UserId} is already inactive.");
+                    Error.Conflict("USER_ALREADY_INACTIVE", $"User {command.UserId} is already inactive."));
             }
 
             var saved = await _userRepository.UpdateAsync(user);
@@ -61,7 +61,7 @@ namespace IdentityManagement.Handler.Commands.Deactivate
                     command.UserId);
 
                 return HandlerResult.FailureResult(
-                    "Account could not be deactivated. Please try again.");
+                    Error.Failure("DEACTIVATE_USER_FAILED", "Account could not be deactivated. Please try again."));
             }
 
             _logger.LogInformation(

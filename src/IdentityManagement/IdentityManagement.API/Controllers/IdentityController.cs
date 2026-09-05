@@ -35,15 +35,7 @@ namespace IdentityManagement.API.Controllers
         {
             var result = await _dispatcher.SendCommand<LoginCommand, HandlerResult<IdentityResponse>>(command);
 
-            if (!result.Success)
-            {
-                return Unauthorized(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Unauthorized"
-                });
-            }
-
-            return Ok(result.Data);
+            return result.ToActionResult();
         }
 
         // POST: api/users/{userId}/deactivate
@@ -54,15 +46,7 @@ namespace IdentityManagement.API.Controllers
             var command = new DeactivateUserCommand { UserId = userId };
             var result  = await _dispatcher.SendCommand<DeactivateUserCommand, HandlerResult>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Deactivation failed."
-                });
-            }
-
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         // POST: api/users/{userId}/activate
@@ -73,15 +57,7 @@ namespace IdentityManagement.API.Controllers
             var command = new ActivateUserCommand { UserId = userId };
             var result  = await _dispatcher.SendCommand<ActivateUserCommand, HandlerResult>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Activation failed."
-                });
-            }
-
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         //  Query endpoints 
@@ -95,15 +71,12 @@ namespace IdentityManagement.API.Controllers
             var query  = new GetUserStatusQuery { UserId = userId };
             var result = await _dispatcher.SendQuery<GetUserStatusQuery, HandlerResult<UserStatusResponse>>(query);
 
-            if (!result.Success)
+            if (result.Success)
             {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "User not found."
-                });
+                return Ok(new { message = result.Message, status = result.Data });
             }
 
-            return Ok(new { message = result.Message, status = result.Data });
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         // GET: api/users/{userId}/profile
@@ -115,15 +88,12 @@ namespace IdentityManagement.API.Controllers
             var query  = new GetUserProfileQuery { UserId = userId };
             var result = await _dispatcher.SendQuery<GetUserProfileQuery, HandlerResult<UserProfileResponse>>(query);
 
-            if (!result.Success)
+            if (result.Success)
             {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "User not found."
-                });
+                return Ok(new { message = result.Message, profile = result.Data });
             }
 
-            return Ok(new { message = result.Message, profile = result.Data });
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

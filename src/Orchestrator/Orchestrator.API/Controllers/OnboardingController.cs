@@ -25,11 +25,16 @@ namespace Orchestrator.API.Controllers
                 .SendCommand<CreateEmployeeOnboardingCommand, HandlerResult<CreateEmployeeOnboardingResponse>>(
                     command);
 
-            return result.ToActionResult(data => new
+            if (result.Success)
             {
-                message = data.Message,
-                onboarding = data
-            });
+                return Ok(new
+                {
+                    message = result.Data!.Message,
+                    onboarding = result.Data
+                });
+            }
+
+            return ResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

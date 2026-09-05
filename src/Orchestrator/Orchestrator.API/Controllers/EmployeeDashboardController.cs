@@ -28,20 +28,16 @@ namespace Orchestrator.API.Controllers
             var result = await _dispatcher
                 .SendQuery<GetEmployeeDashboardQuery, HandlerResult<EmployeeDashboardResponse>>(query);
 
-            if (!result.Success)
+            if (result.Success)
             {
-                if (result.Message != null && result.Message.Contains("not found", System.StringComparison.OrdinalIgnoreCase))
+                return Ok(new
                 {
-                    return NotFound(new ApiErrorResponse { Message = result.Message });
-                }
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to retrieve Employee Dashboard profile." });
+                    message = result.Message,
+                    data = result.Data
+                });
             }
 
-            return Ok(new
-            {
-                message = result.Message,
-                data = result.Data
-            });
+            return HRPlatform.Shared.Extensions.ResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

@@ -40,20 +40,22 @@ namespace Orchestrator.Handler.Offboarding
             {
                 empResult = await _serviceBus.SendQueryAsync<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(empQuery);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Offboarding: failed to get employee {EmployeeId}", command.EmployeeId);
-                return HandlerResult<OffboardEmployeeResponse>.FailureResult("Failed to retrieve employee information.");
+                _logger.LogError(ex, "Offboarding: no handler registered for GetEmployeeQuery.");
+                return HandlerResult<OffboardEmployeeResponse>.FailureResult(
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Employee service is not available."));
             }
 
             if (!empResult.Success || empResult.Data == null)
             {
-                return HandlerResult<OffboardEmployeeResponse>.FailureResult($"Employee retrieval failed: {empResult.Message}");
+                return HandlerResult<OffboardEmployeeResponse>.FailureResult(empResult.Error);
             }
 
             if (empResult.Data.Status == "Terminated")
             {
-                return HandlerResult<OffboardEmployeeResponse>.FailureResult("Employee is already terminated.");
+                return HandlerResult<OffboardEmployeeResponse>.FailureResult(
+                    Error.Conflict("ALREADY_TERMINATED", "Employee is already terminated."));
             }
 
             int userId = empResult.Data.UserId;
@@ -65,15 +67,16 @@ namespace Orchestrator.Handler.Offboarding
             {
                 terminateResult = await _serviceBus.SendCommandAsync<TerminateEmployeeCommand, HandlerResult>(terminateCmd);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Offboarding: Employee termination failed for {EmployeeId}", command.EmployeeId);
-                return HandlerResult<OffboardEmployeeResponse>.FailureResult("Employee termination failed.");
+                _logger.LogError(ex, "Offboarding: no handler registered for TerminateEmployeeCommand.");
+                return HandlerResult<OffboardEmployeeResponse>.FailureResult(
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Employee termination service is not available."));
             }
 
             if (!terminateResult.Success)
             {
-                return HandlerResult<OffboardEmployeeResponse>.FailureResult($"Employee termination failed: {terminateResult.Message}");
+                return HandlerResult<OffboardEmployeeResponse>.FailureResult(terminateResult.Error);
             }
 
             _logger.LogInformation("Offboarding: Employee {EmployeeId} terminated. Proceeding to deactivate identity {UserId}.", command.EmployeeId, userId);
@@ -85,18 +88,20 @@ namespace Orchestrator.Handler.Offboarding
             {
                 deactivateResult = await _serviceBus.SendCommandAsync<DeactivateUserCommand, HandlerResult>(deactivateCmd);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Offboarding: Identity deactivation failed for UserId={UserId}", userId);
-                deactivateResult = HandlerResult.FailureResult("Identity service is not available.");
+                _logger.LogError(ex, "Offboarding: no handler registered for DeactivateUserCommand.");
+                deactivateResult = HandlerResult.FailureResult(
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Identity service is not available."));
             }
 
             if (!deactivateResult.Success)
             {
-                _logger.LogError("Offboarding: Identity deactivation failed. Triggering compensation for EmployeeId={EmployeeId}. Reason: {Reason}", command.EmployeeId, deactivateResult.Message);
+                _logger.LogError("Offboarding: Identity deactivation failed. Triggering compensation for EmployeeId={EmployeeId}. Reason: {Reason}", command.EmployeeId, deactivateResult.Error.Description);
                 await CompensateEmployeeTerminationAsync(command.EmployeeId);
 
-                return HandlerResult<OffboardEmployeeResponse>.FailureResult($"Identity deactivation failed: {deactivateResult.Message}. The employee termination was rolled back/reactivated.");
+                return HandlerResult<OffboardEmployeeResponse>.FailureResult(
+                    Error.Failure("DEACTIVATION_FAILED", $"Identity deactivation failed: {deactivateResult.Error.Description}. The employee termination was rolled back/reactivated."));
             }
 
             _logger.LogInformation("Offboarding: Identity {UserId} deactivated. Proceeding to cancel pending leaves for Employee {EmployeeId}.", userId, command.EmployeeId);
@@ -108,10 +113,11 @@ namespace Orchestrator.Handler.Offboarding
             {
                 cancelLeavesResult = await _serviceBus.SendCommandAsync<CancelPendingLeavesCommand, HandlerResult<CancelPendingLeavesResponse>>(cancelLeavesCmd);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Offboarding: Leave cleanup failed for EmployeeId={EmployeeId}", command.EmployeeId);
-                cancelLeavesResult = HandlerResult<CancelPendingLeavesResponse>.FailureResult("Leave management service is not available.");
+                _logger.LogError(ex, "Offboarding: no handler registered for CancelPendingLeavesCommand.");
+                cancelLeavesResult = HandlerResult<CancelPendingLeavesResponse>.FailureResult(
+                    Error.ServiceUnavailable("SERVICE_UNAVAILABLE", "Leave management service is not available."));
             }
 
             var response = new OffboardEmployeeResponse
@@ -125,8 +131,8 @@ namespace Orchestrator.Handler.Offboarding
 
             if (!cancelLeavesResult.Success)
             {
-                _logger.LogWarning("Offboarding: Leave cleanup failed for EmployeeId={EmployeeId}. Asymmetric workflow: preserving termination and identity deactivation. Reason: {Reason}", command.EmployeeId, cancelLeavesResult.Message);
-                response.Message = $"Employee terminated and Identity deactivated, but leave cleanup failed: {cancelLeavesResult.Message}";
+                _logger.LogWarning("Offboarding: Leave cleanup failed for EmployeeId={EmployeeId}. Asymmetric workflow: preserving termination and identity deactivation. Reason: {Reason}", command.EmployeeId, cancelLeavesResult.Error.Description);
+                response.Message = $"Employee terminated and Identity deactivated, but leave cleanup failed: {cancelLeavesResult.Error.Description}";
                 return HandlerResult<OffboardEmployeeResponse>.SuccessResult(response, response.Message); // Return success with partial failure details
             }
 

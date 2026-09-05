@@ -16,21 +16,17 @@ namespace HRPlatform.Shared.Extensions
             return MapErrorToActionResult(result.Error);
         }
 
-        public static IActionResult ToActionResult<T>(this HandlerResult<T> result, Func<T, object>? responseMapper = null)
+        public static IActionResult ToActionResult<T>(this HandlerResult<T> result)
         {
             if (result.Success)
             {
-                var responseBody = responseMapper != null && result.Data != null
-                    ? responseMapper(result.Data)
-                    : (object?)result.Data;
-
-                return new OkObjectResult(responseBody);
+                return new OkObjectResult(result.Data);
             }
 
             return MapErrorToActionResult(result.Error);
         }
 
-        private static IActionResult MapErrorToActionResult(Error error)
+        public static IActionResult MapErrorToActionResult(Error error)
         {
             var problemDetails = new ProblemDetails
             {

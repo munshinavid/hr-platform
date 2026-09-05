@@ -23,7 +23,8 @@ namespace EmployeeManagement.Handler.Commands.Terminate
 
             if (employee == null)
             {
-                return HandlerResult.FailureResult($"Employee with ID {command.EmployeeId} not found.");
+                return HandlerResult.FailureResult(
+                    Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
             }
 
             try
@@ -36,7 +37,8 @@ namespace EmployeeManagement.Handler.Commands.Terminate
             }
             catch (DomainException ex)
             {
-                return HandlerResult.FailureResult(ex.Message);
+                return HandlerResult.FailureResult(
+                    Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
         }
     }

@@ -23,7 +23,8 @@ namespace LeaveManagement.Handler.Queries.GetLeaveBalance
             
             if (balance == null)
             {
-                return HandlerResult<LeaveBalanceResponse>.FailureResult("Leave balance not found.");
+                return HandlerResult<LeaveBalanceResponse>.FailureResult(
+                    Error.NotFound("LEAVE_BALANCE_NOT_FOUND", "Leave balance not found."));
             }
 
             var response = LeaveMapper.MapToResponse(balance);

@@ -1,6 +1,5 @@
 using EmployeeManagement.Aggregator.Entities;
 using EmployeeManagement.Aggregator.Exceptions;
-using EmployeeManagement.Aggregator.Mapping;
 using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.Shared.Common;
@@ -46,6 +45,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
 
             try
             {
+                //throw new InvalidCastException("This is a test exception to show error handling.");
                 var employee = EmployeeAggregatorRoot.MapToAggregator(
                     command,
                     command.UserId

@@ -84,6 +84,13 @@ namespace HRPlatform.Shared.Common
                 Error = error
             };
         }
+
+        public void Fail(Error error)
+        {
+            Success = false;
+            Message = error.Description;
+            Error = error;
+        }
     }
 
     public class HandlerResult<T> : HandlerResult
@@ -120,5 +127,6 @@ namespace HRPlatform.Shared.Common
                 Error = error
             };
         }
+
     }
 }

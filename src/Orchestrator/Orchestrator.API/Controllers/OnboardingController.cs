@@ -29,7 +29,7 @@ namespace Orchestrator.API.Controllers
             {
                 return Ok(new
                 {
-                    message = result.Data!.Message,
+                    message = result.Message,
                     onboarding = result.Data
                 });
             }

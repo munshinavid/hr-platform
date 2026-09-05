@@ -33,6 +33,9 @@ namespace Orchestrator.Handler
             // Dispatcher for Orchestrator.API → Orchestrator.Handler dispatch
             services.AddScoped<IDispatcher, Dispatcher>();
 
+            // Safe Command Sender
+            services.AddScoped<Infrastructure.SafeCommandSender>();
+
             return services;
         }
     }

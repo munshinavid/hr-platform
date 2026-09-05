@@ -41,9 +41,6 @@ namespace IdentityManagement.Handler.Commands.Login
                     Error.Unauthorized("INVALID_CREDENTIALS", "Invalid email or password."));
             }
 
-            // Account lifecycle check — performed AFTER password verification to avoid
-            // leaking whether the email exists. A deactivated account returns the same
-            // generic error so callers cannot distinguish inactive from wrong-password.
             if (!user.IsActive)
             {
                 return HandlerResult<IdentityResponse>.FailureResult(

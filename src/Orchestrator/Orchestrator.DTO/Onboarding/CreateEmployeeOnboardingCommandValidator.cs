@@ -40,8 +40,8 @@ namespace Orchestrator.DTO.Onboarding
 
             RuleFor(x => x.EmploymentType)
                 .NotEmpty().WithMessage("EmploymentType is required.")
-                .Must(e => e == "FullTime" || e == "PartTime" || e == "Contract" || e == "Intern")
-                .WithMessage("EmploymentType must be FullTime, PartTime, Contract, or Intern.");
+                .Must(e => e == "Full-Time" || e == "Part-Time" || e == "Contract" || e == "Intern")
+                .WithMessage("EmploymentType must be Full-Time, Part-Time, Contract, or Intern.");
 
             RuleFor(x => x.JoiningDate)
                 .NotEmpty().WithMessage("JoiningDate is required.");

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LeaveManagement.Aggregator.Entities;
 using LeaveManagement.Repository.Data;
 using LeaveManagement.Repository.Interfaces;

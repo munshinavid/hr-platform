@@ -2,31 +2,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
+using HRPlatform.Shared.Exceptions;
 using LeaveManagement.DTO.Command;
 using LeaveManagement.DTO.Response;
-using LeaveManagement.Repository.Data;
-using Microsoft.EntityFrameworkCore;
+using LeaveManagement.Repository.Interfaces;
 using LeaveManagement.Aggregator.Exceptions;
+using System.Collections.Generic;
 
 namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
 {
     public class CancelPendingLeavesHandler : ICommandHandler<CancelPendingLeavesCommand, HandlerResult<CancelPendingLeavesResponse>>
     {
-        private readonly LeaveDbContext _dbContext;
+        private readonly ILeaveRequestRepository _requestRepository;
+        private readonly ILeaveBalanceRepository _balanceRepository;
+        private readonly ILeaveUnitOfWork _unitOfWork;
 
-        public CancelPendingLeavesHandler(LeaveDbContext dbContext)
+        public CancelPendingLeavesHandler(
+            ILeaveRequestRepository requestRepository,
+            ILeaveBalanceRepository balanceRepository,
+            ILeaveUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _requestRepository = requestRepository;
+            _balanceRepository = balanceRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<HandlerResult<CancelPendingLeavesResponse>> HandleAsync(CancelPendingLeavesCommand command)
         {
-            using var transaction = await _dbContext.Database.BeginTransactionAsync();
-
             // Get all pending requests for the employee
-            var pendingRequests = await _dbContext.LeaveRequests
-                .Where(r => r.EmployeeId == command.EmployeeId && r.Status == "Pending")
-                .ToListAsync();
+            var pagedResult = await _requestRepository.GetPagedAsync(command.EmployeeId, null, "Pending", 1, int.MaxValue);
+            var pendingRequests = pagedResult.Requests;
 
             if (!pendingRequests.Any())
             {
@@ -36,14 +41,21 @@ namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
                 );
             }
 
+            // We need to fetch balances first to apply domain logic
+            var balanceDict = new Dictionary<int, LeaveManagement.Aggregator.Entities.LeaveBalance>();
             foreach (var request in pendingRequests)
             {
-                // Find the corresponding balance
                 int year = request.StartDate.Year;
-                var balance = await _dbContext.LeaveBalances
-                    .FirstOrDefaultAsync(b => b.EmployeeId == request.EmployeeId && b.LeaveTypeId == request.LeaveTypeId && b.Year == year);
+                var balance = await _balanceRepository.GetByEmployeeAndTypeAsync(request.EmployeeId, request.LeaveTypeId, year);
+                if (balance != null)
+                {
+                    balanceDict[request.LeaveRequestId] = balance;
+                }
+            }
 
-                if (balance == null)
+            foreach (var request in pendingRequests)
+            {
+                if (!balanceDict.TryGetValue(request.LeaveRequestId, out var balance))
                     continue;
 
                 try
@@ -62,10 +74,19 @@ namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
 
             try
             {
-                await _dbContext.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _unitOfWork.ExecuteInTransactionAsync(async () =>
+                {
+                    foreach (var request in pendingRequests)
+                    {
+                        if (balanceDict.TryGetValue(request.LeaveRequestId, out var balance))
+                        {
+                            await _requestRepository.UpdateAsync(request);
+                            await _balanceRepository.UpdateAsync(balance);
+                        }
+                    }
+                });
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ConcurrencyException)
             {
                 return HandlerResult<CancelPendingLeavesResponse>.FailureResult("A concurrency error occurred while updating the leave balances. Please try again.");
             }
@@ -77,3 +98,4 @@ namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
         }
     }
 }
+

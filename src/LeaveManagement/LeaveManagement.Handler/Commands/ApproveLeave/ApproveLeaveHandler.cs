@@ -5,8 +5,7 @@ using LeaveManagement.DTO.Command;
 using LeaveManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
-using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Repository.Data;
+using HRPlatform.Shared.Exceptions;
 
 namespace LeaveManagement.Handler.Commands.ApproveLeave
 {
@@ -14,16 +13,16 @@ namespace LeaveManagement.Handler.Commands.ApproveLeave
     {
         private readonly ILeaveRequestRepository _requestRepository;
         private readonly ILeaveBalanceRepository _balanceRepository;
-        private readonly LeaveDbContext _dbContext;
+        private readonly ILeaveUnitOfWork _unitOfWork;
 
         public ApproveLeaveHandler(
             ILeaveRequestRepository requestRepository,
             ILeaveBalanceRepository balanceRepository,
-            LeaveDbContext dbContext)
+            ILeaveUnitOfWork unitOfWork)
         {
             _requestRepository = requestRepository;
             _balanceRepository = balanceRepository;
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<HandlerResult> HandleAsync(ApproveLeaveCommand command)
@@ -50,14 +49,13 @@ namespace LeaveManagement.Handler.Commands.ApproveLeave
 
             try
             {
-                using var transaction = await _dbContext.Database.BeginTransactionAsync();
-
-                await _requestRepository.UpdateAsync(request);
-                await _balanceRepository.UpdateAsync(balance);
-
-                await transaction.CommitAsync();
+                await _unitOfWork.ExecuteInTransactionAsync(async () =>
+                {
+                    await _requestRepository.UpdateAsync(request);
+                    await _balanceRepository.UpdateAsync(balance);
+                });
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ConcurrencyException)
             {
                 return HandlerResult.FailureResult("A concurrency error occurred while updating the leave balance. Please try again.");
             }

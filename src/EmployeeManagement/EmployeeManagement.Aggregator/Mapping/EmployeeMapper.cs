@@ -44,4 +44,4 @@ namespace EmployeeManagement.Aggregator.Mapping
             employee.UpdatedAt = DateTime.UtcNow;
         }
     }
-}
+}

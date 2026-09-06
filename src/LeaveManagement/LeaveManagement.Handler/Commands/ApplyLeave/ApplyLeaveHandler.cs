@@ -8,8 +8,7 @@ using LeaveManagement.Aggregator.Mapping;
 using LeaveManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
-using Microsoft.EntityFrameworkCore;
-using LeaveManagement.Repository.Data;
+using HRPlatform.Shared.Exceptions;
 
 namespace LeaveManagement.Handler.Commands.ApplyLeave
 {
@@ -18,18 +17,18 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
         private readonly ILeaveRequestRepository _requestRepository;
         private readonly ILeaveBalanceRepository _balanceRepository;
         private readonly IGenericRepository<LeaveType> _typeRepository;
-        private readonly LeaveDbContext _dbContext;
+        private readonly ILeaveUnitOfWork _unitOfWork;
 
         public ApplyLeaveHandler(
             ILeaveRequestRepository requestRepository,
             ILeaveBalanceRepository balanceRepository,
             IGenericRepository<LeaveType> typeRepository,
-            LeaveDbContext dbContext)
+            ILeaveUnitOfWork unitOfWork)
         {
             _requestRepository = requestRepository;
             _balanceRepository = balanceRepository;
             _typeRepository = typeRepository;
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<HandlerResult<LeaveRequestResponse>> HandleAsync(ApplyLeaveCommand command)
@@ -70,14 +69,13 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
 
             try
             {
-                using var transaction = await _dbContext.Database.BeginTransactionAsync();
-
-                await _requestRepository.AddAsync(request);
-                await _balanceRepository.UpdateAsync(balance);
-
-                await transaction.CommitAsync();
+                await _unitOfWork.ExecuteInTransactionAsync(async () =>
+                {
+                    await _requestRepository.AddAsync(request);
+                    await _balanceRepository.UpdateAsync(balance);
+                });
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ConcurrencyException)
             {
                 return HandlerResult<LeaveRequestResponse>.FailureResult(
                     Error.Conflict("CONCURRENCY_ERROR", "A concurrency error occurred while updating the leave balance. Please try again."));

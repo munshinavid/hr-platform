@@ -3,8 +3,6 @@ using EmployeeManagement.DTO.Command;
 using EmployeeManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
-using System;
-using System.Threading.Tasks;
 
 namespace EmployeeManagement.Handler.Commands.Terminate
 {

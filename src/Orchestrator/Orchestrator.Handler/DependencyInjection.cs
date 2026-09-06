@@ -8,6 +8,7 @@ using Orchestrator.DTO.Offboarding;
 using Orchestrator.Handler.Offboarding;
 using Orchestrator.DTO.EmployeeDashboard;
 using Orchestrator.Handler.EmployeeDashboard;
+using Orchestrator.Handler.Common;
 
 namespace Orchestrator.Handler
 {
@@ -34,7 +35,7 @@ namespace Orchestrator.Handler
             services.AddScoped<IDispatcher, Dispatcher>();
 
             // Safe Command Sender
-            services.AddScoped<Infrastructure.SafeCommandSender>();
+            services.AddScoped<SafeCommandSender>();
 
             return services;
         }

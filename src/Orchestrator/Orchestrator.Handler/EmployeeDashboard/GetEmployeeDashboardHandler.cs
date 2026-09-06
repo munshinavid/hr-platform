@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.ServiceBus.Abstractions;
@@ -10,17 +7,17 @@ using IdentityManagement.DTO.Query;
 using IdentityManagement.DTO.Response;
 using LeaveManagement.DTO.Query;
 using LeaveManagement.DTO.Response;
-using Microsoft.Extensions.Logging;
 using Orchestrator.DTO.EmployeeDashboard;
+using Orchestrator.Handler.Common;
 
 namespace Orchestrator.Handler.EmployeeDashboard
 {
     public class GetEmployeeDashboardHandler : IQueryHandler<GetEmployeeDashboardQuery, HandlerResult<EmployeeDashboardResponse>>
     {
-        private readonly Infrastructure.SafeCommandSender _safeCommandSender;
+        private readonly SafeCommandSender _safeCommandSender;
 
         public GetEmployeeDashboardHandler(
-            Infrastructure.SafeCommandSender safeCommandSender)
+            SafeCommandSender safeCommandSender)
         {
             _safeCommandSender = safeCommandSender;
         }
@@ -36,7 +33,7 @@ namespace Orchestrator.Handler.EmployeeDashboard
                 return HandlerResult<EmployeeDashboardResponse>.FailureResult(employeeResult.Error);
             }
 
-            // Step 2: Parallel Aggregation for independent downstream queries
+            // Step 2: Parallel Aggregation 
             var identityQuery = new GetUserProfileQuery { UserId = employeeResult.Data.UserId };
             var identityTask = _safeCommandSender.SendQueryAsync<GetUserProfileQuery, HandlerResult<UserProfileResponse>>(identityQuery);
 
@@ -59,7 +56,7 @@ namespace Orchestrator.Handler.EmployeeDashboard
                 return HandlerResult<EmployeeDashboardResponse>.FailureResult(leaveResult.Error);
             }
 
-            // Combine the results
+            // Combining the results
             var response = new EmployeeDashboardResponse
             {
                 Employee = employeeResult.Data,

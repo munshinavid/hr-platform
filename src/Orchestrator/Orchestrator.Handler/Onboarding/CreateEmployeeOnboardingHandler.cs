@@ -7,17 +7,18 @@ using IdentityManagement.DTO.Command;
 using IdentityManagement.DTO.Response;
 using Microsoft.Extensions.Logging;
 using Orchestrator.DTO.Onboarding;
+using Orchestrator.Handler.Common;
 
 namespace Orchestrator.Handler.Onboarding
 {
     public class CreateEmployeeOnboardingHandler
         : ICommandHandler<CreateEmployeeOnboardingCommand, HandlerResult<CreateEmployeeOnboardingResponse>>
     {
-        private readonly Infrastructure.SafeCommandSender _safeCommandSender;
+        private readonly SafeCommandSender _safeCommandSender;
         private readonly ILogger<CreateEmployeeOnboardingHandler> _logger;
 
         public CreateEmployeeOnboardingHandler(
-            Infrastructure.SafeCommandSender safeCommandSender,
+            SafeCommandSender safeCommandSender,
             ILogger<CreateEmployeeOnboardingHandler> logger)
         {
             _safeCommandSender = safeCommandSender;
@@ -27,7 +28,7 @@ namespace Orchestrator.Handler.Onboarding
         public async Task<HandlerResult<CreateEmployeeOnboardingResponse>> HandleAsync(
             CreateEmployeeOnboardingCommand command)
         {
-            var registerCommand = OnboardingCommandMapper.ToRegisterUserCommand(command);
+            var registerCommand = OnboardingMapper.ToRegisterUserCommand(command);
 
             var identityResult = await _safeCommandSender
                 .SendCommandAsync<RegisterUserCommand, HandlerResult<UserRegistrationResult>>(registerCommand);
@@ -39,7 +40,7 @@ namespace Orchestrator.Handler.Onboarding
 
             var userId = identityResult.Data.UserId;
 
-            var createEmployeeCommand = OnboardingCommandMapper.ToCreateEmployeeCommand(command, userId);
+            var createEmployeeCommand = OnboardingMapper.ToCreateEmployeeCommand(command, userId);
 
             var employeeResult = await _safeCommandSender
                 .SendCommandAsync<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>(createEmployeeCommand);
@@ -47,13 +48,7 @@ namespace Orchestrator.Handler.Onboarding
             if (employeeResult.Success && employeeResult.Data != null)
             {
                 return HandlerResult<CreateEmployeeOnboardingResponse>.SuccessResult(
-                    new CreateEmployeeOnboardingResponse
-                    {
-                        UserId     = userId,
-                        EmployeeId = employeeResult.Data.EmployeeId,
-                        Name       = employeeResult.Data.Name,
-                        Email      = employeeResult.Data.Email
-                    },
+                    OnboardingMapper.ToCreateEmployeeOnboardingResponse(userId, employeeResult.Data),
                     "Employee onboarding completed successfully.");
             }
 

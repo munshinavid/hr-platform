@@ -36,8 +36,6 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
                         Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
                 }
 
-                // Check Employee.Email uniqueness in the EmployeeManagement context.
-                // User.Email uniqueness in the Authentication context is not EM's concern.
                 var emailExists =
                     await _employeeRepository.EmailExistsAsync(
                         command.Email,
@@ -69,4 +67,4 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
             }
         }
     }
-}
+}

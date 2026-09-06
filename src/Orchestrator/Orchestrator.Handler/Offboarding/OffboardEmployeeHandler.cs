@@ -11,17 +11,18 @@ using LeaveManagement.DTO.Command;
 using LeaveManagement.DTO.Response;
 using Microsoft.Extensions.Logging;
 using Orchestrator.DTO.Offboarding;
+using Orchestrator.Handler.Common;
 
 namespace Orchestrator.Handler.Offboarding
 {
     public class OffboardEmployeeHandler
         : ICommandHandler<OffboardEmployeeCommand, HandlerResult<OffboardEmployeeResponse>>
     {
-        private readonly Infrastructure.SafeCommandSender _safeCommandSender;
+        private readonly SafeCommandSender _safeCommandSender;
         private readonly ILogger<OffboardEmployeeHandler> _logger;
 
         public OffboardEmployeeHandler(
-            Infrastructure.SafeCommandSender safeCommandSender,
+            SafeCommandSender safeCommandSender,
             ILogger<OffboardEmployeeHandler> logger)
         {
             _safeCommandSender = safeCommandSender;

@@ -3,7 +3,7 @@ using HRPlatform.ServiceBus.Abstractions;
 using HRPlatform.Shared.Common;
 using Microsoft.Extensions.Logging;
 
-namespace Orchestrator.Handler.Infrastructure
+namespace Orchestrator.Handler.Common
 {
     public class SafeCommandSender
     {

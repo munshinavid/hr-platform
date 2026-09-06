@@ -1,7 +1,7 @@
 namespace HRPlatform.Shared.Abstractions
 {
-    public interface ICommandHandler<TCommand, TResult>
+    public interface ICommandHandler<TCommand, TResponse>
     {
-        Task<TResult> HandleAsync(TCommand command);
+        Task<TResponse> HandleAsync(TCommand command);
     }
 }

@@ -12,15 +12,15 @@ namespace HRPlatform.Shared.Dispatcher
             _serviceProvider = serviceProvider;
         }
 
-        public Task<TResult> SendCommand<TCommand, TResult>(TCommand command)
+        public Task<TResponse> SendCommand<TCommand, TResponse>(TCommand command)
         {
-            var handler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResult>>();
+            var handler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResponse>>();
             return handler.HandleAsync(command);
         }
 
-        public Task<TResult> SendQuery<TQuery, TResult>(TQuery query)
+        public Task<TResponse> SendQuery<TQuery, TResponse>(TQuery query)
         {
-            var handler = _serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
+            var handler = _serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResponse>>();
             return handler.HandleAsync(query);
         }
     }

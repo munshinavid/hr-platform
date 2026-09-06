@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Exceptions;
@@ -7,7 +5,7 @@ using LeaveManagement.DTO.Command;
 using LeaveManagement.DTO.Response;
 using LeaveManagement.Repository.Interfaces;
 using LeaveManagement.Aggregator.Exceptions;
-using System.Collections.Generic;
+using LeaveManagement.Aggregator.Entities;
 
 namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
 {
@@ -42,7 +40,7 @@ namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
             }
 
             // We need to fetch balances first to apply domain logic
-            var balanceDict = new Dictionary<int, LeaveManagement.Aggregator.Entities.LeaveBalance>();
+            var balanceDict = new Dictionary<int, LeaveBalance>();
             foreach (var request in pendingRequests)
             {
                 int year = request.StartDate.Year;

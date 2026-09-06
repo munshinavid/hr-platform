@@ -18,14 +18,14 @@ namespace Orchestrator.Handler.Common
             _logger = logger;
         }
 
-        public async Task<TResult> SendCommandAsync<TCommand, TResult>(
+        public async Task<TResponse> SendCommandAsync<TCommand, TResponse>(
             TCommand command)
-            where TResult : HandlerResult, new()
+            where TResponse : HandlerResult, new()
         {
             try
             {
                 return await _serviceBus
-                    .SendCommandAsync<TCommand, TResult>(command);
+                    .SendCommandAsync<TCommand, TResponse>(command);
             }
             catch (Exception ex)
             {
@@ -34,7 +34,7 @@ namespace Orchestrator.Handler.Common
                     "Service bus call failed for {CommandType}",
                     typeof(TCommand).Name);
 
-                var result = new TResult();
+                var result = new TResponse();
                 result.Fail(Error.ServiceUnavailable(
                     "SERVICE_UNAVAILABLE",
                     "Target service is not available."));
@@ -42,14 +42,14 @@ namespace Orchestrator.Handler.Common
             }
         }
 
-        public async Task<TResult> SendQueryAsync<TQuery, TResult>(
+        public async Task<TResponse> SendQueryAsync<TQuery, TResponse>(
             TQuery query)
-            where TResult : HandlerResult, new()
+            where TResponse : HandlerResult, new()
         {
             try
             {
                 return await _serviceBus
-                    .SendQueryAsync<TQuery, TResult>(query);
+                    .SendQueryAsync<TQuery, TResponse>(query);
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace Orchestrator.Handler.Common
                     "Service bus call failed for {QueryType}",
                     typeof(TQuery).Name);
 
-                var result = new TResult();
+                var result = new TResponse();
                 result.Fail(Error.ServiceUnavailable(
                     "SERVICE_UNAVAILABLE",
                     "Target service is not available."));

@@ -2,7 +2,7 @@ namespace HRPlatform.ServiceBus.Abstractions
 {
     public interface IServiceBus
     {
-        Task<TResult> SendCommandAsync<TCommand, TResult>(TCommand command);
-        Task<TResult> SendQueryAsync<TQuery, TResult>(TQuery query);
+        Task<TResponse> SendCommandAsync<TCommand, TResponse>(TCommand command);
+        Task<TResponse> SendQueryAsync<TQuery, TResponse>(TQuery query);
     }
 }

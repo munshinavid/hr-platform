@@ -19,25 +19,25 @@ namespace EmployeeManagement.Handler.Commands.Reactivate
 
         public async Task<HandlerResult> HandleAsync(ReactivateEmployeeCommand command)
         {
+            var employee = await _repository.GetByIdAsync(command.EmployeeId);
+
+            if (employee == null)
+                return HandlerResult.FailureResult(
+                    Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
+
             try
             {
-                var employee = await _repository.GetByIdAsync(command.EmployeeId);
-
-                if (employee == null)
-                    return HandlerResult.FailureResult(
-                        Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
-
                 employee.Reactivate();
-
-                await _repository.UpdateAsync(employee);
-
-                return HandlerResult.SuccessResult("Employee reactivated successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult.FailureResult(
                     Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
+
+            await _repository.UpdateAsync(employee);
+
+            return HandlerResult.SuccessResult("Employee reactivated successfully.");
         }
     }
 }

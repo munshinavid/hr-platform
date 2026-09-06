@@ -25,46 +25,46 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
             UpdateEmployeeCommand command)
         {
+            var employee =
+                await _employeeRepository.GetByIdAsync(command.EmployeeId);
+
+            if (employee == null)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
+            }
+
+            var emailExists =
+                await _employeeRepository.EmailExistsAsync(
+                    command.Email,
+                    employee.EmployeeId);
+
+            if (emailExists)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
+            }
+
             try
             {
-                var employee =
-                    await _employeeRepository.GetByIdAsync(command.EmployeeId);
-
-                if (employee == null)
-                {
-                    return HandlerResult<EmployeeResponse>.FailureResult(
-                        Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
-                }
-
-                var emailExists =
-                    await _employeeRepository.EmailExistsAsync(
-                        command.Email,
-                        employee.EmployeeId);
-
-                if (emailExists)
-                {
-                    return HandlerResult<EmployeeResponse>.FailureResult(
-                        Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
-                }
-
                 employee.MapToAggregator(command);
-
-                await _employeeRepository.UpdateAsync(employee);
-
-                var updatedEmployee =
-                    await _employeeRepository.GetByIdAsync(command.EmployeeId);
-
-                var response = updatedEmployee!.MapToResponse();
-
-                return HandlerResult<EmployeeResponse>.SuccessResult(
-                    response,
-                    "Employee updated successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult<EmployeeResponse>.FailureResult(
                     Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
+
+            await _employeeRepository.UpdateAsync(employee);
+
+            var updatedEmployee =
+                await _employeeRepository.GetByIdAsync(command.EmployeeId);
+
+            var response = updatedEmployee!.MapToResponse();
+
+            return HandlerResult<EmployeeResponse>.SuccessResult(
+                response,
+                "Employee updated successfully.");
         }
     }
 }

@@ -34,25 +34,25 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
 
         public async Task<HandlerResult<LeaveRequestResponse>> HandleAsync(ApplyLeaveCommand command)
         {
+            var leaveType = await _typeRepository.GetByIdAsync(command.LeaveTypeId);
+            if (leaveType == null || !leaveType.IsActive)
+                return HandlerResult<LeaveRequestResponse>.FailureResult(
+                    Error.Validation("INVALID_LEAVE_TYPE", "Invalid or inactive Leave Type."));
+
+            int year = command.StartDate.Year;
+            var balance = await _balanceRepository.GetByEmployeeAndTypeAsync(command.EmployeeId, command.LeaveTypeId, year);
+            
+            if (balance == null)
+                return HandlerResult<LeaveRequestResponse>.FailureResult(
+                    Error.NotFound("LEAVE_BALANCE_NOT_FOUND", $"No leave balance found for year {year}."));
+
+            int totalDays = (command.EndDate - command.StartDate).Days + 1;
+
+            LeaveRequest request;
+            
             try
             {
-                var leaveType = await _typeRepository.GetByIdAsync(command.LeaveTypeId);
-                if (leaveType == null || !leaveType.IsActive)
-                    return HandlerResult<LeaveRequestResponse>.FailureResult(
-                        Error.Validation("INVALID_LEAVE_TYPE", "Invalid or inactive Leave Type."));
-
-                int year = command.StartDate.Year;
-                var balance = await _balanceRepository.GetByEmployeeAndTypeAsync(command.EmployeeId, command.LeaveTypeId, year);
-                
-                if (balance == null)
-                    return HandlerResult<LeaveRequestResponse>.FailureResult(
-                        Error.NotFound("LEAVE_BALANCE_NOT_FOUND", $"No leave balance found for year {year}."));
-
-                int totalDays = (command.EndDate - command.StartDate).Days + 1;
-
-                using var transaction = await _dbContext.Database.BeginTransactionAsync();
-
-                var request = LeaveRequest.Apply(
+                request = LeaveRequest.Apply(
                     command.EmployeeId,
                     command.LeaveTypeId,
                     command.StartDate,
@@ -61,25 +61,30 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
                     command.Reason);
 
                 balance.Hold(totalDays);
-
-                await _requestRepository.AddAsync(request);
-                await _balanceRepository.UpdateAsync(balance);
-
-                await transaction.CommitAsync();
-
-                var response = LeaveMapper.MapToResponse(request);
-                return HandlerResult<LeaveRequestResponse>.SuccessResult(response, "Leave applied successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult<LeaveRequestResponse>.FailureResult(
                     Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
+
+            try
+            {
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+                await _requestRepository.AddAsync(request);
+                await _balanceRepository.UpdateAsync(balance);
+
+                await transaction.CommitAsync();
+            }
             catch (DbUpdateConcurrencyException)
             {
                 return HandlerResult<LeaveRequestResponse>.FailureResult(
                     Error.Conflict("CONCURRENCY_ERROR", "A concurrency error occurred while updating the leave balance. Please try again."));
             }
+
+            var response = LeaveMapper.MapToResponse(request);
+            return HandlerResult<LeaveRequestResponse>.SuccessResult(response, "Leave applied successfully.");
         }
     }
 }

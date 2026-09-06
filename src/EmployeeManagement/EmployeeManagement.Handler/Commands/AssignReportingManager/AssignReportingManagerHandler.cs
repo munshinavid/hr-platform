@@ -34,16 +34,16 @@ namespace EmployeeManagement.Handler.Commands.AssignReportingManager
             try
             {
                 employee.AssignReportingManager(command.ReportingManagerId);
-                
-                await _employeeRepository.UpdateAsync(employee);
-                
-                return HandlerResult.SuccessResult("Reporting manager assigned successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult.FailureResult(
                     Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
+
+            await _employeeRepository.UpdateAsync(employee);
+            
+            return HandlerResult.SuccessResult("Reporting manager assigned successfully.");
         }
     }
 }

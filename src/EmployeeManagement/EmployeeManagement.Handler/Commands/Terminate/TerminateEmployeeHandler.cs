@@ -30,16 +30,16 @@ namespace EmployeeManagement.Handler.Commands.Terminate
             try
             {
                 employee.Terminate();
-                
-                await _employeeRepository.UpdateAsync(employee);
-                
-                return HandlerResult.SuccessResult("Employee terminated successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult.FailureResult(
                     Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
+
+            await _employeeRepository.UpdateAsync(employee);
+            
+            return HandlerResult.SuccessResult("Employee terminated successfully.");
         }
     }
 }

@@ -43,36 +43,36 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                     Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
             }
 
+            EmployeeAggregatorRoot employee;
             try
             {
-                //throw new InvalidCastException("This is a test exception to show error handling.");
-                var employee = EmployeeAggregatorRoot.MapToAggregator(
+                employee = EmployeeAggregatorRoot.MapToAggregator(
                     command,
                     command.UserId
                 );
-
-                var saved = await _employeeRepository.AddAsync(employee);
-                if (!saved)
-                {
-                    return HandlerResult<EmployeeResponse>.FailureResult(
-                        Error.Failure("EMPLOYEE_SAVE_FAILED", "Failed to save employee record to database."));
-                }
-
-                var createdEmployee =
-                    await _employeeRepository.GetByIdAsync(employee.EmployeeId);
-
-                var response =
-                    createdEmployee!.MapToResponse();
-
-                return HandlerResult<EmployeeResponse>.SuccessResult(
-                    response,
-                    "Employee created successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult<EmployeeResponse>.FailureResult(
                     Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
+
+            var saved = await _employeeRepository.AddAsync(employee);
+            if (!saved)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.Failure("EMPLOYEE_SAVE_FAILED", "Failed to save employee record to database."));
+            }
+
+            var createdEmployee =
+                await _employeeRepository.GetByIdAsync(employee.EmployeeId);
+
+            var response =
+                createdEmployee!.MapToResponse();
+
+            return HandlerResult<EmployeeResponse>.SuccessResult(
+                response,
+                "Employee created successfully.");
         }
     }
 }

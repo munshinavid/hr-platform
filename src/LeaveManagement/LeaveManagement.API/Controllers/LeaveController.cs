@@ -28,7 +28,7 @@ namespace LeaveManagement.API.Controllers
             {
                 return Ok(new { message = result.Message, data = result.Data });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpPost("{leaveRequestId}/approve")]
@@ -63,7 +63,7 @@ namespace LeaveManagement.API.Controllers
             {
                 return Ok(new { data = result.Data });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpGet("requests")]
@@ -74,7 +74,7 @@ namespace LeaveManagement.API.Controllers
             {
                 return Ok(new { data = result.Data });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpGet("requests/{leaveRequestId}")]
@@ -86,7 +86,7 @@ namespace LeaveManagement.API.Controllers
             {
                 return Ok(new { data = result.Data });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

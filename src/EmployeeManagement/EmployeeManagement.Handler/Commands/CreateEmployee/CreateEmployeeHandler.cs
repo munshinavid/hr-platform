@@ -1,11 +1,11 @@
-using EmployeeManagement.Aggregator.Entities;
-using EmployeeManagement.Aggregator.Exceptions;
+﻿using EmployeeManagement.Aggregator.Aggregates;
 using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using EmployeeManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using Microsoft.Extensions.Logging;
+using EmployeeManagement.Aggregator.Exceptions;
 
 namespace EmployeeManagement.Handler.Commands.CreateEmployee
 {
@@ -43,10 +43,10 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
                     Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
             }
 
-            EmployeeAggregatorRoot employee;
+            EmployeeAggregateRoot employee;
             try
             {
-                employee = EmployeeAggregatorRoot.MapToAggregator(
+                employee = EmployeeAggregateRoot.MapToAggregator(
                     command,
                     command.UserId
                 );

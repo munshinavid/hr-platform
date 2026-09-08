@@ -35,7 +35,7 @@ namespace Orchestrator.API.Controllers
                 });
             }
 
-            return HRPlatform.Shared.Extensions.ResultExtensions.MapErrorToActionResult(result.Error);
+            return HRPlatform.Shared.Extensions.ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

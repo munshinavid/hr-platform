@@ -1,14 +1,14 @@
-using IdentityManagement.Aggregator.Entities;
+using IdentityManagement.Aggregator.Aggregates;
 
 namespace IdentityManagement.Repository.Interfaces
 {
     public interface IIdentityUserRepository
     {
-        Task<UserAggregatorRoot?> GetByIdAsync(int userId);
-        Task<UserAggregatorRoot?> GetByEmailAsync(string email);
+        Task<UserAggregateRoot?> GetByIdAsync(int userId);
+        Task<UserAggregateRoot?> GetByEmailAsync(string email);
         Task<bool> EmailExistsAsync(string email);
-        Task<bool> AddAsync(UserAggregatorRoot user);
-        Task<bool> UpdateAsync(UserAggregatorRoot user);
+        Task<bool> AddAsync(UserAggregateRoot user);
+        Task<bool> UpdateAsync(UserAggregateRoot user);
         Task<bool> DeleteAsync(int userId);
     }
 }

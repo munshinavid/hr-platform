@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRPlatform.Shared.Extensions
 {
-    public static class ResultExtensions
+    public static class ApiResultExtensions
     {
         public static IActionResult ToActionResult(this HandlerResult result)
         {

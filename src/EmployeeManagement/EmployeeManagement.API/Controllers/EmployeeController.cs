@@ -36,7 +36,7 @@ namespace EmployeeManagement.API.Controllers
                     employee = result.Data
                 });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpPut("{employeeId}")]
@@ -58,7 +58,7 @@ namespace EmployeeManagement.API.Controllers
                     employee = result.Data
                 });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpGet]
@@ -77,7 +77,7 @@ namespace EmployeeManagement.API.Controllers
                     employees = result.Data
                 });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpGet("{employeeId}")]
@@ -97,7 +97,7 @@ namespace EmployeeManagement.API.Controllers
                     employee = result.Data
                 });
             }
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         [HttpPost("{employeeId}/terminate")]

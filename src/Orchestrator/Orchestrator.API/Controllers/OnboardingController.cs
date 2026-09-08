@@ -34,7 +34,7 @@ namespace Orchestrator.API.Controllers
                 });
             }
 
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

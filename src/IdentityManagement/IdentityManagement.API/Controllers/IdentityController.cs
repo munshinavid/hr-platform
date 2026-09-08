@@ -76,7 +76,7 @@ namespace IdentityManagement.API.Controllers
                 return Ok(new { message = result.Message, status = result.Data });
             }
 
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
 
         // GET: api/users/{userId}/profile
@@ -93,7 +93,7 @@ namespace IdentityManagement.API.Controllers
                 return Ok(new { message = result.Message, profile = result.Data });
             }
 
-            return ResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

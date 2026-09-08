@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using LeaveManagement.Aggregator.Entities;
 using LeaveManagement.Aggregator.Exceptions;
 using LeaveManagement.DTO.Command;
 using LeaveManagement.DTO.Response;
@@ -9,6 +8,7 @@ using LeaveManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Exceptions;
+using LeaveManagement.Aggregator.Aggregates;
 
 namespace LeaveManagement.Handler.Commands.ApplyLeave
 {
@@ -16,13 +16,13 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
     {
         private readonly ILeaveRequestRepository _requestRepository;
         private readonly ILeaveBalanceRepository _balanceRepository;
-        private readonly IGenericRepository<LeaveType> _typeRepository;
+        private readonly IGenericRepository<LeaveTypeAggregateRoot> _typeRepository;
         private readonly ILeaveUnitOfWork _unitOfWork;
 
         public ApplyLeaveHandler(
             ILeaveRequestRepository requestRepository,
             ILeaveBalanceRepository balanceRepository,
-            IGenericRepository<LeaveType> typeRepository,
+            IGenericRepository<LeaveTypeAggregateRoot> typeRepository,
             ILeaveUnitOfWork unitOfWork)
         {
             _requestRepository = requestRepository;
@@ -47,11 +47,11 @@ namespace LeaveManagement.Handler.Commands.ApplyLeave
 
             int totalDays = (command.EndDate - command.StartDate).Days + 1;
 
-            LeaveRequest request;
+            LeaveRequestAggregateRoot request;
             
             try
             {
-                request = LeaveRequest.Apply(
+                request = LeaveRequestAggregateRoot.Apply(
                     command.EmployeeId,
                     command.LeaveTypeId,
                     command.StartDate,

@@ -1,11 +1,11 @@
-using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Aggregates;
 using EmployeeManagement.DTO.Response;
 
 namespace EmployeeManagement.Aggregator.Mapping
 {
     public static class EmployeeResponseMapper
     {
-        public static EmployeeResponse MapToResponse(EmployeeAggregatorRoot employee)
+        public static EmployeeResponse MapToResponse(EmployeeAggregateRoot employee)
         {
             return new EmployeeResponse
             {

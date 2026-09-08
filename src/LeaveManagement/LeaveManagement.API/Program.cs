@@ -1,3 +1,4 @@
+using HRPlatform.Shared.Extensions;
 using LeaveManagement.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfiguration();
 
 // Register Handler layer (which also registers Repository)
 builder.Services.AddLeaveHandlerLayer(builder.Configuration);

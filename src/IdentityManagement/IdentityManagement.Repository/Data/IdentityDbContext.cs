@@ -1,4 +1,4 @@
-using IdentityManagement.Aggregator.Entities;
+using IdentityManagement.Aggregator.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityManagement.Repository.Data
@@ -10,13 +10,13 @@ namespace IdentityManagement.Repository.Data
         {
         }
 
-        public DbSet<UserAggregatorRoot> Users { get; set; }
+        public DbSet<UserAggregateRoot> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UserAggregatorRoot>(entity =>
+            modelBuilder.Entity<UserAggregateRoot>(entity =>
             {
                 entity.HasKey(u => u.UserId);
                 entity.ToTable("Users");
@@ -26,13 +26,10 @@ namespace IdentityManagement.Repository.Data
                     .IsRequired();
 
 
-                // Account lifecycle column.
-                // Migration default = 1 (true) so all pre-existing users remain active.
                 entity.Property(u => u.IsActive)
                     .IsRequired()
                     .HasDefaultValue(true);
 
-                // Audit columns.
                 entity.Property(u => u.CreatedAt).IsRequired();
                 entity.Property(u => u.UpdatedAt).IsRequired();
 
@@ -40,7 +37,7 @@ namespace IdentityManagement.Repository.Data
                     .IsRequired()
                     .HasMaxLength(256);
 
-                // Unique index on Email — fast lookup during login / duplicate check.
+                // Unique index on Email for fast lookup 
                 entity.HasIndex(u => u.Email)
                     .IsUnique()
                     .HasDatabaseName("IX_Users_Email");

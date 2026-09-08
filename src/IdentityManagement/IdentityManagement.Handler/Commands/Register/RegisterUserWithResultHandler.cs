@@ -1,11 +1,11 @@
 using IdentityManagement.Aggregator.Constants;
-using IdentityManagement.Aggregator.Entities;
 using IdentityManagement.DTO.Command;
 using IdentityManagement.DTO.Response;
 using IdentityManagement.Handler.Services;
 using IdentityManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
+using IdentityManagement.Aggregator.Aggregates;
 
 namespace IdentityManagement.Handler.Commands.Register
 {
@@ -35,7 +35,7 @@ namespace IdentityManagement.Handler.Commands.Register
 
             var passwordHash = _passwordHasher.Hash(command.Password);
 
-            var user = UserAggregatorRoot.MapToAggregator(
+            var user = UserAggregateRoot.MapToAggregator(
                 command,
                 passwordHash,
                 Roles.Employee);

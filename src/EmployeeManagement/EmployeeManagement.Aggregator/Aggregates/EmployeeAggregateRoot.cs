@@ -3,9 +3,9 @@ using EmployeeManagement.Aggregator.Mapping;
 using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Response;
 
-namespace EmployeeManagement.Aggregator.Entities
+namespace EmployeeManagement.Aggregator.Aggregates
 {
-    public class EmployeeAggregatorRoot
+    public class EmployeeAggregateRoot
     {
         public int EmployeeId { get; set; }
         public int UserId { get; set; }
@@ -30,10 +30,10 @@ namespace EmployeeManagement.Aggregator.Entities
 
         public string Status { get; set; } = string.Empty;
 
-        public DepartmentAggregatorRoot? Department { get; set; }
+        public DepartmentAggregateRoot? Department { get; set; }
 
         public int? ReportingManagerId { get; set; }
-        public EmployeeAggregatorRoot? ReportingManager { get; set; }
+        public EmployeeAggregateRoot? ReportingManager { get; set; }
 
         public DateTime? TerminationDate { get; set; }
 
@@ -54,7 +54,7 @@ namespace EmployeeManagement.Aggregator.Entities
                     "Joining date cannot be in the future.");
         }
 
-        public static EmployeeAggregatorRoot MapToAggregator(
+        public static EmployeeAggregateRoot MapToAggregator(
             CreateEmployeeCommand command,
             int userId)
         {

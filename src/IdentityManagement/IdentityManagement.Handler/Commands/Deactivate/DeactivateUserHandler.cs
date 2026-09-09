@@ -6,16 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityManagement.Handler.Commands.Deactivate
 {
-    /// <summary>
-    /// Deactivates a user account so the user can no longer authenticate.
-    ///
-    /// Business rules:
-    ///   - Non-existent UserId → failure (safe "not found" message).
-    ///   - Already-inactive account → failure (idempotent guard — caller is informed
-    ///     but no state is changed, so the Orchestrator can decide whether to treat
-    ///     this as an error or a no-op during compensation).
-    ///   - Active account → IsActive set to false, UpdatedAt stamped, persisted.
-    /// </summary>
     public class DeactivateUserHandler : ICommandHandler<DeactivateUserCommand, HandlerResult>
     {
         private readonly IIdentityUserRepository _userRepository;

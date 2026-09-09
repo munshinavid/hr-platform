@@ -11,14 +11,7 @@ namespace IdentityManagement.Repository.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // ── Safety note ───────────────────────────────────────────────────────
-            // The Users table already exists in the database (created before EF
-            // migrations were introduced for this context).
-            // This migration only ADDS and DROPS columns — it never drops or recreates
-            // the table, so existing UserId / Email / Password / Role data is preserved.
-            // ─────────────────────────────────────────────────────────────────────
-
-            // 1. Add IsActive — nullable first so SQL Server can fill existing rows.
+            
             migrationBuilder.AddColumn<bool>(
                 name: "IsActive",
                 table: "Users",
@@ -76,8 +69,6 @@ namespace IdentityManagement.Repository.Migrations
                 oldNullable: true);
 
             // 6. Drop Name — identity credentials do not own the HR display name.
-            //    Employee.Name in EmployeeManagement is the authoritative HR profile name.
-            //    ONLY run this if the column exists; if it was never added, this is a no-op.
             migrationBuilder.Sql(@"
                 IF COL_LENGTH('Users', 'Name') IS NOT NULL
                     ALTER TABLE [Users] DROP COLUMN [Name]");

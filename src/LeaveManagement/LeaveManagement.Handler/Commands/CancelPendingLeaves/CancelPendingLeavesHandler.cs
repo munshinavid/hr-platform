@@ -39,7 +39,7 @@ namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
                 );
             }
 
-            // We need to fetch balances first to apply domain logic
+            //fetch balances first to apply domain logic
             var balanceDict = new Dictionary<int, LeaveBalanceAggregateRoot>();
             foreach (var request in pendingRequests)
             {

@@ -6,18 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityManagement.Handler.Commands.Activate
 {
-    /// <summary>
-    /// Re-activates a previously deactivated user account.
-    ///
-    /// Business rules:
-    ///   - Non-existent UserId → failure.
-    ///   - Already-active account → failure (idempotent guard).
-    ///   - Inactive account → IsActive set to true, UpdatedAt stamped, persisted.
-    ///
-    /// This is the compensation counterpart of DeactivateUserHandler.
-    /// Used by the Offboarding Orchestrator if Step 3 fails and Step 2 must be
-    /// rolled back (Phase D).
-    /// </summary>
     public class ActivateUserHandler : ICommandHandler<ActivateUserCommand, HandlerResult>
     {
         private readonly IIdentityUserRepository _userRepository;

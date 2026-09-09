@@ -11,18 +11,35 @@ namespace HRPlatform.Shared.Common
         ServiceUnavailable = 6
     }
 
-    public sealed record Error(
-        string Code,
-        string Description,
-        ErrorType Type = ErrorType.Failure,
-        IDictionary<string, string[]>? ValidationErrors = null)
+    public sealed class Error
     {
-        public static readonly Error None = new(string.Empty, string.Empty);
+        public string Code { get; }
+        public string Description { get; }
+        public ErrorType Type { get; }
+        public IDictionary<string, string[]>? ValidationErrors { get; }
+
+        public Error(
+            string code,
+            string description,
+            ErrorType type = ErrorType.Failure,
+            IDictionary<string, string[]>? validationErrors = null)
+        {
+            Code = code;
+            Description = description;
+            Type = type;
+            ValidationErrors = validationErrors;
+        }
+
+        public static readonly Error None =
+            new(string.Empty, string.Empty);
 
         public static Error Failure(string code, string description) =>
             new(code, description, ErrorType.Failure);
 
-        public static Error Validation(string code, string description, IDictionary<string, string[]>? validationErrors = null) =>
+        public static Error Validation(
+            string code,
+            string description,
+            IDictionary<string, string[]>? validationErrors = null) =>
             new(code, description, ErrorType.Validation, validationErrors);
 
         public static Error NotFound(string code, string description) =>
@@ -49,7 +66,9 @@ namespace HRPlatform.Shared.Common
 
         public string? Message
         {
-            get => Error != null && !string.IsNullOrEmpty(Error.Description) ? Error.Description : _message;
+            get => Error != null && !string.IsNullOrEmpty(Error.Description)
+                ? Error.Description
+                : _message;
             protected set => _message = value;
         }
 
@@ -97,7 +116,9 @@ namespace HRPlatform.Shared.Common
     {
         public T? Data { get; private set; }
 
-        public static HandlerResult<T> SuccessResult(T data, string? message = null)
+        public static HandlerResult<T> SuccessResult(
+            T data,
+            string? message = null)
         {
             return new HandlerResult<T>
             {
@@ -127,6 +148,5 @@ namespace HRPlatform.Shared.Common
                 Error = error
             };
         }
-
     }
 }

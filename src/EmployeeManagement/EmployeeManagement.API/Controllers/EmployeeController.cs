@@ -28,15 +28,11 @@ namespace EmployeeManagement.API.Controllers
         {
             var result = await _dispatcher.SendCommand<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>(command);
 
-            if (result.Success)
+            return result.ToActionResult(data => new
             {
-                return Ok(new
-                {
-                    message = result.Message,
-                    employee = result.Data
-                });
-            }
-            return ApiResultExtensions.MapErrorToActionResult(result.Error);
+                message = result.Message,
+                employee = data
+            });
         }
 
         [HttpPut("{employeeId}")]
@@ -50,15 +46,11 @@ namespace EmployeeManagement.API.Controllers
                 UpdateEmployeeCommand,
                 HandlerResult<EmployeeResponse>>(command);
 
-            if (result.Success)
+            return result.ToActionResult(data => new
             {
-                return Ok(new
-                {
-                    message = result.Message,
-                    employee = result.Data
-                });
-            }
-            return ApiResultExtensions.MapErrorToActionResult(result.Error);
+                message = result.Message,
+                employee = data
+            });
         }
 
         [HttpGet]
@@ -69,15 +61,7 @@ namespace EmployeeManagement.API.Controllers
                 GetEmployeesQuery,
                 HandlerResult<PagedResponse<EmployeeResponse>>>(query);
 
-            if (result.Success)
-            {
-                return Ok(new
-                {
-                    message = result.Message,
-                    employees = result.Data
-                });
-            }
-            return ApiResultExtensions.MapErrorToActionResult(result.Error);
+            return result.ToActionResult();
         }
 
         [HttpGet("{employeeId}")]
@@ -89,15 +73,11 @@ namespace EmployeeManagement.API.Controllers
             };
             var result = await _dispatcher.SendQuery<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(query);
 
-            if (result.Success)
+            return result.ToActionResult(data => new
             {
-                return Ok(new
-                {
-                    message = result.Message,
-                    employee = result.Data
-                });
-            }
-            return ApiResultExtensions.MapErrorToActionResult(result.Error);
+                message = result.Message,
+                employee = data
+            });
         }
 
         [HttpPost("{employeeId}/terminate")]

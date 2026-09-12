@@ -33,7 +33,6 @@ namespace IdentityManagement.Handler.Commands.Deactivate
 
             if (!changed)
             {
-                // Already inactive — idempotent but inform the caller.
                 _logger.LogWarning(
                     "DeactivateUser: UserId={UserId} is already inactive. No change made.",
                     command.UserId);

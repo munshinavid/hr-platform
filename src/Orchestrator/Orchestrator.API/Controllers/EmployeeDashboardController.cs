@@ -3,13 +3,14 @@ using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Mvc;
 using Orchestrator.DTO.EmployeeDashboard;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Orchestrator.API.Controllers
 {
     [Route("api/orchestrator/employees")]
     [ApiController]
-    //[Authorize(Policy = "RequireHRRole")] // 
+    //[Authorize(Policy = "RequireHRRole")]
     public class EmployeeDashboardController : ControllerBase
     {
         private readonly IDispatcher _dispatcher;
@@ -37,7 +38,7 @@ namespace Orchestrator.API.Controllers
                 });
             }
 
-            return HRPlatform.Shared.Extensions.ApiResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

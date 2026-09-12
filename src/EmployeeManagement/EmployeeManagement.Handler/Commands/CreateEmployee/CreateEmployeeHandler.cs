@@ -29,6 +29,7 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
             CreateEmployeeCommand command)
         {
+            //throw new Exception("This is a test exception to demonstrate error handling in the CreateEmployeeHandler.");
             var department = await _departmentRepository.GetByIdAsync(command.DepartmentId);
             if (department == null)
             {

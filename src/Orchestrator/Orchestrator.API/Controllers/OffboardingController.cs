@@ -3,6 +3,7 @@ using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Mvc;
 using Orchestrator.DTO.Offboarding;
+using HRPlatform.Shared.Extensions;
 
 namespace Orchestrator.API.Controllers
 {
@@ -35,7 +36,7 @@ namespace Orchestrator.API.Controllers
                 });
             }
 
-            return HRPlatform.Shared.Extensions.ApiResultExtensions.MapErrorToActionResult(result.Error);
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

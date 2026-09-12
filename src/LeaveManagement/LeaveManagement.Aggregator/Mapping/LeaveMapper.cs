@@ -1,11 +1,11 @@
-using LeaveManagement.Aggregator.Entities;
+using LeaveManagement.Aggregator.Aggregates;
 using LeaveManagement.DTO.Response;
 
 namespace LeaveManagement.Aggregator.Mapping
 {
     public static class LeaveMapper
     {
-        public static LeaveBalanceResponse MapToResponse(LeaveBalance balance)
+        public static LeaveBalanceResponse MapToResponse(LeaveBalanceAggregateRoot balance)
         {
             return new LeaveBalanceResponse
             {
@@ -23,7 +23,7 @@ namespace LeaveManagement.Aggregator.Mapping
             };
         }
 
-        public static LeaveRequestResponse MapToResponse(LeaveRequest request)
+        public static LeaveRequestResponse MapToResponse(LeaveRequestAggregateRoot request)
         {
             return new LeaveRequestResponse
             {

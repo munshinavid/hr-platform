@@ -1,5 +1,5 @@
 using EmployeeManagement.Repository.Interfaces;
-using EmployeeManagement.Aggregator.Entities;   
+using EmployeeManagement.Aggregator.Aggregates;   
 using EmployeeManagement.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,27 +1,24 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LeaveManagement.Aggregator.Entities;
+using LeaveManagement.Aggregator.Aggregates;
 using LeaveManagement.Repository.Data;
 using LeaveManagement.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Repository.Implementations
 {
-    public class LeaveRequestRepository : GenericRepository<LeaveRequest>, ILeaveRequestRepository
+    public class LeaveRequestRepository : GenericRepository<LeaveRequestAggregateRoot>, ILeaveRequestRepository
     {
         public LeaveRequestRepository(LeaveDbContext context) : base(context)
         {
         }
 
-        public override async Task<LeaveRequest?> GetByIdAsync(int id)
+        public override async Task<LeaveRequestAggregateRoot?> GetByIdAsync(int id)
         {
             return await _dbSet
                 .Include(r => r.LeaveType)
                 .FirstOrDefaultAsync(r => r.LeaveRequestId == id);
         }
 
-        public async Task<(List<LeaveRequest> Requests, int TotalCount)> GetPagedAsync(
+        public async Task<(List<LeaveRequestAggregateRoot> Requests, int TotalCount)> GetPagedAsync(
             int? employeeId,
             int? leaveTypeId,
             string? status,

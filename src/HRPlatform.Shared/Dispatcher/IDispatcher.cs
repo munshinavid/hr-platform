@@ -2,8 +2,8 @@ namespace HRPlatform.Shared.Dispatcher
 {
     public interface IDispatcher
     {
-        Task<TResult> SendCommand<TCommand, TResult>(TCommand command);
+        Task<TResponse> SendCommand<TCommand, TResponse>(TCommand command);
 
-        Task<TResult> SendQuery<TQuery, TResult>(TQuery query);
+        Task<TResponse> SendQuery<TQuery, TResponse>(TQuery query);
     }
 }

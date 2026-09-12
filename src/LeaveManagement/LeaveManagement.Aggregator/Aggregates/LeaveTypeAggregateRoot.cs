@@ -1,8 +1,8 @@
 using System;
 
-namespace LeaveManagement.Aggregator.Entities
+namespace LeaveManagement.Aggregator.Aggregates
 {
-    public class LeaveType
+    public class LeaveTypeAggregateRoot
     {
         public int LeaveTypeId { get; set; }
         public string Name { get; set; } = string.Empty;

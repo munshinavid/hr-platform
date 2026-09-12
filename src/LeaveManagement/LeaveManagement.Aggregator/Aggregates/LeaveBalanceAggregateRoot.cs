@@ -1,25 +1,23 @@
 using System;
 using LeaveManagement.Aggregator.Exceptions;
 
-namespace LeaveManagement.Aggregator.Entities
+namespace LeaveManagement.Aggregator.Aggregates
 {
-    public class LeaveBalance
+    public class LeaveBalanceAggregateRoot
     {
         public int LeaveBalanceId { get; set; }
         
-        // Scalar reference to EmployeeManagement. No navigation property.
         public int EmployeeId { get; set; }
         
         public int LeaveTypeId { get; set; }
-        public LeaveType? LeaveType { get; set; }
+        public LeaveTypeAggregateRoot? LeaveType { get; set; }
         
         public int Year { get; set; }
         public int TotalDays { get; set; }
         public int UsedDays { get; set; }
         public int HeldDays { get; set; }
-        
-        // Concurrency token
-        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+
+        public byte[] RowVersion { get; set; } = [];
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

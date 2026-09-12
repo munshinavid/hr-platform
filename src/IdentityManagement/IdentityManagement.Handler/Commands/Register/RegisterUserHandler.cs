@@ -1,10 +1,10 @@
 using IdentityManagement.Aggregator.Constants;
-using IdentityManagement.Aggregator.Entities;
 using IdentityManagement.DTO.Command;
 using IdentityManagement.Handler.Services;
 using IdentityManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
+using IdentityManagement.Aggregator.Aggregates;
 
 namespace IdentityManagement.Handler.Commands.Register
 {
@@ -27,12 +27,13 @@ namespace IdentityManagement.Handler.Commands.Register
 
             if (emailExists)
             {
-                return HandlerResult.FailureResult("Email is already registered.");
+                return HandlerResult.FailureResult(
+                    Error.Conflict("USER_EMAIL_EXISTS", $"User with email '{command.Email}' is already registered."));
             }
 
             var passwordHash = _passwordHasher.Hash(command.Password);
 
-            var user = UserAggregatorRoot.MapToAggregator(
+            var user = UserAggregateRoot.MapToAggregator(
                 command,
                 passwordHash,
                 Roles.Employee);
@@ -41,7 +42,8 @@ namespace IdentityManagement.Handler.Commands.Register
 
             if (!saved)
             {
-                return HandlerResult.FailureResult("User could not be saved to the database.");
+                return HandlerResult.FailureResult(
+                    Error.Failure("USER_SAVE_FAILED", "User could not be saved to the database."));
             }
 
             return HandlerResult.SuccessResult("Registration successful.");

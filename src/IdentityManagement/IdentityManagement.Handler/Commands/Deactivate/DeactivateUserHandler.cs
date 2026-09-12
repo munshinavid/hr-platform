@@ -6,16 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityManagement.Handler.Commands.Deactivate
 {
-    /// <summary>
-    /// Deactivates a user account so the user can no longer authenticate.
-    ///
-    /// Business rules:
-    ///   - Non-existent UserId → failure (safe "not found" message).
-    ///   - Already-inactive account → failure (idempotent guard — caller is informed
-    ///     but no state is changed, so the Orchestrator can decide whether to treat
-    ///     this as an error or a no-op during compensation).
-    ///   - Active account → IsActive set to false, UpdatedAt stamped, persisted.
-    /// </summary>
     public class DeactivateUserHandler : ICommandHandler<DeactivateUserCommand, HandlerResult>
     {
         private readonly IIdentityUserRepository _userRepository;
@@ -36,20 +26,19 @@ namespace IdentityManagement.Handler.Commands.Deactivate
             if (user == null)
             {
                 return HandlerResult.FailureResult(
-                    $"User with ID {command.UserId} was not found.");
+                    Error.NotFound("USER_NOT_FOUND", $"User with ID {command.UserId} was not found."));
             }
 
             var changed = user.Deactivate();
 
             if (!changed)
             {
-                // Already inactive — idempotent but inform the caller.
                 _logger.LogWarning(
                     "DeactivateUser: UserId={UserId} is already inactive. No change made.",
                     command.UserId);
 
                 return HandlerResult.FailureResult(
-                    $"User {command.UserId} is already inactive.");
+                    Error.Conflict("USER_ALREADY_INACTIVE", $"User {command.UserId} is already inactive."));
             }
 
             var saved = await _userRepository.UpdateAsync(user);
@@ -61,7 +50,7 @@ namespace IdentityManagement.Handler.Commands.Deactivate
                     command.UserId);
 
                 return HandlerResult.FailureResult(
-                    "Account could not be deactivated. Please try again.");
+                    Error.Failure("DEACTIVATE_USER_FAILED", "Account could not be deactivated. Please try again."));
             }
 
             _logger.LogInformation(

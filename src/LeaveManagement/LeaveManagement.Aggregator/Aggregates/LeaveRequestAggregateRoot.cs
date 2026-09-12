@@ -1,17 +1,15 @@
 using System;
 using LeaveManagement.Aggregator.Exceptions;
 
-namespace LeaveManagement.Aggregator.Entities
+namespace LeaveManagement.Aggregator.Aggregates
 {
-    public class LeaveRequest
+    public class LeaveRequestAggregateRoot
     {
         public int LeaveRequestId { get; set; }
-        
-        // Scalar reference to EmployeeManagement
         public int EmployeeId { get; set; }
         
         public int LeaveTypeId { get; set; }
-        public LeaveType? LeaveType { get; set; }
+        public LeaveTypeAggregateRoot? LeaveType { get; set; }
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -28,7 +26,7 @@ namespace LeaveManagement.Aggregator.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public static LeaveRequest Apply(int employeeId, int leaveTypeId, DateTime startDate, DateTime endDate, int totalDays, string reason)
+        public static LeaveRequestAggregateRoot Apply(int employeeId, int leaveTypeId, DateTime startDate, DateTime endDate, int totalDays, string reason)
         {
             if (totalDays <= 0)
                 throw new DomainException("Total days must be positive.");
@@ -36,7 +34,7 @@ namespace LeaveManagement.Aggregator.Entities
                 throw new DomainException("Start date cannot be after end date.");
 
             var now = DateTime.UtcNow;
-            return new LeaveRequest
+            return new LeaveRequestAggregateRoot
             {
                 EmployeeId = employeeId,
                 LeaveTypeId = leaveTypeId,
@@ -71,7 +69,7 @@ namespace LeaveManagement.Aggregator.Entities
 
             Status = "Rejected";
             RejectionReason = reason;
-            ApprovedByEmployeeId = rejectedByEmployeeId; // Reusing this column or add RejectedByEmployeeId? The requirement says ApprovedByEmployeeId, but maybe it should be ReviewedBy. I'll stick to the fields requested. Wait, the prompt requested ApprovedByEmployeeId. For rejection, the rejectedByEmployeeId can be mapped to ApprovedByEmployeeId, or we can just leave it. Let's map it there for audit. Actually, the prompt says "set ApprovedByEmployeeId" during approval. During rejection it just says "set RejectionReason, set ReviewedAt". I won't set ApprovedByEmployeeId for rejection unless explicitly requested, but I'll set ReviewedAt.
+            ApprovedByEmployeeId = rejectedByEmployeeId;       
             ReviewedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }

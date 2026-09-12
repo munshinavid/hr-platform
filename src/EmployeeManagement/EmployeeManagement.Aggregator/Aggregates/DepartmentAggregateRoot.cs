@@ -1,6 +1,6 @@
-namespace EmployeeManagement.Aggregator.Entities
+namespace EmployeeManagement.Aggregator.Aggregates
 {
-    public class DepartmentAggregatorRoot
+    public class DepartmentAggregateRoot
     {
         public int DepartmentId { get; set; }
 

@@ -1,12 +1,11 @@
-using EmployeeManagement.Aggregator.Entities;
-using EmployeeManagement.Aggregator.Exceptions;
-using EmployeeManagement.Aggregator.Mapping;
+﻿using EmployeeManagement.Aggregator.Aggregates;
 using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using EmployeeManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using Microsoft.Extensions.Logging;
+using EmployeeManagement.Aggregator.Exceptions;
 
 namespace EmployeeManagement.Handler.Commands.CreateEmployee
 {
@@ -14,50 +13,67 @@ namespace EmployeeManagement.Handler.Commands.CreateEmployee
         : ICommandHandler<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IDepartmentRepository _departmentRepository;
         private readonly ILogger<CreateEmployeeHandler> _logger;
 
         public CreateEmployeeHandler(
             IEmployeeRepository employeeRepository,
+            IDepartmentRepository departmentRepository,
             ILogger<CreateEmployeeHandler> logger)
         {
             _employeeRepository = employeeRepository;
+            _departmentRepository = departmentRepository;
             _logger = logger;
         }
 
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
             CreateEmployeeCommand command)
         {
+            //throw new Exception("This is a test exception to demonstrate error handling in the CreateEmployeeHandler.");
+            var department = await _departmentRepository.GetByIdAsync(command.DepartmentId);
+            if (department == null)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.NotFound("DEPARTMENT_NOT_FOUND", $"Department with ID {command.DepartmentId} does not exist."));
+            }
+
+            var emailExists = await _employeeRepository.EmailExistsAsync(command.Email);
+            if (emailExists)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
+            }
+
+            EmployeeAggregateRoot employee;
             try
             {
-                var employee = EmployeeAggregatorRoot.MapToAggregator(
+                employee = EmployeeAggregateRoot.MapToAggregator(
                     command,
                     command.UserId
                 );
-
-                await _employeeRepository.AddAsync(employee);
-
-                var createdEmployee =
-                    await _employeeRepository.GetByIdAsync(employee.EmployeeId);
-
-                var response =
-                    createdEmployee!.MapToResponse();
-
-                return HandlerResult<EmployeeResponse>.SuccessResult(
-                    response,
-                    "Employee created successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult<EmployeeResponse>.FailureResult(
-                    ex.Message);
+                    Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating employee.");
 
+            var saved = await _employeeRepository.AddAsync(employee);
+            if (!saved)
+            {
                 return HandlerResult<EmployeeResponse>.FailureResult(
-                    "Employee could not be saved to the database.");
+                    Error.Failure("EMPLOYEE_SAVE_FAILED", "Failed to save employee record to database."));
             }
+
+            var createdEmployee =
+                await _employeeRepository.GetByIdAsync(employee.EmployeeId);
+
+            var response =
+                createdEmployee!.MapToResponse();
+
+            return HandlerResult<EmployeeResponse>.SuccessResult(
+                response,
+                "Employee created successfully.");
         }
     }
 }

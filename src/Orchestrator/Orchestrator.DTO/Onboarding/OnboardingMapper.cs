@@ -1,16 +1,11 @@
 using EmployeeManagement.DTO.Command;
 using IdentityManagement.DTO.Command;
+using EmployeeManagement.DTO.Response;
 
 namespace Orchestrator.DTO.Onboarding
 {
-    public static class OnboardingCommandMapper
+    public static class OnboardingMapper
     {
-        /// <summary>
-        /// Maps the onboarding command to a RegisterUserCommand.
-        /// Name is intentionally excluded — IdentityManagement owns only
-        /// the credential (Email + Password). The HR profile name is owned
-        /// by EmployeeManagement and is passed via CreateEmployeeCommand below.
-        /// </summary>
         public static RegisterUserCommand ToRegisterUserCommand(CreateEmployeeOnboardingCommand command)
         {
             return new RegisterUserCommand
@@ -35,6 +30,17 @@ namespace Orchestrator.DTO.Onboarding
                 EmploymentType = command.EmploymentType,
                 JoiningDate    = command.JoiningDate,
                 Status         = command.Status
+            };
+        }
+
+        public static CreateEmployeeOnboardingResponse ToCreateEmployeeOnboardingResponse(int userId, EmployeeResponse employeeResponse)
+        {
+            return new CreateEmployeeOnboardingResponse
+            {
+                UserId     = userId,
+                EmployeeId = employeeResponse.EmployeeId,
+                Name       = employeeResponse.Name,
+                Email      = employeeResponse.Email
             };
         }
     }

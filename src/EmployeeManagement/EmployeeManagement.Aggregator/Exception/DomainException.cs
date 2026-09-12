@@ -1,6 +1,6 @@
 namespace EmployeeManagement.Aggregator.Exceptions;
 
-public class DomainException : Exception
+public class DomainException : System.Exception
 {
     public DomainException(string message)
         : base(message)

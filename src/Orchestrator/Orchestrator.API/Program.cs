@@ -1,12 +1,16 @@
 using HRPlatform.ServiceBus.Extensions;
 using HRPlatform.Shared.Extensions;
 using HRPlatform.Shared.Middleware;
+using Orchestrator.DTO.Onboarding;
 using Orchestrator.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Controllers 
 builder.Services.AddControllers();
+
+// ── FluentValidation
+builder.Services.AddFluentValidationConfiguration(typeof(CreateEmployeeOnboardingCommandValidator));
 
 // ── Swagger / OpenAPI 
 builder.Services.AddEndpointsApiExplorer();

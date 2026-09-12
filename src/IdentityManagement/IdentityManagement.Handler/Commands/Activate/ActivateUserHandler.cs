@@ -6,18 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityManagement.Handler.Commands.Activate
 {
-    /// <summary>
-    /// Re-activates a previously deactivated user account.
-    ///
-    /// Business rules:
-    ///   - Non-existent UserId → failure.
-    ///   - Already-active account → failure (idempotent guard).
-    ///   - Inactive account → IsActive set to true, UpdatedAt stamped, persisted.
-    ///
-    /// This is the compensation counterpart of DeactivateUserHandler.
-    /// Used by the Offboarding Orchestrator if Step 3 fails and Step 2 must be
-    /// rolled back (Phase D).
-    /// </summary>
     public class ActivateUserHandler : ICommandHandler<ActivateUserCommand, HandlerResult>
     {
         private readonly IIdentityUserRepository _userRepository;
@@ -38,7 +26,7 @@ namespace IdentityManagement.Handler.Commands.Activate
             if (user == null)
             {
                 return HandlerResult.FailureResult(
-                    $"User with ID {command.UserId} was not found.");
+                    Error.NotFound("USER_NOT_FOUND", $"User with ID {command.UserId} was not found."));
             }
 
             var changed = user.Activate();
@@ -50,7 +38,7 @@ namespace IdentityManagement.Handler.Commands.Activate
                     command.UserId);
 
                 return HandlerResult.FailureResult(
-                    $"User {command.UserId} is already active.");
+                    Error.Conflict("USER_ALREADY_ACTIVE", $"User {command.UserId} is already active."));
             }
 
             var saved = await _userRepository.UpdateAsync(user);
@@ -62,7 +50,7 @@ namespace IdentityManagement.Handler.Commands.Activate
                     command.UserId);
 
                 return HandlerResult.FailureResult(
-                    "Account could not be activated. Please try again.");
+                    Error.Failure("ACTIVATE_USER_FAILED", "Account could not be activated. Please try again."));
             }
 
             _logger.LogInformation(

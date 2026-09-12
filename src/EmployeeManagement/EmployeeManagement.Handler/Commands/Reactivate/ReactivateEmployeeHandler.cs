@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using EmployeeManagement.Aggregator.Exceptions;
 using EmployeeManagement.DTO.Command;
@@ -19,27 +19,25 @@ namespace EmployeeManagement.Handler.Commands.Reactivate
 
         public async Task<HandlerResult> HandleAsync(ReactivateEmployeeCommand command)
         {
+            var employee = await _repository.GetByIdAsync(command.EmployeeId);
+
+            if (employee == null)
+                return HandlerResult.FailureResult(
+                    Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
+
             try
             {
-                var employee = await _repository.GetByIdAsync(command.EmployeeId);
-
-                if (employee == null)
-                    return HandlerResult.FailureResult("Employee not found.");
-
                 employee.Reactivate();
-
-                await _repository.UpdateAsync(employee);
-
-                return HandlerResult.SuccessResult("Employee reactivated successfully.");
             }
             catch (DomainException ex)
             {
-                return HandlerResult.FailureResult(ex.Message);
+                return HandlerResult.FailureResult(
+                    Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
-            catch (Exception ex)
-            {
-                return HandlerResult.FailureResult($"An error occurred while reactivating the employee: {ex.Message}");
-            }
+
+            await _repository.UpdateAsync(employee);
+
+            return HandlerResult.SuccessResult("Employee reactivated successfully.");
         }
     }
 }

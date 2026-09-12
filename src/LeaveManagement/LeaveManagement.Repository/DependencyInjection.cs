@@ -19,8 +19,8 @@ namespace LeaveManagement.Repository
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ILeaveBalanceRepository, LeaveBalanceRepository>();
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+            services.AddScoped<ILeaveUnitOfWork, LeaveUnitOfWork>();
             
-            // Register DbContext as the unit of work / context provider if needed, or rely on scoped dependencies.
             return services;
         }
     }

@@ -3,13 +3,14 @@ using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
 using Microsoft.AspNetCore.Mvc;
 using Orchestrator.DTO.EmployeeDashboard;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Orchestrator.API.Controllers
 {
     [Route("api/orchestrator/employees")]
     [ApiController]
-    //[Authorize(Policy = "RequireHRRole")] // 
+    //[Authorize(Policy = "RequireHRRole")]
     public class EmployeeDashboardController : ControllerBase
     {
         private readonly IDispatcher _dispatcher;
@@ -28,20 +29,16 @@ namespace Orchestrator.API.Controllers
             var result = await _dispatcher
                 .SendQuery<GetEmployeeDashboardQuery, HandlerResult<EmployeeDashboardResponse>>(query);
 
-            if (!result.Success)
+            if (result.Success)
             {
-                if (result.Message != null && result.Message.Contains("not found", System.StringComparison.OrdinalIgnoreCase))
+                return Ok(new
                 {
-                    return NotFound(new ApiErrorResponse { Message = result.Message });
-                }
-                return BadRequest(new ApiErrorResponse { Message = result.Message ?? "Failed to retrieve Employee Dashboard profile." });
+                    message = result.Message,
+                    data = result.Data
+                });
             }
 
-            return Ok(new
-            {
-                message = result.Message,
-                data = result.Data
-            });
+            return ApiResultExtensions.MapErrorToActionResult(result.Error);
         }
     }
 }

@@ -1,4 +1,4 @@
-using LeaveManagement.Aggregator.Entities;
+using LeaveManagement.Aggregator.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagement.Repository.Data
@@ -9,58 +9,58 @@ namespace LeaveManagement.Repository.Data
         {
         }
 
-        public DbSet<LeaveType> LeaveTypes { get; set; }
-        public DbSet<LeaveBalance> LeaveBalances { get; set; }
-        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<LeaveTypeAggregateRoot> LeaveTypes { get; set; }
+        public DbSet<LeaveBalanceAggregateRoot> LeaveBalances { get; set; }
+        public DbSet<LeaveRequestAggregateRoot> LeaveRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // LeaveType configuration
-            modelBuilder.Entity<LeaveType>()
+            modelBuilder.Entity<LeaveTypeAggregateRoot>()
                 .HasKey(lt => lt.LeaveTypeId);
             
             // Seed base leave types
-            modelBuilder.Entity<LeaveType>().HasData(
-                new LeaveType { LeaveTypeId = 1, Name = "Annual Leave", Code = "ANNUAL", Description = "Standard annual leave", DefaultDaysPerYear = 20, IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new LeaveType { LeaveTypeId = 2, Name = "Sick Leave", Code = "SICK", Description = "Standard sick leave", DefaultDaysPerYear = 10, IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new LeaveType { LeaveTypeId = 3, Name = "Casual Leave", Code = "CASUAL", Description = "Casual / personal leave", DefaultDaysPerYear = 5, IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
+            modelBuilder.Entity<LeaveTypeAggregateRoot>().HasData(
+                new LeaveTypeAggregateRoot { LeaveTypeId = 1, Name = "Annual Leave", Code = "ANNUAL", Description = "Standard annual leave", DefaultDaysPerYear = 20, IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new LeaveTypeAggregateRoot { LeaveTypeId = 2, Name = "Sick Leave", Code = "SICK", Description = "Standard sick leave", DefaultDaysPerYear = 10, IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new LeaveTypeAggregateRoot { LeaveTypeId = 3, Name = "Casual Leave", Code = "CASUAL", Description = "Casual / personal leave", DefaultDaysPerYear = 5, IsActive = true, CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
             );
 
             // LeaveBalance configuration
-            modelBuilder.Entity<LeaveBalance>()
+            modelBuilder.Entity<LeaveBalanceAggregateRoot>()
                 .HasKey(lb => lb.LeaveBalanceId);
 
-            modelBuilder.Entity<LeaveBalance>()
+            modelBuilder.Entity<LeaveBalanceAggregateRoot>()
                 .HasIndex(lb => new { lb.EmployeeId, lb.LeaveTypeId, lb.Year })
                 .IsUnique();
 
-            modelBuilder.Entity<LeaveBalance>()
+            modelBuilder.Entity<LeaveBalanceAggregateRoot>()
                 .Property(lb => lb.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken();
 
-            modelBuilder.Entity<LeaveBalance>()
+            modelBuilder.Entity<LeaveBalanceAggregateRoot>()
                 .HasOne(lb => lb.LeaveType)
                 .WithMany()
                 .HasForeignKey(lb => lb.LeaveTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // LeaveRequest configuration
-            modelBuilder.Entity<LeaveRequest>()
+            modelBuilder.Entity<LeaveRequestAggregateRoot>()
                 .HasKey(lr => lr.LeaveRequestId);
 
-            modelBuilder.Entity<LeaveRequest>()
+            modelBuilder.Entity<LeaveRequestAggregateRoot>()
                 .HasOne(lr => lr.LeaveType)
                 .WithMany()
                 .HasForeignKey(lr => lr.LeaveTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Seeding LeaveBalances for existing seeded employees (Year 2026)
-            modelBuilder.Entity<LeaveBalance>().HasData(
+            modelBuilder.Entity<LeaveBalanceAggregateRoot>().HasData(
                 // Rahim Ahmed (EmployeeId = 1)
-                new LeaveBalance
+                new LeaveBalanceAggregateRoot
                 {
                     LeaveBalanceId = 1,
                     EmployeeId = 1,
@@ -72,7 +72,7 @@ namespace LeaveManagement.Repository.Data
                     CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 },
-                new LeaveBalance
+                new LeaveBalanceAggregateRoot
                 {
                     LeaveBalanceId = 2,
                     EmployeeId = 1,
@@ -84,7 +84,7 @@ namespace LeaveManagement.Repository.Data
                     CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 },
-                new LeaveBalance
+                new LeaveBalanceAggregateRoot
                 {
                     LeaveBalanceId = 3,
                     EmployeeId = 1,
@@ -98,7 +98,7 @@ namespace LeaveManagement.Repository.Data
                 },
 
                 // Karim Hasan (EmployeeId = 2)
-                new LeaveBalance
+                new LeaveBalanceAggregateRoot
                 {
                     LeaveBalanceId = 4,
                     EmployeeId = 2,
@@ -112,7 +112,7 @@ namespace LeaveManagement.Repository.Data
                 },
 
                 // Sadia Akter (EmployeeId = 5 - HR Manager)
-                new LeaveBalance
+                new LeaveBalanceAggregateRoot
                 {
                     LeaveBalanceId = 5,
                     EmployeeId = 5,
@@ -127,7 +127,7 @@ namespace LeaveManagement.Repository.Data
             );
 
 
-            modelBuilder.Entity<LeaveRequest>().HasData(
+            modelBuilder.Entity<LeaveRequestAggregateRoot>().HasData(
                 new
                 {
                     LeaveRequestId = 1,

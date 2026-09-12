@@ -1,18 +1,18 @@
-using IdentityManagement.Aggregator.Entities;
+using IdentityManagement.Aggregator.Aggregates;
 using IdentityManagement.DTO.Command;
 
 namespace IdentityManagement.Aggregator.Mapping
 {
     public static class UserMapper
     {
-        public static UserAggregatorRoot MapToAggregator(
+        public static UserAggregateRoot MapToAggregator(
             RegisterUserCommand command,
             string passwordHash,
             string role)
         {
             var now = DateTime.UtcNow;
 
-            return new UserAggregatorRoot
+            return new UserAggregateRoot
             {
                 Email        = command.Email,
                 PasswordHash = passwordHash,

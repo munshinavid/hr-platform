@@ -1,10 +1,10 @@
-using EmployeeManagement.Aggregator.Exceptions;
-using EmployeeManagement.DTO.Command;
+﻿using EmployeeManagement.DTO.Command;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using EmployeeManagement.Repository.Interfaces;
 using HRPlatform.Shared.Abstractions;
 using Microsoft.Extensions.Logging;
+using EmployeeManagement.Aggregator.Exceptions;
 
 namespace EmployeeManagement.Handler.Commands.UpdateEmployee
 {
@@ -25,55 +25,46 @@ namespace EmployeeManagement.Handler.Commands.UpdateEmployee
         public async Task<HandlerResult<EmployeeResponse>> HandleAsync(
             UpdateEmployeeCommand command)
         {
+            var employee =
+                await _employeeRepository.GetByIdAsync(command.EmployeeId);
+
+            if (employee == null)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.NotFound("EMPLOYEE_NOT_FOUND", $"Employee with ID {command.EmployeeId} not found."));
+            }
+
+            var emailExists =
+                await _employeeRepository.EmailExistsAsync(
+                    command.Email,
+                    employee.EmployeeId);
+
+            if (emailExists)
+            {
+                return HandlerResult<EmployeeResponse>.FailureResult(
+                    Error.Conflict("EMPLOYEE_EMAIL_EXISTS", $"An employee with email '{command.Email}' already exists."));
+            }
+
             try
             {
-                var employee =
-                    await _employeeRepository.GetByIdAsync(command.EmployeeId);
-
-                if (employee == null)
-                {
-                    return HandlerResult<EmployeeResponse>.FailureResult(
-                        "Employee not found.");
-                }
-
-                // Check Employee.Email uniqueness in the EmployeeManagement context.
-                // User.Email uniqueness in the Authentication context is not EM's concern.
-                var emailExists =
-                    await _employeeRepository.EmailExistsAsync(
-                        command.Email,
-                        employee.EmployeeId);
-
-                if (emailExists)
-                {
-                    return HandlerResult<EmployeeResponse>.FailureResult(
-                        "Email already exists.");
-                }
-
                 employee.MapToAggregator(command);
-
-                await _employeeRepository.UpdateAsync(employee);
-
-                var updatedEmployee =
-                    await _employeeRepository.GetByIdAsync(command.EmployeeId);
-
-                var response = updatedEmployee!.MapToResponse();
-
-                return HandlerResult<EmployeeResponse>.SuccessResult(
-                    response,
-                    "Employee updated successfully.");
             }
             catch (DomainException ex)
             {
                 return HandlerResult<EmployeeResponse>.FailureResult(
-                    ex.Message);
+                    Error.Validation("DOMAIN_RULE_VIOLATION", ex.Message));
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating employee.");
 
-                return HandlerResult<EmployeeResponse>.FailureResult(
-                    "Employee could not be updated.");
-            }
+            await _employeeRepository.UpdateAsync(employee);
+
+            var updatedEmployee =
+                await _employeeRepository.GetByIdAsync(command.EmployeeId);
+
+            var response = updatedEmployee!.MapToResponse();
+
+            return HandlerResult<EmployeeResponse>.SuccessResult(
+                response,
+                "Employee updated successfully.");
         }
     }
-}
+}

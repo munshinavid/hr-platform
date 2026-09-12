@@ -1,7 +1,7 @@
 namespace HRPlatform.Shared.Abstractions
 {
-    public interface IQueryHandler<TQuery, TResult>
+    public interface IQueryHandler<TQuery, TResponse>
     {
-        Task<TResult> HandleAsync(TQuery query);
+        Task<TResponse> HandleAsync(TQuery query);
     }
 }

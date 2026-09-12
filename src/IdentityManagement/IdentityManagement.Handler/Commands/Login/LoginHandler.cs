@@ -29,22 +29,22 @@ namespace IdentityManagement.Handler.Commands.Login
 
             if (user == null)
             {
-                return HandlerResult<IdentityResponse>.FailureResult("Invalid email or password.");
+                return HandlerResult<IdentityResponse>.FailureResult(
+                    Error.Unauthorized("INVALID_CREDENTIALS", "Invalid email or password."));
             }
 
             var isPasswordValid = _passwordHasher.Verify(command.Password, user.PasswordHash);
 
             if (!isPasswordValid)
             {
-                return HandlerResult<IdentityResponse>.FailureResult("Invalid email or password.");
+                return HandlerResult<IdentityResponse>.FailureResult(
+                    Error.Unauthorized("INVALID_CREDENTIALS", "Invalid email or password."));
             }
 
-            // Account lifecycle check — performed AFTER password verification to avoid
-            // leaking whether the email exists. A deactivated account returns the same
-            // generic error so callers cannot distinguish inactive from wrong-password.
             if (!user.IsActive)
             {
-                return HandlerResult<IdentityResponse>.FailureResult("Invalid email or password.");
+                return HandlerResult<IdentityResponse>.FailureResult(
+                    Error.Unauthorized("INVALID_CREDENTIALS", "Invalid email or password."));
             }
 
             var token = _jwtTokenService.GenerateToken(user);

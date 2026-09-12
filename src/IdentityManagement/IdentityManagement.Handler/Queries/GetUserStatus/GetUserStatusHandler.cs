@@ -30,7 +30,7 @@ namespace IdentityManagement.Handler.Queries.GetUserStatus
             if (user == null)
             {
                 return HandlerResult<UserStatusResponse>.FailureResult(
-                    $"User with ID {query.UserId} was not found.");
+                    Error.NotFound("USER_NOT_FOUND", $"User with ID {query.UserId} was not found."));
             }
 
             return HandlerResult<UserStatusResponse>.SuccessResult(

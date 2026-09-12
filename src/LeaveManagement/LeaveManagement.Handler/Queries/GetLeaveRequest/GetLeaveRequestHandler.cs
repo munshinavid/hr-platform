@@ -22,7 +22,8 @@ namespace LeaveManagement.Handler.Queries.GetLeaveRequest
             var request = await _requestRepository.GetByIdAsync(query.LeaveRequestId);
             if (request == null)
             {
-                return HandlerResult<LeaveRequestResponse>.FailureResult("Leave request not found.");
+                return HandlerResult<LeaveRequestResponse>.FailureResult(
+                    Error.NotFound("LEAVE_REQUEST_NOT_FOUND", "Leave request not found."));
             }
 
             var response = LeaveMapper.MapToResponse(request);

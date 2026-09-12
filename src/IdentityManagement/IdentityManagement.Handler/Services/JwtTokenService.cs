@@ -1,4 +1,4 @@
-using IdentityManagement.Aggregator.Entities;
+using IdentityManagement.Aggregator.Aggregates;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,7 +16,7 @@ namespace IdentityManagement.Handler.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(UserAggregatorRoot user)
+        public string GenerateToken(UserAggregateRoot user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
 

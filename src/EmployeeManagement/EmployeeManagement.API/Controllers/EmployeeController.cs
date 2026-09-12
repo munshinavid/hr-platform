@@ -3,6 +3,7 @@ using EmployeeManagement.DTO.Query;
 using EmployeeManagement.DTO.Response;
 using HRPlatform.Shared.Common;
 using HRPlatform.Shared.Dispatcher;
+using HRPlatform.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,25 +22,16 @@ namespace EmployeeManagement.API.Controllers
             _dispatcher = dispatcher;
         }
 
-        // POST: api/Employee
         [HttpPost]
         //[Authorize(Roles = "HR")]
         public async Task<IActionResult> Create([FromBody] CreateEmployeeCommand command)
         {
             var result = await _dispatcher.SendCommand<CreateEmployeeCommand, HandlerResult<EmployeeResponse>>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Bad request"
-                });
-            }
-
-            return Ok(new
+            return result.ToActionResult(data => new
             {
                 message = result.Message,
-                employee = result.Data
+                employee = data
             });
         }
 
@@ -54,18 +46,10 @@ namespace EmployeeManagement.API.Controllers
                 UpdateEmployeeCommand,
                 HandlerResult<EmployeeResponse>>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Bad request"
-                });
-            }
-
-            return Ok(new
+            return result.ToActionResult(data => new
             {
                 message = result.Message,
-                employee = result.Data
+                employee = data
             });
         }
 
@@ -76,18 +60,8 @@ namespace EmployeeManagement.API.Controllers
             var result = await _dispatcher.SendQuery<
                 GetEmployeesQuery,
                 HandlerResult<PagedResponse<EmployeeResponse>>>(query);
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Bad request"
-                });
-            }
-            return Ok(new
-            {
-                message = result.Message,
-                employees = result.Data
-            });
+
+            return result.ToActionResult();
         }
 
         [HttpGet("{employeeId}")]
@@ -99,18 +73,10 @@ namespace EmployeeManagement.API.Controllers
             };
             var result = await _dispatcher.SendQuery<GetEmployeeQuery, HandlerResult<EmployeeResponse>>(query);
 
-            if (!result.Success)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Employee not found"
-                });
-            }
-
-            return Ok(new
+            return result.ToActionResult(data => new
             {
                 message = result.Message,
-                employee = result.Data
+                employee = data
             });
         }
 
@@ -120,15 +86,7 @@ namespace EmployeeManagement.API.Controllers
             var command = new TerminateEmployeeCommand { EmployeeId = employeeId };
             var result = await _dispatcher.SendCommand<TerminateEmployeeCommand, HandlerResult>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Termination failed"
-                });
-            }
-
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
 
         [HttpPut("{employeeId}/reporting-manager")]
@@ -139,15 +97,7 @@ namespace EmployeeManagement.API.Controllers
             command.EmployeeId = employeeId;
             var result = await _dispatcher.SendCommand<AssignReportingManagerCommand, HandlerResult>(command);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = result.Message ?? "Failed to assign reporting manager"
-                });
-            }
-
-            return Ok(new { message = result.Message });
+            return result.ToActionResult();
         }
     }
 }

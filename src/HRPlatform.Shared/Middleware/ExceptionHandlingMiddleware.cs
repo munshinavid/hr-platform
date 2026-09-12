@@ -1,6 +1,7 @@
-using HRPlatform.Shared.Common;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 
@@ -25,23 +26,30 @@ namespace HRPlatform.Shared.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred.");
+                _logger.LogError(ex, "An unhandled exception occurred during request execution.");
                 await HandleExceptionAsync(context, ex);
             }
         }
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType = "application/problem+json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = new ApiErrorResponse
+            var traceId = Activity.Current?.Id ?? context.TraceIdentifier;
+
+            var problemDetails = new ProblemDetails
             {
-                Message = "An internal server error occurred.",
-                Details = exception.Message // For debugging purposes
+                Title = "An internal server error occurred.",
+                Status = (int)HttpStatusCode.InternalServerError,
+                Detail = exception.Message,
+                Instance = context.Request.Path
             };
 
-            var json = JsonSerializer.Serialize(response, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            problemDetails.Extensions["errorCode"] = "INTERNAL_SERVER_ERROR";
+            problemDetails.Extensions["traceId"] = traceId;
+
+            var json = JsonSerializer.Serialize(problemDetails, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return context.Response.WriteAsync(json);
         }
     }

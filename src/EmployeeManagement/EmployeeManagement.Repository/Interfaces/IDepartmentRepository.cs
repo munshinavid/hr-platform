@@ -1,8 +1,8 @@
-using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Aggregates;
 
 namespace EmployeeManagement.Repository.Interfaces
 {
-    public interface IDepartmentRepository : IGenericRepository<DepartmentAggregatorRoot>
+    public interface IDepartmentRepository : IGenericRepository<DepartmentAggregateRoot>
     {
     }
 }

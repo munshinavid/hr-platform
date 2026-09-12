@@ -13,22 +13,22 @@ namespace HRPlatform.ServiceBus.Implementations
             _serviceProvider = serviceProvider;
         }
 
-        public Task<TResult> SendCommandAsync<TCommand, TResult>(TCommand command)
+        public Task<TResponse> SendCommandAsync<TCommand, TResponse>(TCommand command)
         {
-            var handler = _serviceProvider.GetService<ICommandHandler<TCommand, TResult>>()
+            var handler = _serviceProvider.GetService<ICommandHandler<TCommand, TResponse>>()
                 ?? throw new InvalidOperationException(
                     $"No handler registered for command '{typeof(TCommand).Name}'. " +
-                    $"Ensure an ICommandHandler<{typeof(TCommand).Name}, {typeof(TResult).Name}> is registered in DI.");
+                    $"Ensure an ICommandHandler<{typeof(TCommand).Name}, {typeof(TResponse).Name}> is registered in DI.");
 
             return handler.HandleAsync(command);
         }
 
-        public Task<TResult> SendQueryAsync<TQuery, TResult>(TQuery query)
+        public Task<TResponse> SendQueryAsync<TQuery, TResponse>(TQuery query)
         {
-            var handler = _serviceProvider.GetService<IQueryHandler<TQuery, TResult>>()
+            var handler = _serviceProvider.GetService<IQueryHandler<TQuery, TResponse>>()
                 ?? throw new InvalidOperationException(
                     $"No handler registered for query '{typeof(TQuery).Name}'. " +
-                    $"Ensure an IQueryHandler<{typeof(TQuery).Name}, {typeof(TResult).Name}> is registered in DI.");
+                    $"Ensure an IQueryHandler<{typeof(TQuery).Name}, {typeof(TResponse).Name}> is registered in DI.");
 
             return handler.HandleAsync(query);
         }

@@ -1,10 +1,10 @@
-using IdentityManagement.Aggregator.Entities;
+using IdentityManagement.Aggregator.Aggregates;
 
 namespace IdentityManagement.Handler.Services
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(UserAggregatorRoot user);
+        string GenerateToken(UserAggregateRoot user);
 
         int GetExpirationMinutes();
     }

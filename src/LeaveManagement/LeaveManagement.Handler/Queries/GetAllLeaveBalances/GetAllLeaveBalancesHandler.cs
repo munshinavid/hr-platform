@@ -22,33 +22,26 @@ namespace LeaveManagement.Handler.Queries.GetAllLeaveBalances
 
         public async Task<HandlerResult<IEnumerable<LeaveBalanceResponse>>> HandleAsync(GetAllLeaveBalancesQuery query)
         {
-            try
-            {
-                var balances = await _dbContext.LeaveBalances
-                    .Include(b => b.LeaveType)
-                    .Where(b => b.EmployeeId == query.EmployeeId && b.Year == query.Year)
-                    .Select(b => new LeaveBalanceResponse
-                    {
-                        LeaveBalanceId = b.LeaveBalanceId,
-                        EmployeeId = b.EmployeeId,
-                        LeaveTypeId = b.LeaveTypeId,
-                        LeaveTypeName = b.LeaveType != null ? b.LeaveType.Name : string.Empty,
-                        Year = b.Year,
-                        TotalDays = b.TotalDays,
-                        UsedDays = b.UsedDays,
-                        HeldDays = b.HeldDays,
-                        AvailableDays = b.TotalDays - b.UsedDays - b.HeldDays,
-                        CreatedAt = b.CreatedAt,
-                        UpdatedAt = b.UpdatedAt
-                    })
-                    .ToListAsync();
+            var balances = await _dbContext.LeaveBalances
+                .Include(b => b.LeaveType)
+                .Where(b => b.EmployeeId == query.EmployeeId && b.Year == query.Year)
+                .Select(b => new LeaveBalanceResponse
+                {
+                    LeaveBalanceId = b.LeaveBalanceId,
+                    EmployeeId = b.EmployeeId,
+                    LeaveTypeId = b.LeaveTypeId,
+                    LeaveTypeName = b.LeaveType != null ? b.LeaveType.Name : string.Empty,
+                    Year = b.Year,
+                    TotalDays = b.TotalDays,
+                    UsedDays = b.UsedDays,
+                    HeldDays = b.HeldDays,
+                    AvailableDays = b.TotalDays - b.UsedDays - b.HeldDays,
+                    CreatedAt = b.CreatedAt,
+                    UpdatedAt = b.UpdatedAt
+                })
+                .ToListAsync();
 
-                return HandlerResult<IEnumerable<LeaveBalanceResponse>>.SuccessResult(balances);
-            }
-            catch (Exception ex)
-            {
-                return HandlerResult<IEnumerable<LeaveBalanceResponse>>.FailureResult($"An error occurred while fetching leave balances: {ex.Message}");
-            }
+            return HandlerResult<IEnumerable<LeaveBalanceResponse>>.SuccessResult(balances);
         }
     }
 }

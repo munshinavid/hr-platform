@@ -1,15 +1,15 @@
-using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Aggregates;
 using EmployeeManagement.DTO.Command;
 
 namespace EmployeeManagement.Aggregator.Mapping
 {
     public static class EmployeeMapper
     {
-        public static EmployeeAggregatorRoot MapToAggregator(
+        public static EmployeeAggregateRoot MapToAggregator(
             CreateEmployeeCommand command,
             int userId)
         {
-            return new EmployeeAggregatorRoot
+            return new EmployeeAggregateRoot
             {
                 UserId = userId,
                 Name = command.Name,
@@ -28,7 +28,7 @@ namespace EmployeeManagement.Aggregator.Mapping
         }
 
         public static void MapToAggregator(
-            EmployeeAggregatorRoot employee,
+            EmployeeAggregateRoot employee,
             UpdateEmployeeCommand command)
         {
             employee.Name = command.Name;
@@ -44,4 +44,4 @@ namespace EmployeeManagement.Aggregator.Mapping
             employee.UpdatedAt = DateTime.UtcNow;
         }
     }
-}
+}

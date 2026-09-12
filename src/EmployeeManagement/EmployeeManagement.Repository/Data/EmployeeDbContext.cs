@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using EmployeeManagement.Aggregator.Entities;
+using EmployeeManagement.Aggregator.Aggregates;
 
 namespace EmployeeManagement.Repository.Data
 {
@@ -10,40 +10,39 @@ namespace EmployeeManagement.Repository.Data
         {
         }
 
-        public DbSet<EmployeeAggregatorRoot> Employees { get; set; }
-        public DbSet<DepartmentAggregatorRoot> Departments { get; set; }
+        public DbSet<EmployeeAggregateRoot> Employees { get; set; }
+        public DbSet<DepartmentAggregateRoot> Departments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Primary Keys
-            modelBuilder.Entity<EmployeeAggregatorRoot>()
+            modelBuilder.Entity<EmployeeAggregateRoot>()
                 .HasKey(e => e.EmployeeId);
 
-            modelBuilder.Entity<DepartmentAggregatorRoot>()
+            modelBuilder.Entity<DepartmentAggregateRoot>()
                 .HasKey(d => d.DepartmentId);
 
             // Existing database table names
-            modelBuilder.Entity<EmployeeAggregatorRoot>()
+            modelBuilder.Entity<EmployeeAggregateRoot>()
                 .ToTable("Employees");
 
-            modelBuilder.Entity<DepartmentAggregatorRoot>()
+            modelBuilder.Entity<DepartmentAggregateRoot>()
                 .ToTable("Departments");
 
             // Employee salary
-            modelBuilder.Entity<EmployeeAggregatorRoot>()
+            modelBuilder.Entity<EmployeeAggregateRoot>()
                 .Property(e => e.Salary)
                 .HasPrecision(18, 2);
 
-            // UserId is a plain scalar column — logical reference to the Identity User.
-            // No EF navigation property; the FK constraint at DB level is preserved.
-            modelBuilder.Entity<EmployeeAggregatorRoot>()
+            // logical reference to the Identity User.
+            modelBuilder.Entity<EmployeeAggregateRoot>()
                 .Property(e => e.UserId)
                 .IsRequired();
 
             // Self-referencing reporting manager
-            modelBuilder.Entity<EmployeeAggregatorRoot>()
+            modelBuilder.Entity<EmployeeAggregateRoot>()
                 .HasOne(e => e.ReportingManager)
                 .WithMany()
                 .HasForeignKey(e => e.ReportingManagerId)
@@ -51,25 +50,25 @@ namespace EmployeeManagement.Repository.Data
 
 
             // Seed Department
-            modelBuilder.Entity<DepartmentAggregatorRoot>().HasData(
-                new DepartmentAggregatorRoot
+            modelBuilder.Entity<DepartmentAggregateRoot>().HasData(
+                new DepartmentAggregateRoot
                 {
                     DepartmentId = 1,
                     DepartmentName = "IT"
                 },
-                new DepartmentAggregatorRoot
+                new DepartmentAggregateRoot
                 {
                     DepartmentId = 2,
                     DepartmentName = "HR"
                 },
-                new DepartmentAggregatorRoot
+                new DepartmentAggregateRoot
                 {
                     DepartmentId = 3,
                     DepartmentName = "Finance"
                 }
             );
 
-            modelBuilder.Entity<EmployeeAggregatorRoot>().HasData(
+            modelBuilder.Entity<EmployeeAggregateRoot>().HasData(
                 new
                 {
                     EmployeeId = 1,

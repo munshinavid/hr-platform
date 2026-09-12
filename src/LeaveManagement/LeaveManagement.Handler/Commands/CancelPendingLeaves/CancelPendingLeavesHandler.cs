@@ -1,76 +1,99 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using HRPlatform.Shared.Abstractions;
 using HRPlatform.Shared.Common;
+using HRPlatform.Shared.Exceptions;
 using LeaveManagement.DTO.Command;
 using LeaveManagement.DTO.Response;
-using LeaveManagement.Repository.Data;
-using Microsoft.EntityFrameworkCore;
+using LeaveManagement.Repository.Interfaces;
+using LeaveManagement.Aggregator.Exceptions;
+using LeaveManagement.Aggregator.Aggregates;
 
 namespace LeaveManagement.Handler.Commands.CancelPendingLeaves
 {
     public class CancelPendingLeavesHandler : ICommandHandler<CancelPendingLeavesCommand, HandlerResult<CancelPendingLeavesResponse>>
     {
-        private readonly LeaveDbContext _dbContext;
+        private readonly ILeaveRequestRepository _requestRepository;
+        private readonly ILeaveBalanceRepository _balanceRepository;
+        private readonly ILeaveUnitOfWork _unitOfWork;
 
-        public CancelPendingLeavesHandler(LeaveDbContext dbContext)
+        public CancelPendingLeavesHandler(
+            ILeaveRequestRepository requestRepository,
+            ILeaveBalanceRepository balanceRepository,
+            ILeaveUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _requestRepository = requestRepository;
+            _balanceRepository = balanceRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<HandlerResult<CancelPendingLeavesResponse>> HandleAsync(CancelPendingLeavesCommand command)
         {
-            try
+            // Get all pending requests for the employee
+            var pagedResult = await _requestRepository.GetPagedAsync(command.EmployeeId, null, "Pending", 1, int.MaxValue);
+            var pendingRequests = pagedResult.Requests;
+
+            if (!pendingRequests.Any())
             {
-                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+                return HandlerResult<CancelPendingLeavesResponse>.SuccessResult(
+                    new CancelPendingLeavesResponse { CancelledCount = 0 }, 
+                    "No pending leave requests found."
+                );
+            }
 
-                // Get all pending requests for the employee
-                var pendingRequests = await _dbContext.LeaveRequests
-                    .Where(r => r.EmployeeId == command.EmployeeId && r.Status == "Pending")
-                    .ToListAsync();
-
-                if (!pendingRequests.Any())
+            //fetch balances first to apply domain logic
+            var balanceDict = new Dictionary<int, LeaveBalanceAggregateRoot>();
+            foreach (var request in pendingRequests)
+            {
+                int year = request.StartDate.Year;
+                var balance = await _balanceRepository.GetByEmployeeAndTypeAsync(request.EmployeeId, request.LeaveTypeId, year);
+                if (balance != null)
                 {
-                    return HandlerResult<CancelPendingLeavesResponse>.SuccessResult(
-                        new CancelPendingLeavesResponse { CancelledCount = 0 }, 
-                        "No pending leave requests found."
-                    );
+                    balanceDict[request.LeaveRequestId] = balance;
                 }
+            }
 
-                foreach (var request in pendingRequests)
+            foreach (var request in pendingRequests)
+            {
+                if (!balanceDict.TryGetValue(request.LeaveRequestId, out var balance))
+                    continue;
+
+                try
                 {
-                    // Find the corresponding balance
-                    int year = request.StartDate.Year;
-                    var balance = await _dbContext.LeaveBalances
-                        .FirstOrDefaultAsync(b => b.EmployeeId == request.EmployeeId && b.LeaveTypeId == request.LeaveTypeId && b.Year == year);
-
-                    if (balance == null)
-                        continue;
-
                     // Release the held days
                     balance.ReleaseHold(request.TotalDays);
                     
                     // Cancel the request
                     request.Cancel();
                 }
-
-                await _dbContext.SaveChangesAsync();
-                await transaction.CommitAsync();
-
-                return HandlerResult<CancelPendingLeavesResponse>.SuccessResult(
-                    new CancelPendingLeavesResponse { CancelledCount = pendingRequests.Count },
-                    $"Successfully cancelled {pendingRequests.Count} pending leave requests."
-                );
+                catch (DomainException ex)
+                {
+                    return HandlerResult<CancelPendingLeavesResponse>.FailureResult(ex.Message);
+                }
             }
-            catch (DbUpdateConcurrencyException)
+
+            try
+            {
+                await _unitOfWork.ExecuteInTransactionAsync(async () =>
+                {
+                    foreach (var request in pendingRequests)
+                    {
+                        if (balanceDict.TryGetValue(request.LeaveRequestId, out var balance))
+                        {
+                            await _requestRepository.UpdateAsync(request);
+                            await _balanceRepository.UpdateAsync(balance);
+                        }
+                    }
+                });
+            }
+            catch (ConcurrencyException)
             {
                 return HandlerResult<CancelPendingLeavesResponse>.FailureResult("A concurrency error occurred while updating the leave balances. Please try again.");
             }
-            catch (Exception ex)
-            {
-                return HandlerResult<CancelPendingLeavesResponse>.FailureResult($"An error occurred: {ex.Message}");
-            }
+
+            return HandlerResult<CancelPendingLeavesResponse>.SuccessResult(
+                new CancelPendingLeavesResponse { CancelledCount = pendingRequests.Count },
+                $"Successfully cancelled {pendingRequests.Count} pending leave requests."
+            );
         }
     }
 }
+

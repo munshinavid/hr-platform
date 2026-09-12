@@ -19,7 +19,8 @@ namespace IdentityManagement.Handler.Commands.Delete
             var result = await _userRepository.DeleteAsync(command.UserId);
             if (!result)
             {
-                return HandlerResult.FailureResult("User not found or could not be deleted.");
+                return HandlerResult.FailureResult(
+                    Error.Failure("USER_DELETE_FAILED", "User not found or could not be deleted."));
             }
 
             return HandlerResult.SuccessResult("User deleted successfully.");

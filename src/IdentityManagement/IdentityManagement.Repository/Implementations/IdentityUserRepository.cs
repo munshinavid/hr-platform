@@ -1,4 +1,4 @@
-using IdentityManagement.Aggregator.Entities;
+using IdentityManagement.Aggregator.Aggregates;
 using IdentityManagement.Repository.Data;
 using IdentityManagement.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +14,12 @@ namespace IdentityManagement.Repository.Implementations
             _context = context;
         }
 
-        public async Task<UserAggregatorRoot?> GetByIdAsync(int userId)
+        public async Task<UserAggregateRoot?> GetByIdAsync(int userId)
         {
             return await _context.Users.FindAsync(userId);
         }
 
-        public async Task<UserAggregatorRoot?> GetByEmailAsync(string email)
+        public async Task<UserAggregateRoot?> GetByEmailAsync(string email)
         {
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
@@ -31,13 +31,13 @@ namespace IdentityManagement.Repository.Implementations
                 .AnyAsync(u => u.Email == email);
         }
 
-        public async Task<bool> AddAsync(UserAggregatorRoot user)
+        public async Task<bool> AddAsync(UserAggregateRoot user)
         {
             await _context.Users.AddAsync(user);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateAsync(UserAggregatorRoot user)
+        public async Task<bool> UpdateAsync(UserAggregateRoot user)
         {
             _context.Users.Update(user);
             return await _context.SaveChangesAsync() > 0;
